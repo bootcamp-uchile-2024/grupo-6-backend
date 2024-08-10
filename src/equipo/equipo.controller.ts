@@ -21,12 +21,12 @@ export class EquipoController {
   @Get(':area')
   findOne(@Param('area') area: string, @Res() response: Response): void {
 
-    const area_info = this.equipoService.findArea(area);
+    const areaObj = this.equipoService.findArea(area);
 
-    if (area_info == 'Área no encontrada'){
-      response.status(400).send(area_info)
+    if (areaObj){
+      response.status(200).send(areaObj)
     } else {
-      response.status(200).send(area_info);
+      response.status(404).send("Área no encontrada");
     }
   }
 

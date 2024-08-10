@@ -15,47 +15,41 @@ export class EquipoService {
     return 'This action adds a new equipo';
   }
 
-  getEquipo(){
-    return this.equipo;
-  }
+  // getEquipo :: -> string
+  // Devuelve la información del equipo, indicando su nombre, áreas, integrantes y lider
+  getEquipo() {
+    let txt_Equipo: string = `Equipo: ${this.equipo.nombre}\n\n`;
 
-  // getEquipo() {
-  //   let txt_Equipo: string = `Equipo: ${this.equipo.nombre}\n\n`;
-
-  //   // Añadir información por área
-  //   for (let i: number = 0; i < this.equipo.areas.length; i++){
+    // Añadir información por área
+    for (let i: number = 0; i < this.equipo.areas.length; i++){
       
-  //     let area: string = this.equipo.areas[i]; 
+      let area: string = this.equipo.areas[i]; 
 
-  //     // Nombre de área
-  //     txt_Equipo += `Área: ${area}\n`; 
+      // Nombre de área
+      txt_Equipo += `Área: ${area}\n`; 
 
-  //     // Integrantes
-  //     let integrantes: string = this.equipo.personas[i].join(', ');
-  //     txt_Equipo += `Integrantes del área ${area}: ${integrantes}\n`;
+      // Integrantes
+      let integrantes: string = this.equipo.personas[i].join(', ');
+      txt_Equipo += `Integrantes del área ${area}: ${integrantes}\n`;
 
-  //     // Lider el grupo
-  //     txt_Equipo += `Líder del área ${area}: ${this.equipo.lider[i]}\n\n`;
+      // Lider el grupo
+      txt_Equipo += `Líder del área ${area}: ${this.equipo.lider[i]}\n\n`;
 
-  //   }
+    }
 
-  //   return txt_Equipo;
-  // }
-
-  findArea(area: string): object{
+    return txt_Equipo;
+  }
+  // findArea :: string -> string
+  // A partir del nombre de un área, devuelve información de la misma
+  findArea(area: string): string {
     let idx: number = this.equipo.areas.indexOf(area); // Encontrar índice del área
 
     // Datos del área
-    let integrantes: string[] = this.equipo.personas[idx];
+    let integrantes: string = this.equipo.personas[idx].join(', ');
     let lider: string = this.equipo.lider[idx];
 
-    const info_area = {
-      'area': area,
-      'integrantes': integrantes,
-      'lider': lider,
-    }
-
-    return info_area;
+    // Información del área
+    return `Área: ${area}\nIntegrantes: ${integrantes}\nLíder: ${lider}`
   }
 
   findOne(id: number) {

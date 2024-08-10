@@ -44,12 +44,16 @@ export class EquipoService {
   findArea(area: string): string {
     let idx: number = this.equipo.areas.indexOf(area); // Encontrar índice del área
 
-    // Datos del área
-    let integrantes: string = this.equipo.personas[idx].join(', ');
-    let lider: string = this.equipo.lider[idx];
-
     // Información del área
-    return `Área: ${area}\nIntegrantes: ${integrantes}\nLíder: ${lider}`
+    if (idx > 0){
+      // Datos del área
+      let integrantes: string = this.equipo.personas[idx].join(', ');
+      let lider: string = this.equipo.lider[idx];
+      
+      return `Área: ${area}\nIntegrantes: ${integrantes}\nLíder: ${lider}`
+    } else {
+      return 'Área no encontrada'
+    }
   }
 
   findOne(id: number) {

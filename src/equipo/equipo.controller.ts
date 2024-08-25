@@ -17,6 +17,20 @@ export class EquipoController {
   getEquipo() {
     return this.equipoService.getEquipo();
   }
+
+  // Obtener los datos de las areas
+  @Get('/areas')
+  getAreas() {
+    return this.equipoService.getAreas();
+  }
+
+  // Obtener los datos del Ecommerce
+  @Get('/ecommerce')
+  getEcommerceInfo() {
+    return this.equipoService.getEcommerceInfo();
+  }
+
+
   // Dado el nombre de un área, entregar información sus integrante y líder
   @Get(':area')
   findOne(@Param('area') area: string, @Res() response: Response): void {

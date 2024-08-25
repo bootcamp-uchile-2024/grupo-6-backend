@@ -42,12 +42,9 @@ export class ProductsService {
   //   return `This action returns a #${id} product`;
   // }
 
-  getFilteredProducts(filters: {
+  applyFilterProducts(filteredProducts: Product[], filters: {
     priceMin?: number;
     priceMax?: number;
-    limit?: number;
-    offset?: number;
-    sortBy?: string;
     autor?: string;
     nombre?: string;
     rating?: number;
@@ -59,8 +56,6 @@ export class ProductsService {
     agnoPublicacionMin?: number;
     agnoPublicacionMax?: number;
   }){
-    let filteredProducts = this.products;
-
     // Filtro autor
     if (filters.autor){
       filteredProducts = filteredProducts.filter( 
@@ -141,18 +136,101 @@ export class ProductsService {
         book => book.agnoPublicacion <= new Date(filters.agnoPublicacionMax, 0)
       )
     }
-    // Ordenar
+
+    return filteredProducts;
+  }
+
+  sortProducts(filteredProducts: Product[], filters: {
+    sortBy?: string;
+  }){
     if (filters.sortBy){
       filteredProducts = filteredProducts.sort(
         (a, b) => a[filters.sortBy] > b[filters.sortBy] ? 1 : -1,
       )
     }
-    // Paginación
+    return filteredProducts;
+  }
+
+  paginationProducts(filteredProducts: Product[], filters: {
+    limit?: number;
+    offset?: number;
+  }){
     const offset = filters.offset || 0;
     const limit = filters.limit || filteredProducts.length;
 
-    filteredProducts = filteredProducts.slice(offset, offset + limit);
+    return filteredProducts.slice(offset, offset + limit);
+  }
 
+  getFilteredProducts(filters: {
+    priceMin?: number;
+    priceMax?: number;
+    limit?: number;
+    offset?: number;
+    sortBy?: string;
+    autor?: string;
+    nombre?: string;
+    rating?: number;
+    genero?: string[];
+    editorial?: string[];
+    idioma?: string[];
+    isbn?: string;
+    encuadernacion?: Encuadernacion;
+    agnoPublicacionMin?: number;
+    agnoPublicacionMax?: number;
+  }){
+    let filteredProducts = this.products;
+
+    // Aplicar filtros
+    filteredProducts = this.applyFilterProducts(filteredProducts, filters);
+    
+    // Ordenar
+    filteredProducts = this.sortProducts(filteredProducts, filters);
+
+    // Paginación
+    filteredProducts = this.paginationProducts(filteredProducts, filters);
+
+    // Gestión de errores
+    if (!filteredProducts){
+      throw new ErrorStatus('No existen productos que cumplan la solicitud', 404)
+    }
+
+    return filteredProducts;
+  }
+  
+  getSearchedProductos(query: string, filters: {
+    priceMin?: number;
+    priceMax?: number;
+    limit?: number;
+    offset?: number;
+    sortBy?: string;
+    autor?: string;
+    rating?: number;
+    genero?: string[];
+    editorial?: string[];
+    idioma?: string[];
+    encuadernacion?: Encuadernacion;
+    agnoPublicacionMin?: number;
+    agnoPublicacionMax?: number;
+  }){
+    let filteredProducts = this.products;
+
+    // Filtro por solicitud
+    filteredProducts = filteredProducts.filter( 
+      book => 
+        book.autor.some(autor => autor.toLowerCase().includes(query.toLowerCase()))
+        || book.nombre.toLowerCase().includes(query.toLowerCase())
+        || book.isbn === query
+      )
+    // Aplicar filtros
+    filteredProducts = this.applyFilterProducts(filteredProducts, filters);
+    
+    // Ordenar
+    filteredProducts = this.sortProducts(filteredProducts, filters);
+
+    // Paginación
+    filteredProducts = this.paginationProducts(filteredProducts, filters);
+
+    // Gestión de errores
     if (!filteredProducts){
       throw new ErrorStatus('No existen productos que cumplan la solicitud', 404)
     }

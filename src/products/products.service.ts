@@ -223,7 +223,7 @@ export class ProductsService {
       )
     // Aplicar filtros
     filteredProducts = this.applyFilterProducts(filteredProducts, filters);
-    
+
     // Ordenar
     filteredProducts = this.sortProducts(filteredProducts, filters);
 
@@ -231,7 +231,7 @@ export class ProductsService {
     filteredProducts = this.paginationProducts(filteredProducts, filters);
 
     // Gestión de errores
-    if (!filteredProducts){
+    if (filteredProducts.length == 0){
       throw new ErrorStatus('No existen productos que cumplan la solicitud', 404)
     }
 

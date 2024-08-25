@@ -5,6 +5,7 @@ import { Product } from './entities/product.entity';
 import { Genero } from './entities/genero';
 import { Idioma } from './entities/idioma';
 import { Encuadernacion } from './entities/encuadernacion';
+import { ErrorStatus } from 'src/errorStatus';
 
 @Injectable()
 export class ProductsService {
@@ -36,11 +37,129 @@ export class ProductsService {
   nombreEpica() {
     return `Este modulo corresponde a la epica "Obtencion de Producto".`;
   }
-
+  
   // findOne(id: number) {
   //   return `This action returns a #${id} product`;
   // }
 
+  getFilteredProducts(filters: {
+    priceMin?: number;
+    priceMax?: number;
+    limit?: number;
+    offset?: number;
+    sortBy?: string;
+    autor?: string;
+    nombre?: string;
+    rating?: number;
+    genero?: string[];
+    editorial?: string[];
+    idioma?: string[];
+    isbn?: string;
+    encuadernacion?: Encuadernacion;
+    agnoPublicacionMin?: number;
+    agnoPublicacionMax?: number;
+  }){
+    let filteredProducts = this.products;
+
+    // Filtro autor
+    if (filters.autor){
+      filteredProducts = filteredProducts.filter( 
+        book => book.autor.some(
+          autor => autor.toLowerCase().includes(filters.autor.toLowerCase())
+        )
+      )
+    }
+    // Filtro nombre
+    if (filters.nombre){
+      filteredProducts = filteredProducts.filter(
+        book => book.nombre.toLowerCase().includes(filters.nombre.toLowerCase())
+      );
+    }
+    // Filtro precio mínimo
+    if (filters.priceMin !== undefined){
+      filteredProducts = filteredProducts.filter(
+        book => book.precio >= filters.priceMin
+      )
+    }
+    // Filtro precio máximo
+    if (filters.priceMax !== undefined){
+      filteredProducts = filteredProducts.filter(
+        book => book.precio <= filters.priceMax
+      )
+    }
+    // Filtro rating
+    if (filters.rating !== undefined){
+      filteredProducts = filteredProducts.filter(
+        book => book.rating >= filters.rating
+      )
+    }
+    // Filtro genero
+    if (filters.genero){
+      const generos = Array.isArray(filters.genero) ? filters.genero : [filters.genero];
+      const generosEnums = generos.map(g => Genero[g as keyof typeof Genero]); // Convertir a enums
+
+      filteredProducts = filteredProducts.filter(
+        book => book.genero.some(gen => generosEnums.includes(gen))
+        );
+    }
+    // Filtro editorial
+    if (filters.editorial){
+      filteredProducts = filteredProducts.filter(
+        book => filters.editorial.includes(book.editorial)
+        );
+    }
+    // Filtro idioma
+    if (filters.idioma){
+      const idiomas = Array.isArray(filters.idioma) ? filters.idioma : [filters.idioma];
+      const idiomasEnums = idiomas.map(idioma => Idioma[idioma as keyof typeof Idioma]); // Convertir a enums
+
+      filteredProducts = filteredProducts.filter(
+        book => idiomasEnums.includes(book.idioma)
+        );
+    }
+    // Filtro isbn
+    if (filters.isbn){
+      filteredProducts = filteredProducts.filter(
+        book => book.isbn === filters.isbn
+      )
+    }
+    // Filtro encuadernación
+    if (filters.encuadernacion){
+      filteredProducts = filteredProducts.filter(
+        book => book.encuadernacion === filters.encuadernacion
+      )
+    }
+    // Filtro año publicación mínimo
+    if (filters.agnoPublicacionMin !== undefined){
+      filteredProducts = filteredProducts.filter(
+        book => book.agnoPublicacion >= new Date(filters.agnoPublicacionMin, 0)
+      )
+    }
+    // Filtro año publicación máximo
+    if (filters.agnoPublicacionMax !== undefined){
+      filteredProducts = filteredProducts.filter(
+        book => book.agnoPublicacion <= new Date(filters.agnoPublicacionMax, 0)
+      )
+    }
+    // Ordenar
+    if (filters.sortBy){
+      filteredProducts = filteredProducts.sort(
+        (a, b) => a[filters.sortBy] > b[filters.sortBy] ? 1 : -1,
+      )
+    }
+    // Paginación
+    const offset = filters.offset || 0;
+    const limit = filters.limit || filteredProducts.length;
+
+    filteredProducts = filteredProducts.slice(offset, offset + limit);
+
+    if (!filteredProducts){
+      throw new ErrorStatus('No existen productos que cumplan la solicitud', 404)
+    }
+
+    return filteredProducts;
+  }
+  
   // update(id: number, updateProductDto: UpdateProductDto) {
   //   return `This action updates a #${id} product`;
   // }

@@ -2,10 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Query } from '@
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Response } from 'express';
 import { Genero } from './entities/genero';
 import { Encuadernacion } from './entities/encuadernacion';
 import { Idioma } from './entities/idioma';
-import { Response } from 'express';
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('products')
@@ -22,10 +22,18 @@ export class ProductsController {
     return this.productsService.nombreEpica();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.productsService.findOne(+id);
-  // }
+  @ApiResponse({ status: 200, description: 'Este codigo se debe a que se pudo enviar el libro en base al isbn ingresado.' })
+  @ApiResponse({ status: 404, description: 'Este codigo se debe a que no encuentra el isbn del libro.' })
+  @Get(':isbn')
+  findOne(@Param('isbn') isbn: string,@Res() response: Response): void {
+    const producto = this.productsService.findOne(isbn);
+    if(producto){
+      response.status(200).send(producto);
+    }
+    else{
+      response.status(404).send('No existe cuenta vista con el id ingresado.');
+    }
+  }
 
 
   // HU Filtro de productos

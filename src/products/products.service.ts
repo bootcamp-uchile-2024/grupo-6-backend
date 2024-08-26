@@ -37,10 +37,12 @@ export class ProductsService {
   nombreEpica() {
     return `Este modulo corresponde a la epica "Obtencion de Producto".`;
   }
-  
-  // findOne(id: number) {
-  //   return `This action returns a #${id} product`;
-  // }
+
+  findOne(isbn: string): Product {
+    const producto: Product = this.products.find((element: Product) => element.isbn == isbn);
+    return producto;
+  }
+
 
   applyFilterProducts(filteredProducts: Product[], filters: {
     priceMin?: number;

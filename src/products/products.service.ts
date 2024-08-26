@@ -37,9 +37,10 @@ export class ProductsService {
     return `Este modulo corresponde a la epica "Obtencion de Producto".`;
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} product`;
-  // }
+  findOne(isbn: string): Product {
+    const producto: Product = this.products.find((element: Product) => element.isbn == isbn);
+    return producto;
+  }
 
   // update(id: number, updateProductDto: UpdateProductDto) {
   //   return `This action updates a #${id} product`;

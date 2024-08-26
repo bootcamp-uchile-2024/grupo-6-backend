@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Response } from '@nestjs/common';
+import { Response } from 'express';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('products')
 export class ProductsController {
@@ -18,10 +19,18 @@ export class ProductsController {
     return this.productsService.nombreEpica();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.productsService.findOne(+id);
-  // }
+  @ApiResponse({ status: 200, description: 'Este codigo se debe a que se pudo enviar el libro en base al isbn ingresado.' })
+  @ApiResponse({ status: 404, description: 'Este codigo se debe a que no encuentra el isbn del libro.' })
+  @Get(':isbn')
+  findOne(@Param('isbn') isbn: string,@Res() response: Response): void {
+    const producto = this.productsService.findOne(isbn);
+    if(producto){
+      response.status(200).send(producto);
+    }
+    else{
+      response.status(404).send('No existe cuenta vista con el id ingresado.');
+    }
+  }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {

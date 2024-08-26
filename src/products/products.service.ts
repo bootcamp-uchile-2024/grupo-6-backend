@@ -26,9 +26,9 @@ export class ProductsService {
     new Product('9789569635601', 'Meditaciones', ['Marco Aurelio'], 30, 11500, [Genero.FILOSOFIA_RELIGION, Genero.CLASICO], 'Taurus', Idioma.ESPANOL, Encuadernacion.TAPA_BLANDA, new Date(2021, 0), 176, 0, '9789569635601.jpeg'),
   ]
 
-  // create(createProductDto: CreateProductDto) {
-  //   return 'This action adds a new product';
-  // }
+  create(createProductDto: CreateProductDto) {
+    return 'This action adds a new product';
+  }
 
   // findAll() {
   //   return `This action returns all products`;

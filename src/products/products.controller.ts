@@ -11,17 +11,19 @@ import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
-
-  // @Post()
-  // create(@Body() createProductDto: CreateProductDto) {
-  //   return this.productsService.create(createProductDto);
-  // }
-
-  @Get()
-  nombreEpica() {
-    return this.productsService.nombreEpica();
+  
+  @ApiTags('Products')
+  @Post()
+  create(@Body() createProductDto: CreateProductDto) {
+    return this.productsService.create(createProductDto);
   }
 
+  // @Get()
+  // nombreEpica() {
+  //   return this.productsService.nombreEpica();
+  // }
+
+  @ApiTags('Products')
   @ApiResponse({ status: 200, description: 'Este codigo se debe a que se pudo enviar el libro en base al isbn ingresado.' })
   @ApiResponse({ status: 404, description: 'Este codigo se debe a que no encuentra el isbn del libro.' })
   @Get(':isbn')
@@ -125,7 +127,7 @@ export class ProductsController {
     @Query('query') query: string,
     @Query('priceMin') priceMin?: number,
     @Query('priceMax') priceMax?: number,
-    @Query('limit') limit = 10,
+    @Query('limit') limit = 10, 
     @Query('offset') offset = 0,
     @Query('sortBy') sortBy?: string,
     @Query('autor') autor?: string,

@@ -9,7 +9,7 @@ import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class ShoppingcartController {
   constructor(private readonly shoppingcartService: ShoppingcartService) {}
 
-  @ApiTags('Crear/Agregar producto a carrito de compras')
+  @ApiTags('Shopping cart')
   @ApiBody({type: CreateShoppingcartDto, description: 'Datos del libro que se va a cargar al carrito de compras'})
   @ApiResponse({status:201, description: 'Producto agregado a carrito de compras'})
   @Post()
@@ -29,7 +29,7 @@ export class ShoppingcartController {
     
   }*/
 
-  @ApiTags('Obtención de productos del carrito de compras')
+  @ApiTags('Shopping cart')
   @ApiResponse({status:200, description: 'Obtención de carrito de compras'})
   @ApiResponse({status:404, description: 'No se puede obtener carrito de compras'})
   @Get()
@@ -52,7 +52,7 @@ export class ShoppingcartController {
   update(@Param('id') id: string, @Body() updateShoppingcartDto: UpdateShoppingcartDto) {
     return this.shoppingcartService.update(+id, updateShoppingcartDto);
   }*/
-    @ApiTags('Eliminar producto del carrito de compra')
+    @ApiTags('Shopping cart')
     @ApiResponse({status:200, description: 'Producto eliminado del carrito de compra'})
     @ApiResponse({status:404, description: 'Producto no existe en el carrito de compra'})
     @Delete(':item')

@@ -4,11 +4,11 @@ import { Genero } from "src/products/entities/genero";
 
 export class CreateShoppingcartDto {
     public item: number;
-    @ApiProperty({example: 'El señor de los Anillos: La comunidad del Anillo', description: 'Nombre del libro', default: 'El señor de los Anillos: La comunidad del Anillo' })
+    // @ApiProperty({example: 'El señor de los Anillos: La comunidad del Anillo', description: 'Nombre del libro', default: 'El señor de los Anillos: La comunidad del Anillo' })
     public nombre: string;
-    @ApiProperty({example: ['J.R.R TOLKIEN'], description: 'Autor del libro', default:['J.R.R TOLKIEN']})
+    // @ApiProperty({example: ['J.R.R TOLKIEN'], description: 'Autor del libro', default:['J.R.R TOLKIEN']})
     public autor: string[];
-    @ApiProperty({example: 10, description: 'Stock de libros disponibles', default: 10})
+    // @ApiProperty({example: 10, description: 'Stock de libros disponibles', default: 10})
     public stockLibro: number;
     @ApiProperty({example: 16000, description: 'Precio del libro', default: 16000})
     public precio: number;

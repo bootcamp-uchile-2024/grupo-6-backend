@@ -12,10 +12,10 @@ export class HomeController {
   //   return this.homeService.create(createHomeDto);
   // }
 
-  @Get()
-  nombreEpica() {
-    return this.homeService.nombreEpica();
-  }
+  // @Get()
+  // nombreEpica() {
+  //   return this.homeService.nombreEpica();
+  // }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {

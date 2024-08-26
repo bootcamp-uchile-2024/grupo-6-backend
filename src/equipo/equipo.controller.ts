@@ -8,49 +8,49 @@ import { Response } from 'express';
 export class EquipoController {
   constructor(private readonly equipoService: EquipoService) {}
 
-  @Post()
-  create(@Body() createEquipoDto: CreateEquipoDto) {
-    return this.equipoService.create(createEquipoDto);
-  }
-  // Obtener los datos del equipo
-  @Get()
-  getEquipo() {
-    return this.equipoService.getEquipo();
-  }
+  // @Post()
+  // create(@Body() createEquipoDto: CreateEquipoDto) {
+  //   return this.equipoService.create(createEquipoDto);
+  // }
+  // // Obtener los datos del equipo
+  // @Get()
+  // getEquipo() {
+  //   return this.equipoService.getEquipo();
+  // }
 
-  // Obtener los datos de las areas
-  @Get('/areas')
-  getAreas() {
-    return this.equipoService.getAreas();
-  }
+  // // Obtener los datos de las areas
+  // @Get('/areas')
+  // getAreas() {
+  //   return this.equipoService.getAreas();
+  // }
 
-  // Obtener los datos del Ecommerce
-  @Get('/ecommerce')
-  getEcommerceInfo() {
-    return this.equipoService.getEcommerceInfo();
-  }
+  // // Obtener los datos del Ecommerce
+  // @Get('/ecommerce')
+  // getEcommerceInfo() {
+  //   return this.equipoService.getEcommerceInfo();
+  // }
 
 
-  // Dado el nombre de un área, entregar información sus integrante y líder
-  @Get(':area')
-  findOne(@Param('area') area: string, @Res() response: Response): void {
+  // // Dado el nombre de un área, entregar información sus integrante y líder
+  // @Get(':area')
+  // findOne(@Param('area') area: string, @Res() response: Response): void {
 
-    const areaObj = this.equipoService.findArea(area);
+  //   const areaObj = this.equipoService.findArea(area);
 
-    if (areaObj){
-      response.status(200).send(areaObj)
-    } else {
-      response.status(404).send("Área no encontrada");
-    }
-  }
+  //   if (areaObj){
+  //     response.status(200).send(areaObj)
+  //   } else {
+  //     response.status(404).send("Área no encontrada");
+  //   }
+  // }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEquipoDto: UpdateEquipoDto) {
-    return this.equipoService.update(+id, updateEquipoDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateEquipoDto: UpdateEquipoDto) {
+  //   return this.equipoService.update(+id, updateEquipoDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.equipoService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.equipoService.remove(+id);
+  // }
 }

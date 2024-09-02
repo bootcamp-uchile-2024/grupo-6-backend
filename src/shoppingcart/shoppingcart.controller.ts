@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, NotFoundException, ImATeapotException, NotImplementedException } from '@nestjs/common';
 import { ShoppingcartService } from './shoppingcart.service';
 import { CreateShoppingcartDto } from './dto/create-shoppingcart.dto';
 import { UpdateShoppingcartDto } from './dto/update-shoppingcart.dto';
@@ -14,7 +14,7 @@ export class ShoppingcartController {
   @ApiResponse({status:201, description: 'Producto agregado a carrito de compras'})
   @Post()
   create(@Body() createShoppingcartDto: CreateShoppingcartDto, /*@Res() response:Response*/ ) {
-    return this.shoppingcartService.create(createShoppingcartDto); //response.status(201).send(this.shoppingcartService.create(createShoppingcartDto));    
+    return this.shoppingcartService.create(createShoppingcartDto); //response.status(201).send(this.shoppingcartService.create(createShoppingcartDto));   
   }
   /*@ApiTags('Obtención de nombre de la Épica')
   @Get()
@@ -34,11 +34,11 @@ export class ShoppingcartController {
   @Get()
   obtenerProductos(/*@Res() res:Response*/) {
     let encontrado = this.shoppingcartService.obtenerProductos();
-    if(encontrado != null){
+    //if(encontrado != null){
       return encontrado; //res.status(200).send(encontrado);
-    }else{
-      //return 'No se encuentra información requerida' //res.status(404).send("No se encuentra información requerida");
-    }
+    /*}else{
+      throw new NotImplementedException(); //return 'No se encuentra información requerida' //res.status(404).send("No se encuentra información requerida");
+    }*/
     
   }
 
@@ -60,7 +60,7 @@ export class ShoppingcartController {
       if (encontrado){
         return 'Producto eliminado del carrito de compra'//response.status(200).send('Producto eliminado del carrito de compra');
       }else{
-        //return 'Producto no existe'//response.status(404).send('Producto no existe en el carrito de compra');
+        throw new NotFoundException(); //return 'Producto no existe'//response.status(404).send('Producto no existe en el carrito de compra');
       }
     }
 }

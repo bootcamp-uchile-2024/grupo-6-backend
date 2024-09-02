@@ -13,9 +13,8 @@ export class ShoppingcartController {
   @ApiBody({type: CreateShoppingcartDto, description: 'Datos del libro que se va a cargar al carrito de compras'})
   @ApiResponse({status:201, description: 'Producto agregado a carrito de compras'})
   @Post()
-  create(@Body() createShoppingcartDto: CreateShoppingcartDto, @Res() response:Response ) {
-    
-    response.status(201).send(this.shoppingcartService.create(createShoppingcartDto));
+  create(@Body() createShoppingcartDto: CreateShoppingcartDto, /*@Res() response:Response*/ ) {
+    return this.shoppingcartService.create(createShoppingcartDto); //response.status(201).send(this.shoppingcartService.create(createShoppingcartDto));    
   }
   /*@ApiTags('Obtención de nombre de la Épica')
   @Get()
@@ -33,12 +32,12 @@ export class ShoppingcartController {
   @ApiResponse({status:200, description: 'Obtención de carrito de compras'})
   @ApiResponse({status:404, description: 'No se puede obtener carrito de compras'})
   @Get()
-  obtenerProductos(@Res() res:Response): void {
+  obtenerProductos(/*@Res() res:Response*/) {
     let encontrado = this.shoppingcartService.obtenerProductos();
     if(encontrado != null){
-      res.status(200).send(encontrado);
+      return encontrado; //res.status(200).send(encontrado);
     }else{
-      res.status(404).send("No se encuentra información requerida");
+      //return 'No se encuentra información requerida' //res.status(404).send("No se encuentra información requerida");
     }
     
   }
@@ -56,12 +55,12 @@ export class ShoppingcartController {
     @ApiResponse({status:200, description: 'Producto eliminado del carrito de compra'})
     @ApiResponse({status:404, description: 'Producto no existe en el carrito de compra'})
     @Delete(':item')
-    remove(@Param('item') item: number, @Res() response:Response) {
+    remove(@Param('item') item: number, /*@Res() response:Response*/) {
       const encontrado = this.shoppingcartService.remove(item);
       if (encontrado){
-        response.status(200).send('Producto eliminado del carrito de compra');
+        return 'Producto eliminado del carrito de compra'//response.status(200).send('Producto eliminado del carrito de compra');
       }else{
-        response.status(404).send('Producto no existe en el carrito de compra');
+        //return 'Producto no existe'//response.status(404).send('Producto no existe en el carrito de compra');
       }
     }
 }

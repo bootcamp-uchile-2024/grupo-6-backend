@@ -3,9 +3,12 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ShoppingcartModule } from './shoppingcart/shoppingcart.module';
 import { ProductsModule } from './products/products.module';
+import { BooksInterceptor } from './books/books.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalInterceptors(new BooksInterceptor());
 
   const configApp = new DocumentBuilder()
     .setTitle('API Páginas Selectas Backend')

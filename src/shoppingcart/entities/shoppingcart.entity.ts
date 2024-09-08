@@ -2,6 +2,7 @@ import { Encuadernacion } from "src/products/entities/encuadernacion";
 import { Genero } from "src/products/entities/genero";
 
 export class Shoppingcart {
+    public isbn:string;
     public item: number;
     public nombre: string;
     public autor: string[];

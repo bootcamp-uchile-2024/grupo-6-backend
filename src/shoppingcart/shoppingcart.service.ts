@@ -2,29 +2,37 @@ import { Injectable } from '@nestjs/common';
 import { CreateShoppingcartDto } from './dto/create-shoppingcart.dto';
 import { UpdateShoppingcartDto } from './dto/update-shoppingcart.dto';
 import { Shoppingcart } from './entities/shoppingcart.entity';
+import { ProductsService } from 'src/products/products.service';
+import { CreateProductDto } from 'src/products/dto/create-product.dto';
 
 @Injectable()
 export class ShoppingcartService {
 
+  constructor(private readonly productsService: ProductsService){}
+
   shoppingcart: Shoppingcart [] = [];
 
-  create(createShoppingcartDto: CreateShoppingcartDto) {
-    const encontrado = this.shoppingcart.find((element) => element.nombre == createShoppingcartDto.nombre)
+  create(createProductotDto: CreateProductDto) {
+    const encontrado = this.shoppingcart.find((element) => element.isbn == createProductotDto.isbn)
       if(encontrado){
-        //Desarrollar lógica para sumatoria de la cantidad (pendiente)
+        const cartCantidad = this.shoppingcart.find((element)=> element.isbn == encontrado.isbn)//Desarrollar lógica para sumatoria de la cantidad (pendiente)
+        if(cartCantidad){
+          cartCantidad.cantidad = cartCantidad.cantidad +1;
+        }
       }else{
       const cart: Shoppingcart = new Shoppingcart();
+      cart.isbn = createProductotDto.isbn;
       cart.item = this.shoppingcart.length + 1;
-      cart.nombre = createShoppingcartDto.nombre;
-      cart.autor = createShoppingcartDto.autor;
-      cart.caratula = createShoppingcartDto.caratula;
-      cart.editorial = createShoppingcartDto.editorial;
-      cart.genero = createShoppingcartDto.genero;
-      cart.precio = createShoppingcartDto.precio;
-      cart.descuento = createShoppingcartDto.descuento;
-      cart.encuadernacion = createShoppingcartDto.encuadernacion;
+      cart.nombre = createProductotDto.nombre;
+      cart.autor = createProductotDto.autor;
+      cart.caratula = createProductotDto.caratula;
+      cart.editorial = createProductotDto.editorial;
+      cart.genero = createProductotDto.genero;
+      cart.precio = createProductotDto.precio;
+      cart.descuento = createProductotDto.descuento;
+      cart.encuadernacion = createProductotDto.encuadernacion;
       cart.cantidad = 1;
-      cart.stockLibro = createShoppingcartDto.stockLibro;
+      cart.stockLibro = createProductotDto.stockLibro;
     
       this.shoppingcart.push(cart);
       return this.shoppingcart;

@@ -4,17 +4,21 @@ import { CreateShoppingcartDto } from './dto/create-shoppingcart.dto';
 import { UpdateShoppingcartDto } from './dto/update-shoppingcart.dto';
 import { Response } from 'express';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ProductsService } from 'src/products/products.service';
+import { CreateProductDto } from 'src/products/dto/create-product.dto';
 
 @Controller('shoppingcart')
 export class ShoppingcartController {
-  constructor(private readonly shoppingcartService: ShoppingcartService) {}
+  constructor(private readonly shoppingcartService: ShoppingcartService,
+              private readonly productService: ProductsService
+  ) {}
 
   @ApiTags('Shopping cart')
-  @ApiBody({type: CreateShoppingcartDto, description: 'Datos del libro que se va a cargar al carrito de compras'})
+  @ApiBody({type: CreateProductDto, description: 'Datos del libro que se va a cargar al carrito de compras'})
   @ApiResponse({status:201, description: 'Producto agregado a carrito de compras'})
   @Post()
-  create(@Body() createShoppingcartDto: CreateShoppingcartDto, /*@Res() response:Response*/ ) {
-    return this.shoppingcartService.create(createShoppingcartDto); //response.status(201).send(this.shoppingcartService.create(createShoppingcartDto));   
+  create(@Body() createProductDto: CreateProductDto, /*@Res() response:Response*/ ) {
+    return this.shoppingcartService.create(createProductDto); //response.status(201).send(this.shoppingcartService.create(createShoppingcartDto));   
   }
   /*@ApiTags('Obtención de nombre de la Épica')
   @Get()

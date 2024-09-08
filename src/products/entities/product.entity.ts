@@ -36,7 +36,12 @@ export class Product {
     public descuento: number;
     @ApiProperty()
     public caratula: string;
-
+    @ApiProperty()
+    public dimensiones: string;
+    @ApiProperty()
+    public ean: string; // Código de barra del producto
+    @ApiProperty()
+    public resumen: string;
     
     constructor(
         isbn: string,
@@ -52,6 +57,9 @@ export class Product {
         numeroPaginas: number,
         descuento: number,
         caratula: string,
+        dimensiones: string,
+        ean: string,
+        resumen: string,
       ) {
         this.isbn = isbn;
         this.nombre = nombre;
@@ -68,5 +76,8 @@ export class Product {
         this.resenas = [];
         this.descuento = descuento;
         this.caratula = caratula;
+        this.dimensiones = dimensiones;
+        this.ean = ean;
+        this.resumen = resumen;
       }
 }

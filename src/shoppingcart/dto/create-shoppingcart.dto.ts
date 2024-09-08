@@ -3,6 +3,7 @@ import { Encuadernacion } from "src/products/entities/encuadernacion";
 import { Genero } from "src/products/entities/genero";
 
 export class CreateShoppingcartDto {
+    public isbn: string;
     public item: number;
     // @ApiProperty({example: 'El señor de los Anillos: La comunidad del Anillo', description: 'Nombre del libro'})
     public nombre: string;

@@ -8,13 +8,13 @@ export class BooksMiddleware implements NestMiddleware {
     const emptyBody = (Obj:ObjectType): boolean => Object.keys(req.body).length === 0;
 
     if(emptyBody(req.body)){
-      console.log(req.originalUrl);
-      console.log(req.method);
+      console.log("Path: ", '\n',req.originalUrl);
+      console.log("Method: ", '\n',req.method);
     }
     if(!emptyBody(req.body)){
-      console.log(req.body);
-      console.log(req.originalUrl);
-      console.log(req.method);
+      console.log("Path: ", '\n',req.originalUrl);
+      console.log("Method: ", '\n',req.method);
+      console.log("Body: ", '\n', req.body);
     }
     next();
   }

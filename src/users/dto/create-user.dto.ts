@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { ClientType } from "../entities/clientType.entity";
 import { ClientState } from "../entities/clientState.entity";
-import { Directions } from "../entities/direction.entity";
+import { Address } from "../entities/address.entity";
 import { IsArray, IsEmail, isEmail, IsEnum, IsString } from "class-validator";
 import { TipoDireccion } from "../entities/tipoDireccion.entity";
 
@@ -21,11 +21,9 @@ export class CreateUserDto {
     public correoElectronico: string;
     @ApiProperty({example: '12345', description: 'Contrasena del usuario.'})
     public contrasena: string;
-    @ApiProperty({example: [new Directions(1,"El condor","125","N/A","Nunoa","Santiago","Region Metropolitana",[TipoDireccion.ENVIO,TipoDireccion.FACTURACION],"CASA")], description: 'Direccion del usuario, puede ser direccion de envio y/o facturacion.', isArray: true})
-    @IsArray({message: "..."})
-    public direccion: Directions[];
-    // @ApiProperty({example: '24', description: 'Identificador unico del usuario.'})
-    // public historialPedidos: Pedidos;
+    // @ApiProperty({example: [new Address(1,"El condor","125","N/A","Nunoa","Santiago","Region Metropolitana",[TipoDireccion.ENVIO,TipoDireccion.FACTURACION],"CASA")], description: 'Direccion del usuario, puede ser direccion de envio y/o facturacion.', type: Address})
+    @ApiProperty({description: 'Direccion del usuario, puede ser direccion de envio y/o facturacion.', default: [], type: Address})
+    public direccion: Address[];
     @ApiProperty({example: ClientType.ESTANDAR, description: 'Tipo de usuario, puede ser Premium o Estandar.', enum: ClientType })
     @IsEnum(ClientType,{message: "El tipo del usuario tiene que ser el formato correcto. Ej: 'Premium' o 'Estandar'."})
     public tipoCliente: ClientType;

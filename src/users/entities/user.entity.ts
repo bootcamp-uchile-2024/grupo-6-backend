@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { ClientType } from "./clientType.entity";
 import { ClientState } from "./clientState.entity";
-import { Directions } from "./direction.entity";
+import { Address } from "./address.entity";
 
 
 export class User {
@@ -18,7 +18,7 @@ export class User {
     @ApiProperty()
     public contrasena: string;
     @ApiProperty()
-    public direccion: Directions[];
+    public direccion: Address[];
     // @ApiProperty()
     // public historialPedidos: Pedidos;
     @ApiProperty()
@@ -32,7 +32,7 @@ export class User {
         apellidoMaterno: string,
         correoElectronico: string,
         contrasena: string,
-        direccion: Directions[],
+        direccion: Address[],
         tipoCliente: ClientType,
         estado: ClientState,
       ) {

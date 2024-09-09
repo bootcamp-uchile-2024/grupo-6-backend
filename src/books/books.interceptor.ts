@@ -10,7 +10,7 @@ export class BooksInterceptor implements NestInterceptor {
       map((val) => {
         console.log('----------Interceptor----------');
         console.log('----------Flujo de salida----------');
-        console.log(val);
+        console.log(val );
         return val; 
       }),
     );

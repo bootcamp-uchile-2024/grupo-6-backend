@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, NotFoundException, ImATeapotException, NotImplementedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, NotFoundException, ImATeapotException, NotImplementedException, ParseIntPipe } from '@nestjs/common';
 import { ShoppingcartService } from './shoppingcart.service';
 import { CreateShoppingcartDto } from './dto/create-shoppingcart.dto';
 import { UpdateShoppingcartDto } from './dto/update-shoppingcart.dto';
@@ -59,7 +59,7 @@ export class ShoppingcartController {
     @ApiResponse({status:200, description: 'Producto eliminado del carrito de compra'})
     @ApiResponse({status:404, description: 'Producto no existe en el carrito de compra'})
     @Delete(':item')
-    remove(@Param('item') item: number, /*@Res() response:Response*/) {
+    remove(@Param('item', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true })) item: number, /*@Res() response:Response*/) {
       const encontrado = this.shoppingcartService.remove(item);
       if (encontrado){
         return 'Producto eliminado del carrito de compra'//response.status(200).send('Producto eliminado del carrito de compra');

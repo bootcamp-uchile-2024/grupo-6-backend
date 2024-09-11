@@ -6,6 +6,7 @@ export class ParseEnumGeneroArrayPipePipe implements PipeTransform {
   constructor(private readonly Genero: object) {}
 
   transform(value: Genero[]) {
+
     if (value !== undefined){
       // Se revisa que sea un array o string el valor ingresado
       if (!Array.isArray(value) && typeof value != "string"){

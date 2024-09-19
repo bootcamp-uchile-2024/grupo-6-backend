@@ -1,4 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, NotFoundException, ImATeapotException, NotImplementedException, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+  NotFoundException,
+  ImATeapotException,
+  NotImplementedException,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ShoppingcartService } from './shoppingcart.service';
 import { CreateShoppingcartDto } from './dto/create-shoppingcart.dto';
 import { UpdateShoppingcartDto } from './dto/update-shoppingcart.dto';
@@ -9,16 +22,25 @@ import { CreateProductDto } from 'src/products/dto/create-product.dto';
 
 @Controller('shoppingcart')
 export class ShoppingcartController {
-  constructor(private readonly shoppingcartService: ShoppingcartService,
-              private readonly productService: ProductsService
+  constructor(
+    private readonly shoppingcartService: ShoppingcartService,
+    private readonly productService: ProductsService,
   ) {}
 
   @ApiTags('Shopping cart')
-  @ApiBody({type: CreateProductDto, description: 'Datos del libro que se va a cargar al carrito de compras'})
-  @ApiResponse({status:201, description: 'Producto agregado a carrito de compras'})
+  @ApiBody({
+    type: CreateProductDto,
+    description: 'Datos del libro que se va a cargar al carrito de compras',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Producto agregado a carrito de compras',
+  })
   @Post()
-  create(@Body() createProductDto: CreateProductDto, /*@Res() response:Response*/ ) {
-    return this.shoppingcartService.create(createProductDto); //response.status(201).send(this.shoppingcartService.create(createShoppingcartDto));   
+  create(
+    @Body() createProductDto: CreateProductDto /*@Res() response:Response*/,
+  ) {
+    return this.shoppingcartService.create(createProductDto); //response.status(201).send(this.shoppingcartService.create(createShoppingcartDto));
   }
   /*@ApiTags('Obtención de nombre de la Épica')
   @Get()
@@ -33,17 +55,19 @@ export class ShoppingcartController {
   }*/
 
   @ApiTags('Shopping cart')
-  @ApiResponse({status:200, description: 'Obtención de carrito de compras'})
-  @ApiResponse({status:404, description: 'No se puede obtener carrito de compras'})
+  @ApiResponse({ status: 200, description: 'Obtención de carrito de compras' })
+  @ApiResponse({
+    status: 404,
+    description: 'No se puede obtener carrito de compras',
+  })
   @Get()
   obtenerProductos(/*@Res() res:Response*/) {
-    let encontrado = this.shoppingcartService.obtenerProductos();
+    const encontrado = this.shoppingcartService.obtenerProductos();
     //if(encontrado != null){
-      return encontrado; //res.status(200).send(encontrado);
+    return encontrado; //res.status(200).send(encontrado);
     /*}else{
       throw new NotImplementedException(); //return 'No se encuentra información requerida' //res.status(404).send("No se encuentra información requerida");
     }*/
-    
   }
 
   /*@Get(':id')
@@ -55,17 +79,28 @@ export class ShoppingcartController {
   update(@Param('id') id: string, @Body() updateShoppingcartDto: UpdateShoppingcartDto) {
     return this.shoppingcartService.update(+id, updateShoppingcartDto);
   }*/
-    @ApiTags('Shopping cart')
-    @ApiResponse({status:200, description: 'Producto eliminado del carrito de compra'})
-    @ApiResponse({status:404, description: 'Producto no existe en el carrito de compra'})
-    @Delete(':item')
-    remove(@Param('item', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true })) item: number, /*@Res() response:Response*/) {
-      const encontrado = this.shoppingcartService.remove(item);
-      if (encontrado){
-        return 'Producto eliminado del carrito de compra'//response.status(200).send('Producto eliminado del carrito de compra');
-      }else{
-        throw new NotFoundException(); //return 'Producto no existe'//response.status(404).send('Producto no existe en el carrito de compra');
-      }
+  @ApiTags('Shopping cart')
+  @ApiResponse({
+    status: 200,
+    description: 'Producto eliminado del carrito de compra',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Producto no existe en el carrito de compra',
+  })
+  @Delete(':item')
+  remove(
+    @Param(
+      'item',
+      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
+    )
+    item: number /*@Res() response:Response*/,
+  ) {
+    const encontrado = this.shoppingcartService.remove(item);
+    if (encontrado) {
+      return 'Producto eliminado del carrito de compra'; //response.status(200).send('Producto eliminado del carrito de compra');
+    } else {
+      throw new NotFoundException(); //return 'Producto no existe'//response.status(404).send('Producto no existe en el carrito de compra');
     }
+  }
 }
-

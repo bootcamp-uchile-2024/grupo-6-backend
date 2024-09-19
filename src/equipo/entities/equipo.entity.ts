@@ -1,8 +1,8 @@
-import { Area } from "./area";
+import { Area } from './area';
 
 export class Equipo {
-    constructor(
+  constructor(
     public nombre: string,
     public areas: Area[],
-    ){}
+  ) {}
 }

@@ -1,7 +1,7 @@
 export class Area {
-    constructor(
+  constructor(
     public nombre: string,
     public personas: string[],
     public lider: string,
-    ){}
+  ) {}
 }

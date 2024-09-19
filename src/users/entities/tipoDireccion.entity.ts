@@ -1,4 +1,4 @@
-export enum TipoDireccion{
-    ENVIO = 'Envio',
-    FACTURACION = 'Facturacion'
+export enum TipoDireccion {
+  ENVIO = 'Envio',
+  FACTURACION = 'Facturacion',
 }

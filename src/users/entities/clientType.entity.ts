@@ -1,4 +1,4 @@
-export enum ClientType{
-    PREMIUM = 'Premium',
-    ESTANDAR = 'Estandar'
+export enum ClientType {
+  PREMIUM = 'Premium',
+  ESTANDAR = 'Estandar',
 }

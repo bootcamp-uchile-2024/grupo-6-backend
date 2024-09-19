@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+} from '@nestjs/common';
 import { EquipoService } from './equipo.service';
 import { CreateEquipoDto } from './dto/create-equipo.dto';
 import { UpdateEquipoDto } from './dto/update-equipo.dto';
@@ -29,7 +38,6 @@ export class EquipoController {
   // getEcommerceInfo() {
   //   return this.equipoService.getEcommerceInfo();
   // }
-
 
   // // Dado el nombre de un área, entregar información sus integrante y líder
   // @Get(':area')

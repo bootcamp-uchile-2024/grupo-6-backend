@@ -7,19 +7,22 @@ import { CreateProductDto } from 'src/products/dto/create-product.dto';
 
 @Injectable()
 export class ShoppingcartService {
+  constructor(private readonly productsService: ProductsService) {}
 
-  constructor(private readonly productsService: ProductsService){}
-
-  shoppingcart: Shoppingcart [] = [];
+  shoppingcart: Shoppingcart[] = [];
 
   create(createProductotDto: CreateProductDto) {
-    const encontrado = this.shoppingcart.find((element) => element.isbn == createProductotDto.isbn)
-      if(encontrado){
-        const cartCantidad = this.shoppingcart.find((element)=> element.isbn == encontrado.isbn)//Desarrollar lógica para sumatoria de la cantidad (pendiente)
-        if(cartCantidad){
-          cartCantidad.cantidad = cartCantidad.cantidad +1;
-        }
-      }else{
+    const encontrado = this.shoppingcart.find(
+      (element) => element.isbn == createProductotDto.isbn,
+    );
+    if (encontrado) {
+      const cartCantidad = this.shoppingcart.find(
+        (element) => element.isbn == encontrado.isbn,
+      ); //Desarrollar lógica para sumatoria de la cantidad (pendiente)
+      if (cartCantidad) {
+        cartCantidad.cantidad = cartCantidad.cantidad + 1;
+      }
+    } else {
       const cart: Shoppingcart = new Shoppingcart();
       cart.isbn = createProductotDto.isbn;
       cart.item = this.shoppingcart.length + 1;
@@ -33,11 +36,10 @@ export class ShoppingcartService {
       cart.encuadernacion = createProductotDto.encuadernacion;
       cart.cantidad = 1;
       cart.stockLibro = createProductotDto.stockLibro;
-    
+
       this.shoppingcart.push(cart);
       return this.shoppingcart;
-      }
-    
+    }
   }
 
   /*obtenerNombreEpica() {
@@ -56,14 +58,16 @@ export class ShoppingcartService {
     return `This action updates a #${id} shoppingcart`;
   }*/
 
-    remove(item: number) {
-      const encontrado = this.shoppingcart.find( (element) => element.item == item);
-      if(encontrado){
-        const index = this.shoppingcart.indexOf(encontrado);
-        this.shoppingcart.splice(index, 1);
-        return encontrado;
-      }else{
-        return null;
-      }
+  remove(item: number) {
+    const encontrado = this.shoppingcart.find(
+      (element) => element.item == item,
+    );
+    if (encontrado) {
+      const index = this.shoppingcart.indexOf(encontrado);
+      this.shoppingcart.splice(index, 1);
+      return encontrado;
+    } else {
+      return null;
     }
+  }
 }

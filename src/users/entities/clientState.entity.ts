@@ -1,4 +1,4 @@
-export enum ClientState{
-    ACTIVO = 'Activo',
-    BANEADO = 'Baneado'
+export enum ClientState {
+  ACTIVO = 'Activo',
+  BANEADO = 'Baneado',
 }

@@ -9,10 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ParseEnumGeneroArrayPipePipe = void 0;
+exports.ParseEnumGeneroArrayPipe = void 0;
 const common_1 = require("@nestjs/common");
 const genero_1 = require("../products/entities/genero");
-let ParseEnumGeneroArrayPipePipe = class ParseEnumGeneroArrayPipePipe {
+let ParseEnumGeneroArrayPipe = class ParseEnumGeneroArrayPipe {
     constructor(Genero) {
         this.Genero = Genero;
     }
@@ -33,9 +33,9 @@ let ParseEnumGeneroArrayPipePipe = class ParseEnumGeneroArrayPipePipe {
         }
     }
 };
-exports.ParseEnumGeneroArrayPipePipe = ParseEnumGeneroArrayPipePipe;
-exports.ParseEnumGeneroArrayPipePipe = ParseEnumGeneroArrayPipePipe = __decorate([
+exports.ParseEnumGeneroArrayPipe = ParseEnumGeneroArrayPipe;
+exports.ParseEnumGeneroArrayPipe = ParseEnumGeneroArrayPipe = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [Object])
-], ParseEnumGeneroArrayPipePipe);
+], ParseEnumGeneroArrayPipe);
 //# sourceMappingURL=parse-enum-genero-array-pipe.pipe.js.map

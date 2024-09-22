@@ -22,6 +22,7 @@ const idioma_1 = require("./entities/idioma");
 const swagger_1 = require("@nestjs/swagger");
 const product_entity_1 = require("./entities/product.entity");
 const parse_enum_genero_array_pipe_pipe_1 = require("../parse-enum-array-pipe/parse-enum-genero-array-pipe.pipe");
+const parse_enum_idioma_array_pipe_1 = require("../parse-enum-array-pipe/parse-enum-idioma-array-pipe");
 let ProductsController = class ProductsController {
     constructor(productsService) {
         this.productsService = productsService;
@@ -193,7 +194,10 @@ __decorate([
         required: false,
         example: 2024,
     }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Solicitud generada correctamente' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Solicitud generada correctamente'
+    }),
     (0, swagger_1.ApiResponse)({
         status: 404,
         description: 'No existen productos que cumplan la solicitud',
@@ -207,19 +211,9 @@ __decorate([
     __param(5, (0, common_1.Query)('autor')),
     __param(6, (0, common_1.Query)('nombre')),
     __param(7, (0, common_1.Query)('rating', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
-    __param(8, (0, common_1.Query)('genero', new parse_enum_genero_array_pipe_pipe_1.ParseEnumGeneroArrayPipePipe(genero_1.Genero))),
-    __param(9, (0, common_1.Query)('editorial', new common_1.ParseArrayPipe({
-        items: String,
-        separator: ',',
-        optional: true,
-        errorHttpStatusCode: 400,
-    }))),
-    __param(10, (0, common_1.Query)('idioma', new common_1.ParseArrayPipe({
-        items: String,
-        separator: ',',
-        optional: true,
-        errorHttpStatusCode: 400,
-    }))),
+    __param(8, (0, common_1.Query)('genero', new parse_enum_genero_array_pipe_pipe_1.ParseEnumGeneroArrayPipe(genero_1.Genero))),
+    __param(9, (0, common_1.Query)('editorial', new common_1.ParseArrayPipe({ items: String, separator: ',', optional: true, errorHttpStatusCode: 400, }))),
+    __param(10, (0, common_1.Query)('idioma', new parse_enum_idioma_array_pipe_1.ParseEnumIdiomaArrayPipe(idioma_1.Idioma))),
     __param(11, (0, common_1.Query)('isbn')),
     __param(12, (0, common_1.Query)('encuadernacion', new common_1.ParseEnumPipe(encuadernacion_1.Encuadernacion, { optional: true }))),
     __param(13, (0, common_1.Query)('agnoPublicacionMin', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
@@ -323,19 +317,9 @@ __decorate([
     __param(5, (0, common_1.Query)('sortBy')),
     __param(6, (0, common_1.Query)('autor')),
     __param(7, (0, common_1.Query)('rating', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
-    __param(8, (0, common_1.Query)('genero', new parse_enum_genero_array_pipe_pipe_1.ParseEnumGeneroArrayPipePipe(genero_1.Genero))),
-    __param(9, (0, common_1.Query)('editorial', new common_1.ParseArrayPipe({
-        items: String,
-        separator: ',',
-        optional: true,
-        errorHttpStatusCode: 400,
-    }))),
-    __param(10, (0, common_1.Query)('idioma', new common_1.ParseArrayPipe({
-        items: String,
-        separator: ',',
-        optional: true,
-        errorHttpStatusCode: 400,
-    }))),
+    __param(8, (0, common_1.Query)('genero', new parse_enum_genero_array_pipe_pipe_1.ParseEnumGeneroArrayPipe(genero_1.Genero))),
+    __param(9, (0, common_1.Query)('editorial', new common_1.ParseArrayPipe({ items: String, separator: ',', optional: true, errorHttpStatusCode: 400, }))),
+    __param(10, (0, common_1.Query)('idioma', new parse_enum_idioma_array_pipe_1.ParseEnumIdiomaArrayPipe(idioma_1.Idioma))),
     __param(11, (0, common_1.Query)('encuadernacion', new common_1.ParseEnumPipe(encuadernacion_1.Encuadernacion, { optional: true }))),
     __param(12, (0, common_1.Query)('agnoPublicacionMin', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
     __param(13, (0, common_1.Query)('agnoPublicacionMax', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),

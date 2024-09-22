@@ -3,83 +3,179 @@ import { Encuadernacion } from '../entities/encuadernacion';
 import { Genero } from '../entities/genero';
 import { Idioma } from '../entities/idioma';
 import { Review } from '../entities/review';
+import { ArrayNotEmpty, Contains, IsArray, IsDate, IsEnum, IsInt, IsString, Max, MaxDate, Min, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateProductDto {
-  @ApiProperty({ example: '9788420412146', description: 'ISBN del libro' })
+  @ApiProperty({
+    description: 'ISBN 13 del libro',
+    type: String,
+    example: '9788420412146',
+  })
+  @IsString()
   public isbn: string;
+
   @ApiProperty({
-    example: 'Don Quijote de la Mancha',
     description: 'Nombre del libro',
+    type: String,
+    example: 'Don Quijote de la Mancha',
   })
+  @IsString()
   public nombre: string;
+
   @ApiProperty({
+    description: 'Array con los nombres de los autores del libro',
+    type: [String],
     example: 'Miguel de Cervantes',
-    description: 'Autor de libro',
+    isArray: true,
   })
+  @IsArray()
   public autor: string[];
-  @ApiProperty({ example: 50, description: 'Stock' })
+
+  @ApiProperty({ 
+    description: 'Número de libros en stock',
+    minimum: 1,
+    type: Number,
+    example: 50, 
+  })
+  @Min(1)
   public stockLibro: number;
-  @ApiProperty({ example: 19000, description: 'Precio del libro' })
+
+  @ApiProperty({
+    description: 'Precio del libro (sin descuento)',
+    type: Number,
+    minimum: 1,
+    maximum: 10000000,
+    example: 19000, 
+  })
+  @IsInt()
+  @Min(1)
+  @Max(10000000)
   public precio: number;
+
   public rating: number;
 
   @ApiProperty({
-    example: [Genero.NOVELA, Genero.CLASICO],
-    description: 'Generos tal como Novela, Clasico, etc.',
-    default: [Genero.NOVELA, Genero.CLASICO],
-    enum: Genero,
+    description: 'Lista con el o los géneros del libro',
+    enum: [
+      'Thriller', 'Novela histórica', 'Romance', 'Ciencia ficción',
+      'Distópia', 'Aventura', 'Fantasía', 'Contemporáneo', 'Terror',
+      'Paranormal', 'Poesía', 'Juvenil', 'Infantil', 'Novela',
+      'Clásico', 'Autoayuda', 'Salud y deporte',
+      'Técnicos y especializados', 'Biografías y autobiografías',
+      'Cocina', 'Viajes', 'Arte', 'Ciencia y matemáticas',
+      'Computación', 'Derecho y política', 'Economía y finanzas',
+      'Historia', 'Filosofía y religión', 'Educación',
+    ],
     isArray: true,
+    example: [Genero.NOVELA, Genero.CLASICO],
   })
+  @ArrayNotEmpty()
   public genero: Genero[];
 
   @ApiProperty({
+    description: 'Nombre de la editorial del libro',
+    type: String,
     example: 'Lengua Viva',
-    description: 'Editorial del libro.',
-    default: 'Lengua Viva',
   })
+  @IsString()
   public editorial: string;
+
   @ApiProperty({
+    description: 'Idioma del libro',
+    enum: [
+      'Español',
+      'Inglés',
+      'Francés',
+      'Alemán',
+      'Portugués',
+      'Italiano',
+    ],
     example: Idioma.ESPANOL,
-    description: 'Idiomas como español, ingles, etc.',
   })
+  @IsEnum({entity: Idioma})
   public idioma: Idioma;
+
   @ApiProperty({
     example: Encuadernacion.TAPA_DURA,
-    description: 'Encuadernacion, puede ser tapa dura, tapa blanda.',
+    description: 'Tipo de encuadernación del libro',
+    enum: [
+      'Tapa dura',
+      'Tapa blanda',
+      'Encuadernación en espiral',
+    ]
   })
   public encuadernacion: Encuadernacion;
+
   @ApiProperty({
+    description: 'Año de publicación del libro',
+    type: Date,
     example: new Date(2015, 0),
-    description: 'Año de publicacion del libro.',
+  })
+  @IsDate()
+  @MaxDate( () => new Date(), {
+    message: () =>
+      `No se puede ingresar una fecha mayor al día de hoy: ${new Date().toDateString()})`
   })
   public agnoPublicacion: Date;
-  @ApiProperty({ example: 1376, description: 'Cantidad de paginas del libro.' })
-  public numeroPaginas: number;
-  public resenas: Review[];
-  @ApiProperty({ example: 0, description: 'Descuento que tiene el libro.' })
-  public descuento: number;
-  @ApiProperty({
-    example: '9788420412146.jpg',
-    description: 'Caratula del libro.',
+
+  @ApiProperty({ 
+    description: 'Número de páginas del libro',
+    type: Number,
+    minimum: 1,
+    maximum: 10000,
+    example: 150, 
   })
+  @IsInt()
+  @Min(1)
+  @Max(10000)
+  public numeroPaginas: number;
+
+  public resenas: Review[];
+
+  @ApiProperty({ 
+    description: 'Descuento aplicado al producto de 0 a 100',
+    type: Number,
+    default: 0,
+    minimum: 0,
+    maximum: 100,
+    example: 50
+  })
+  @Min(0)
+  @Max(100)
+  public descuento: number;
+
+  @ApiProperty({
+    description: 'Ruta de la carátula del libro',
+    type: String,
+    example: './images/portada.png'
+  })
+  @IsString()
   public caratula: string;
 
   @ApiProperty({
+    description: 'Dimensiones del libro en formato "Ancho cm x Alto cm"',
     example: '15cm x 25cm',
-    description: 'Dimensiones del libro en cm (ancho x alto).',
-    default: '15cm x 25cm',
+    type: String,
   })
+  @IsString()
+  @Contains('x')
   public dimensiones: string;
+
   @ApiProperty({
+    description: 'Código de barra del libro en formato EAN-13',
     example: '978-8-42-041214-6',
-    description: 'Código de barra del producto en formato EAN-13.',
+    type: String,
   })
+  @IsString()
   public ean: string;
+
   @ApiProperty({
+    description: 'Resumen del libro',
+    type: String,
     example:
       'La obra maestra de Miguel de Cervantes narra las aventuras de Alonso Quijano (...)',
-    description: 'Resumen de libro.',
-    default: 'Sin resumen',
   })
+  @IsString()
   public resumen: string;
 }

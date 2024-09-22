@@ -1,28 +1,14 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Res,
-  Query,
-  HttpException,
-  ParseIntPipe,
-  ParseEnumPipe,
-  ParseArrayPipe,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Query, HttpException, ParseIntPipe, ParseEnumPipe, ParseArrayPipe } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Response } from 'express';
 import { Genero } from './entities/genero';
 import { Encuadernacion } from './entities/encuadernacion';
 import { Idioma } from './entities/idioma';
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Product } from './entities/product.entity';
-import { ParseEnumGeneroArrayPipePipe } from 'src/parse-enum-array-pipe/parse-enum-genero-array-pipe.pipe';
+import { ParseEnumGeneroArrayPipe } from 'src/parse-enum-array-pipe/parse-enum-genero-array-pipe.pipe';
+import { ParseEnumIdiomaArrayPipe } from 'src/parse-enum-array-pipe/parse-enum-idioma-array-pipe';
 
 @Controller('products')
 export class ProductsController {
@@ -48,14 +34,12 @@ export class ProductsController {
   })
   @ApiQuery({
     name: 'limit',
-    description:
-      'Número máximo de productos a entregar. Valor por defecto = 10',
+    description: 'Número máximo de productos a entregar. Valor por defecto = 10',
     required: false,
   })
   @ApiQuery({
     name: 'offset',
-    description:
-      'Desde qué posición empezar a devolver productos. Valor por defecto = 0',
+    description: 'Desde qué posición empezar a devolver productos. Valor por defecto = 0',
     required: false,
   })
   @ApiQuery({
@@ -90,8 +74,7 @@ export class ProductsController {
   })
   @ApiQuery({
     name: 'editorial',
-    description:
-      'Editorial del libro. Puede filtrarse con más de uno. Indicarlos separados con coma',
+    description: 'Editorial del libro. Puede filtrarse con más de uno. Indicarlos separados con coma',
     required: false,
     example: 'Lumen,Taurus',
   })
@@ -126,79 +109,31 @@ export class ProductsController {
     required: false,
     example: 2024,
   })
-  @ApiResponse({ status: 200, description: 'Solicitud generada correctamente' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Solicitud generada correctamente' 
+  })
   @ApiResponse({
     status: 404,
     description: 'No existen productos que cumplan la solicitud',
   })
   @Get('catalog')
   getFilteredProducts(
-    @Query(
-      'priceMin',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    priceMin?: number,
-    @Query(
-      'priceMax',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    priceMax?: number,
-    @Query(
-      'limit',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    limit = 10,
-    @Query(
-      'offset',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    offset = 0,
+    @Query('priceMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMin?: number,
+    @Query('priceMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMax?: number,
+    @Query('limit', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) limit = 10,
+    @Query('offset', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) offset = 0,
     @Query('sortBy') sortBy?: string,
     @Query('autor') autor?: string,
     @Query('nombre') nombre?: string,
-    @Query(
-      'rating',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    rating?: number,
-    @Query('genero', new ParseEnumGeneroArrayPipePipe(Genero))
-    genero?: string | string[],
-    @Query(
-      'editorial',
-      new ParseArrayPipe({
-        items: String,
-        separator: ',',
-        optional: true,
-        errorHttpStatusCode: 400,
-      }),
-    )
-    editorial?: string | string[],
-    @Query(
-      'idioma',
-      new ParseArrayPipe({
-        items: String,
-        separator: ',',
-        optional: true,
-        errorHttpStatusCode: 400,
-      }),
-    )
-    idioma?: string | string[],
+    @Query('rating', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) rating?: number,
+    @Query('genero', new ParseEnumGeneroArrayPipe(Genero)) genero?: string | string[],
+    @Query('editorial', new ParseArrayPipe({ items: String, separator: ',', optional: true, errorHttpStatusCode: 400, }), ) editorial?: string | string[],
+    @Query('idioma', new ParseEnumIdiomaArrayPipe(Idioma)) idioma?: string | string[],
     @Query('isbn') isbn?: string,
-    @Query(
-      'encuadernacion',
-      new ParseEnumPipe(Encuadernacion, { optional: true }),
-    )
-    encuadernacion?: Encuadernacion,
-    @Query(
-      'agnoPublicacionMin',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    agnoPublicacionMin?: number,
-    @Query(
-      'agnoPublicacionMax',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    agnoPublicacionMax?: number,
+    @Query('encuadernacion', new ParseEnumPipe(Encuadernacion, { optional: true }), ) encuadernacion?: Encuadernacion,
+    @Query('agnoPublicacionMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMin?: number,
+    @Query( 'agnoPublicacionMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMax?: number,
   ) {
     const filters = {
       priceMin,
@@ -223,6 +158,8 @@ export class ProductsController {
       throw new HttpException('Error al obtener categorias', 400);
     }
   }
+
+
   // HU Buscador de producto
   @ApiTags('Products')
   @ApiQuery({
@@ -315,70 +252,19 @@ export class ProductsController {
   @Get('search')
   getSearchedProducts(
     @Query('query') query: string,
-    @Query(
-      'priceMin',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    priceMin?: number,
-    @Query(
-      'priceMax',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    priceMax?: number,
-    @Query(
-      'limit',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    limit = 10,
-    @Query(
-      'offset',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    offset = 0,
+    @Query('priceMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMin?: number,
+    @Query('priceMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMax?: number,
+    @Query('limit', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) limit = 10,
+    @Query('offset', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), )offset = 0,
     @Query('sortBy') sortBy?: string,
     @Query('autor') autor?: string,
-    @Query(
-      'rating',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    rating?: number,
-    @Query('genero', new ParseEnumGeneroArrayPipePipe(Genero))
-    genero?: string | string[],
-    @Query(
-      'editorial',
-      new ParseArrayPipe({
-        items: String,
-        separator: ',',
-        optional: true,
-        errorHttpStatusCode: 400,
-      }),
-    )
-    editorial?: string | string[],
-    @Query(
-      'idioma',
-      new ParseArrayPipe({
-        items: String,
-        separator: ',',
-        optional: true,
-        errorHttpStatusCode: 400,
-      }),
-    )
-    idioma?: string | string[],
-    @Query(
-      'encuadernacion',
-      new ParseEnumPipe(Encuadernacion, { optional: true }),
-    )
-    encuadernacion?: Encuadernacion,
-    @Query(
-      'agnoPublicacionMin',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    agnoPublicacionMin?: number,
-    @Query(
-      'agnoPublicacionMax',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    agnoPublicacionMax?: number,
+    @Query('rating', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) rating?: number,
+    @Query('genero', new ParseEnumGeneroArrayPipe(Genero)) genero?: string | string[],
+    @Query('editorial', new ParseArrayPipe({ items: String, separator: ',', optional: true, errorHttpStatusCode: 400, }), ) editorial?: string | string[],
+    @Query('idioma', new ParseEnumIdiomaArrayPipe(Idioma)) idioma?: string | string[],
+    @Query('encuadernacion', new ParseEnumPipe(Encuadernacion, { optional: true }), ) encuadernacion?: Encuadernacion, 
+    @Query( 'agnoPublicacionMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMin?: number, 
+    @Query( 'agnoPublicacionMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMax?: number,
   ) {
     console.log(typeof idioma);
     const filters = {

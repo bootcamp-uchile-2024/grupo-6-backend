@@ -317,9 +317,6 @@ export class ProductsService {
     }
     // Filtro genero
     if (filters.genero !== undefined) {
-      // const generos = Array.isArray(filters.genero) ? filters.genero : [filters.genero];
-      // const generosEnums = generos.map(g => Genero[g as keyof typeof Genero]); // Convertir a enums
-
       filteredProducts = filteredProducts.filter((book) =>
         book.genero.some((gen) => filters.genero.includes(gen)),
       );

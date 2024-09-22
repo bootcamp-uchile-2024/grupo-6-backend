@@ -1,13 +1,8 @@
-import {
-  ArgumentMetadata,
-  BadRequestException,
-  Injectable,
-  PipeTransform,
-} from '@nestjs/common';
+import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { Genero } from 'src/products/entities/genero';
 
 @Injectable()
-export class ParseEnumGeneroArrayPipePipe implements PipeTransform {
+export class ParseEnumGeneroArrayPipe implements PipeTransform {
   constructor(private readonly Genero: object) {}
 
   transform(value: Genero[]) {

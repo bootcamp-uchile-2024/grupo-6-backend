@@ -34,7 +34,7 @@ exports.AppModule = AppModule = __decorate([
             home_module_1.HomeModule,
             users_module_1.UsersModule,
             config_1.ConfigModule.forRoot({
-                envFilePath: '.env.production',
+                envFilePath: '.env.development',
                 isGlobal: true,
                 validate: (config) => {
                     if (!config.PORT) {

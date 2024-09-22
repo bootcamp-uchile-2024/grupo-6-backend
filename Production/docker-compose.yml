@@ -1,0 +1,7 @@
+services:
+  api:
+    image: grupo-6-backend:v1.0.0
+    environment:
+      - ARCHIVO_ENV=production
+    ports:
+      - "3000:5000"

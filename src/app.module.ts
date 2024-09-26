@@ -17,7 +17,7 @@ import { ConfigModule } from '@nestjs/config';
     HomeModule,
     UsersModule,
     ConfigModule.forRoot({
-      envFilePath: `.env.${process.env.ARCHIVO_ENV}`,
+      envFilePath: process.env.ARCHIVO_ENV ? `.env.${process.env.ARCHIVO_ENV}` : '.env',
       isGlobal: true,
       validate: (config: Record<string, any>) => {
         if (!config.PORT) {

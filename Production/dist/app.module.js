@@ -34,7 +34,7 @@ exports.AppModule = AppModule = __decorate([
             home_module_1.HomeModule,
             users_module_1.UsersModule,
             config_1.ConfigModule.forRoot({
-                envFilePath: `.env.${process.env.ARCHIVO_ENV}`,
+                envFilePath: process.env.ARCHIVO_ENV ? `.env.${process.env.ARCHIVO_ENV}` : '.env',
                 isGlobal: true,
                 validate: (config) => {
                     if (!config.PORT) {

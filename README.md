@@ -7,15 +7,15 @@
     - Busqueda de los libros por múltiples filtros (Ej: Género, idioma, autor, titulo, etc), eliminar un libro, entre otros.
 
  ## Contenidos
- 1. [Requisitos Previos](#-requisitos-previos)
- 2. [Instalación](#-instalacion)
- 3. [Configuración](#-configuracion)
- 4. [Ejecución- Desarrollo](#-ejecucion-desarrollo)
- 5. [Ejecución- Producción](#-ejecucion-produccion)
- 6. [Estructura del Proyecto](#-estructura-del-proyecto)
- 7. [Documentación de la API](#-documentación-de-la-api-swagger)
- 8. [Flujo de Trabajo](#-flujo-de-trabajo)
- 9. [Contacto](#-contacto)
+ 1. [Requisitos Previos](#requisitos-previos)
+ 2. [Instalación](#instalacion)
+ 3. [Configuración](#configuracion)
+ 4. [Ejecución- Desarrollo](#ejecucion-ambiente-desarrollo)
+ 5. [Ejecución- Producción](#ejecucion-ambiente-produccion)
+ 6. [Estructura del Proyecto](#estructura-del-proyecto)
+ 7. [Documentación de la API](#documentación-de-la-api-swagger)
+ 8. [Flujo de Trabajo](#flujo-de-trabajo)
+ 9. [Contacto](#contacto)
 
  ## Requisitos Previos
  Antes de ejecutar el proyecto, asegúrate de tener
@@ -79,7 +79,7 @@ PORT=5000
 ```
 
 
- ## Ejecucion- Desarrollo
+ ## Ejecucion ambiente Desarrollo
  Para ejecutar el proyecto en modo desarrollo, usa los siguientes comandos:
 
  ### Realizar Pull a imagen:
@@ -92,7 +92,7 @@ PORT=5000
  docker compose up
  ```
 
- ## 5. Ejecucion- Produccion
+ ## 5. Ejecucion ambiente Produccion
  Para ejecutar el proyecto en modo producción, usa los siguientes comandos:
 
 ### Entrar a directorio de producción:

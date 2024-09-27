@@ -1,11 +1,11 @@
 {
   "name": "grupo-6-backend",
-  "version": "v1.0.0",
-  "description": "Desarrollo Backend del E-Commerce Páginas Selectas",
+  "version": "0.0.1",
+  "description": "Desarrollo Backend de Páginas Selectas",
   "author": {
-    "name": "Nicole Carvajal / Sebastian Flores / Silvano Martinez",
-    "email": "development@paginasselectas.com",
-    "url": "http://www.paginasselectas.com"
+    "name": "Nicole Carvajal",
+    "name2": "Sebastian Flores",
+    "name3": "Silvano Martinez"
   },
   "private": true,
   "license": "UNLICENSED",

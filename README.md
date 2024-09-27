@@ -8,16 +8,16 @@
 
  ## Contenidos
  1. [Requisitos Previos](#-requisitos-previos)
- 2. [Instalación](#-instalación)
- 3. [Configuración](#-configuración)
- 4. [Ejecución- Desarrollo](#-ejecución-desarrollo)
- 5. [Ejecución- Producción](#-ejecucion-producción)
+ 2. [Instalación](#-instalacion)
+ 3. [Configuración](#-configuracion)
+ 4. [Ejecución- Desarrollo](#-ejecucion-desarrollo)
+ 5. [Ejecución- Producción](#-ejecucion-produccion)
  6. [Estructura del Proyecto](#-estructura-del-proyecto)
- 7. [Documentación de la API](#-documentación-de-la-api-(swagger))
- 8. [Flujo de Trabajo](#flujo-de-trabajo)
+ 7. [Documentación de la API](#-documentación-de-la-api-swagger)
+ 8. [Flujo de Trabajo](#-flujo-de-trabajo)
  9. [Contacto](#-contacto)
 
- ## 1. Requisitos Previos
+ ## Requisitos Previos
  Antes de ejecutar el proyecto, asegúrate de tener
  instalados los siguientes componentes:
 - **Node.js**: >= v10.3.2
@@ -43,7 +43,7 @@
 
 
 
- ## 2. Instalación
+ ## Instalacion
  1. Clona el repositorio:
  ```bash
  git clone https://github.com/bootcamp-uchile-2024/grupo-6-backend.git
@@ -59,7 +59,7 @@
 
 
 
- ## 3. Configuración
+ ## Configuracion
  1. Se deben completar las siguientes variables de
  entorno:
 - ENVIRONMENT: Ambiente en donde se ejecuta la app.
@@ -79,7 +79,7 @@ PORT=5000
 ```
 
 
- ## 4. Ejecución- Desarrollo
+ ## Ejecucion- Desarrollo
  Para ejecutar el proyecto en modo desarrollo, usa los siguientes comandos:
 
  ### Realizar Pull a imagen:
@@ -92,7 +92,7 @@ PORT=5000
  docker compose up
  ```
 
- ## 5. Ejecución- Producción
+ ## 5. Ejecucion- Produccion
  Para ejecutar el proyecto en modo producción, usa los siguientes comandos:
 
 ### Entrar a directorio de producción:
@@ -111,7 +111,7 @@ PORT=5000
  ```
 
 
-## 6. Estructura del Proyecto
+## Estructura del Proyecto
  ```bash
  src/
 ├───app.module.ts 
@@ -143,7 +143,7 @@ PORT=5000
 
 
 
-## 7. Documentación de la API (Swagger)
+## Documentacion de la API (Swagger)
  Swagger está habilitado en este proyecto. Puedes acceder
  a la documentación de la API después de iniciar el
  servidor.
@@ -156,7 +156,7 @@ PORT=5000
 - Modificar el puerto dependiendo de la configuracion establecida.
 
 
-## 8. Flujo de Trabajo
+## Flujo de Trabajo
  En este proyecto, seguimos un flujo de trabajo basado en
  ramas para el desarrollo de nuevas características y
  corrección de errores. A continuación, se detalla cómo crear
@@ -189,7 +189,7 @@ PORT=5000
  instrucción necesaria para probarlos.
 
 
-## 9. Contacto
+## Contacto
  Si tienes alguna pregunta, puedes contactarnos a través
  de:
 - Nicole Carvajal

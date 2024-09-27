@@ -1,21 +1,21 @@
 ## Proyecto Paginas Selectas - Backend
 -  Este proyecto es un API RESTful desarrollada con NestJS
-, la cual esta diseñada para proveer información necesaria para una página de E-Commerce de libros llamada "Paginas Selectas".
-- El proyecto consta de multiples metodos HTTP que generan las llamadas al servidor, proveyendo informacion al frontend como por ejemplo:
-    - Registro y log in del usuario.
-    - Carrito de compra de los libros.
-    - Busqueda de los libros por múltiples filtros (Ej: Género, idioma, autor, titulo, etc)
+, la cual esta diseñada para proveer información necesaria para una página de E-Commerce de libros llamada "Paginas Selectas", donde el objetivo es ofrecer la venta de libros, mediante una experiencia de recomendaciones personalizada basada en los gustos del usuario. Además, a futuro se agregara el intercambio de libros y la venta de mystery boxes.
+- La API consta actualmente de multiples metodos HTTP que generan las llamadas al servidor, proveyendo informacion al frontend como por ejemplo:
+    - Registro y log in del usuario, entre otros.
+    - Añadir y eliminar productos del carrito de compra, entre otros.
+    - Busqueda de los libros por múltiples filtros (Ej: Género, idioma, autor, titulo, etc), eliminar un libro, entre otros.
 
  ## Contenidos
- 1. [Requisitos Previos](#1.-Requisitos-Previos)
- 2. [Instalación](#Instalación)
- 3. [Configuración](#configuracion)
- 4. [Ejecución- Desarrollo](#ejecucion-desarrollo)
- 5. [Ejecución- Producción](#ejecucion-produccion)
- 6. [Estructura del Proyecto](#estructura-del-proyecto)
- 7. [Documentación de la API](#documentacion-api)
- 8. [Flujo de Trabajo](#Flujo-de-Trabajo)
- 9. [Contacto](#contacto)
+ 1. [Requisitos Previos](#-requisitos-previos)
+ 2. [Instalación](#-instalación)
+ 3. [Configuración](#-configuración)
+ 4. [Ejecución- Desarrollo](#-ejecución-desarrollo)
+ 5. [Ejecución- Producción](#-ejecucion-producción)
+ 6. [Estructura del Proyecto](#-estructura-del-proyecto)
+ 7. [Documentación de la API](#-documentación-de-la-api-(swagger))
+ 8. [Flujo de Trabajo](#flujo-de-trabajo)
+ 9. [Contacto](#-contacto)
 
  ## 1. Requisitos Previos
  Antes de ejecutar el proyecto, asegúrate de tener
@@ -61,18 +61,30 @@
 
  ## 3. Configuración
  1. Se deben completar las siguientes variables de
- entorno:- EJEMPLO: Colocar alguno de estos valores 1 o 2.- EJEMPLO2: Indicar el nombre.
+ entorno:
+- ENVIRONMENT: Ambiente en donde se ejecuta la app.
+- PORT: Numero del puerto.
+
  2. Completar el archivo .env en la raíz del proyecto,
- configurando las siguientes variables de entorno:- EJEMPLO3: Ruta del xxxxxxx.- EJEMPLO4: Valor para yyyyyyyyyyyyyyyyy.
+ configurando las siguientes variables de entorno:
+ ```bash
+ENVIROMENT=DEVELOPMENT
+PORT=4000 
+```
  3. En caso que se ejecute en ambiente productivo,
- adicionalmente se debe modificar WWWWW.
+ se deben modificar ambas variables:
+  ```bash
+ENVIROMENT=PRODUCTION
+PORT=5000
+```
+
 
  ## 4. Ejecución- Desarrollo
  Para ejecutar el proyecto en modo desarrollo, usa los siguientes comandos:
 
  ### Realizar Pull a imagen:
  ```bash
- docker pull ncarvajalg/grupo-6-backend-dev:v1.0.1
+ docker pull ncarvajalg/grupo-6-backend-dev:v1.0.0
  ```
 
  ### Correr contenedor:
@@ -82,9 +94,15 @@
 
  ## 5. Ejecución- Producción
  Para ejecutar el proyecto en modo producción, usa los siguientes comandos:
+
+### Entrar a directorio de producción:
+  ```bash
+ cd Production
+ ```
+
  ### Realizar Pull a imagen:
  ```bash
- docker pull ncarvajalg/grupo-6-backend:v1.0.1
+ docker pull ncarvajalg/grupo-6-backend:v1.0.0
  ```
 
  ### Correr contenedor:
@@ -96,37 +114,31 @@
 ## 6. Estructura del Proyecto
  ```bash
  src/
-# books contiene Componentes de Nestjs (Interceptors, middleware y filtros de excepcion)
-├───books
-├───equipo
-│   ├───dto
-│   └───entities
-├───home
-│   ├───dto
-│   └───entities
-├───parse-enum-array-pipe
-# Modulo de productos
-├───products
-│   ├───dto
-│   ├───entities
-│   ├───images
-│   ├── products.controller.ts
-│   ├── products.service.ts
+├───app.module.ts 
+├───main.ts 
+├───books/ # books contiene Componentes de Nestjs (Interceptors, middleware y filtros de excepcion)
+│   ├───books.filter.ts # Permite gestionar excepciones y errores lanzado durante el procesamiento de solicitudes. 
+│   ├───books.interceptor.ts # Permite transformar las respuestas y gestionar excepciones.
+│   └───books.middleware.ts # Permite modificar el request o el response.
+├───products/ # Modulo de productos
+│   ├───dto/ # Clase que permite encapsular en una capa adicional la informacion necesaria del libro a enviar entre el cliente y servidor.
+│   ├───entities/ #  Clase que contiene toda la estructura del libro.
+│   ├───images #Imagenes de los libros para poder ser utilizadas del lado del frontend y finalmente mostrarlas en la pagina web.
+│   ├── products.controller.ts # Maneja los metodos HTTP del producto, tales como ver informacion de un libro, buscar varios libros y mostrarlos, agregar un libro, etc.
+│   ├── products.service.ts # Este servicio gestiona la informacion de los productos (libros)
 │   └── products.module.ts
-# Modulo de carrito de compras
-├───shoppingcart
-│    ├───dto
-│    ├───entities
-│    ├── shoppingcart.controller.ts
-│    ├── shoppingcart.service.ts
+├───shoppingcart/ # Modulo de carrito de compras
+│    ├───dto/ # Clase que permite encapsular en una capa adicional la informacion necesaria del carrito de compra a enviar entre el cliente y servidor.
+│    ├───entities/ #  Clase que contiene toda la estructura del carrito de compra.
+│    ├── shoppingcart.controller.ts # Maneja los metodos HTTP del carrito de compra, tales como ver carrito, agregar producto en el carrito, eliminar producto del carrito, etc.
+│    ├── shoppingcart.service.ts # Este servicio gestiona la informacion del carrito de compra.
 │    └── shoppingcart.module.ts
-# Modulo de Usuarios
-└───users
-    ├───dto
-    ├───entities
-    ├── users.controller.ts
-    ├── users.service.ts
-    └── users.module.ts
+├───users/ # Modulo de Usuarios
+│    ├───dto/ # Clase que permite encapsular en una capa adicional la informacion necesaria del usuario a enviar entre el cliente y servidor.
+│    ├───entities/ #  Clase que contiene toda la estructura del usuario.
+│    ├── users.controller.ts # Maneja los metodos HTTP del usuario, tales como ver informacion del usuario, agregar direccion, registrar usuario, etc.
+│    ├── users.service.ts # Este servicio gestiona la informacion de los usuarios.
+│    └── users.module.ts
  ```
 
 
@@ -135,7 +147,7 @@
  Swagger está habilitado en este proyecto. Puedes acceder
  a la documentación de la API después de iniciar el
  servidor.
- 1. Inicia el proyecto:
+ 1. Inicia el proyecto (siguiendo el punto 4 o 5 dependiendo del ambiente):
  ```bash
  docker-compose up 
  ```
@@ -154,14 +166,22 @@
  contiene la última versión estable del proyecto y no debe
  modificarse directamente.
  ### Creación de Branches para Desarrollo
- Cuando se desarrolla una nueva funcionalidad o se corrige un
- error, es necesario crear una rama específica para ello,
+ Cuando se desarrolla una nueva funcionalidad, se corrige un
+ error, o agregar/modificar archivos es necesario crear una rama específica para ello,
  derivada de main.
- #### Nomenclatura de las Ramas- Ramas para nuevas funcionalidades:
- Deben comenzar con el prefijo xxxx/nombre-funcionalidad.
- Ejemplo: xxxx/autenticacion-usuarios- Ramas para corrección de errores:
- Prefijo: yyyy/nombre-del-error
- Ejemplo: fix/error-en-login
+ #### Nomenclatura de las Ramas
+- Ramas para nuevas funcionalidades:
+ Deben comenzar con el prefijo `modulo/nombre-funcionalidad`.
+    - Ejemplo: `modulo/autenticacion-usuarios`
+- Ramas para corrección de errores:
+ Prefijo: `fix/nombre-del-error`
+    - Ejemplo: `fix/error-en-login`
+- Ramas para agregar archivos:
+ Prefijo: `add/nombre-archivo`
+    - Ejemplo: `add/readme`
+- Ramas para modificar archivos:
+ Prefijo: `change/nombre-archivo`
+    - Ejemplo: `change/users.service.ts`
  ### Integración a Producción
  Una vez completados los cambios en tu rama, crea un Pull
  Request (PR) hacia la rama main para revisión. El PR debe
@@ -173,11 +193,8 @@
  Si tienes alguna pregunta, puedes contactarnos a través
  de:
 - Nicole Carvajal
-    - Email: nicole.carvajalg@gmail.com
     - GitHub: [NicoleCG](https://github.com/NicoleCG)
 - José Martínez
-    - Email: jsmoing@gmail.com
     - GitHub: [Snoxdev](https://github.com/Snoxdev)
 - Sebastian Flores
-    - Email: sebastian.floresram@gmail.com
     - GitHub: [x2n1](https://github.com/x2n1)

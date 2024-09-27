@@ -1,73 +1,183 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+## Proyecto Paginas Selectas - Backend
+-  Este proyecto es un API RESTful desarrollada con NestJS
+, la cual esta diseñada para proveer información necesaria para una página de E-Commerce de libros llamada "Paginas Selectas".
+- El proyecto consta de multiples metodos HTTP que generan las llamadas al servidor, proveyendo informacion al frontend como por ejemplo:
+    - Registro y log in del usuario.
+    - Carrito de compra de los libros.
+    - Busqueda de los libros por múltiples filtros (Ej: Género, idioma, autor, titulo, etc)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+ ## Contenidos
+ 1. [Requisitos Previos](#1.-Requisitos-Previos)
+ 2. [Instalación](#Instalación)
+ 3. [Configuración](#configuracion)
+ 4. [Ejecución- Desarrollo](#ejecucion-desarrollo)
+ 5. [Ejecución- Producción](#ejecucion-produccion)
+ 6. [Estructura del Proyecto](#estructura-del-proyecto)
+ 7. [Documentación de la API](#documentacion-api)
+ 8. [Flujo de Trabajo](#Flujo-de-Trabajo)
+ 9. [Contacto](#contacto)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+ ## 1. Requisitos Previos
+ Antes de ejecutar el proyecto, asegúrate de tener
+ instalados los siguientes componentes:
+- **Node.js**: >= v10.3.2
+- **NestJS CLI**: 
+    ```bash
+    npm install -g @nestjs/cli
+    ```
+- **Módulo Config (Para cargar los archivos .env):**
+    ```bash
+    npm install @nestjs/config
+    ```
+- **Dependencia de Swagger (Para poder documentar la api):**
+    ```bash
+    npm install --save @nestjs/swagger
+    ```
+- **Typescript:**
+    ```bash
+    npm install -g typescript
+    ```
+- **Otras Aplicaciones**: 
+    - [Docker:](https://www.docker.com/products/docker-desktop/) Para desplegar aplicaciones dentro de contenedores virtuales.
+    - [Docker Compose:](https://docs.docker.com/compose/install/) Para definir y gestionar aplicaciones multi-contenedor.
 
-## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+ ## 2. Instalación
+ 1. Clona el repositorio:
+ ```bash
+ git clone https://github.com/bootcamp-uchile-2024/grupo-6-backend.git
+ ```
+ 2. Entra en el directorio del proyecto:
+ ```bash
+ cd nombre-del-proyecto
+ ```
+ 3. Instala las dependencias:
+ ```bash
+ npm install
+ ```
 
-```bash
-$ npm install
-```
 
-## Running the app
 
-```bash
-# development
-$ npm run start
+ ## 3. Configuración
+ 1. Se deben completar las siguientes variables de
+ entorno:- EJEMPLO: Colocar alguno de estos valores 1 o 2.- EJEMPLO2: Indicar el nombre.
+ 2. Completar el archivo .env en la raíz del proyecto,
+ configurando las siguientes variables de entorno:- EJEMPLO3: Ruta del xxxxxxx.- EJEMPLO4: Valor para yyyyyyyyyyyyyyyyy.
+ 3. En caso que se ejecute en ambiente productivo,
+ adicionalmente se debe modificar WWWWW.
 
-# watch mode
-$ npm run start:dev
+ ## 4. Ejecución- Desarrollo
+ Para ejecutar el proyecto en modo desarrollo, usa los siguientes comandos:
 
-# production mode
-$ npm run start:prod
-```
+ ### Realizar Pull a imagen:
+ ```bash
+ docker pull ncarvajalg/grupo-6-backend-dev:v1.0.1
+ ```
 
-## Test
+ ### Correr contenedor:
+ ```bash
+ docker compose up
+ ```
 
-```bash
-# unit tests
-$ npm run test
+ ## 5. Ejecución- Producción
+ Para ejecutar el proyecto en modo producción, usa los siguientes comandos:
+ ### Realizar Pull a imagen:
+ ```bash
+ docker pull ncarvajalg/grupo-6-backend:v1.0.1
+ ```
 
-# e2e tests
-$ npm run test:e2e
+ ### Correr contenedor:
+ ```bash
+ docker compose up
+ ```
 
-# test coverage
-$ npm run test:cov
-```
 
-## Support
+## 6. Estructura del Proyecto
+ ```bash
+ src/
+# books contiene Componentes de Nestjs (Interceptors, middleware y filtros de excepcion)
+├───books
+├───equipo
+│   ├───dto
+│   └───entities
+├───home
+│   ├───dto
+│   └───entities
+├───parse-enum-array-pipe
+# Modulo de productos
+├───products
+│   ├───dto
+│   ├───entities
+│   ├───images
+│   ├── products.controller.ts
+│   ├── products.service.ts
+│   └── products.module.ts
+# Modulo de carrito de compras
+├───shoppingcart
+│    ├───dto
+│    ├───entities
+│    ├── shoppingcart.controller.ts
+│    ├── shoppingcart.service.ts
+│    └── shoppingcart.module.ts
+# Modulo de Usuarios
+└───users
+    ├───dto
+    ├───entities
+    ├── users.controller.ts
+    ├── users.service.ts
+    └── users.module.ts
+ ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 7. Documentación de la API (Swagger)
+ Swagger está habilitado en este proyecto. Puedes acceder
+ a la documentación de la API después de iniciar el
+ servidor.
+ 1. Inicia el proyecto:
+ ```bash
+ docker-compose up 
+ ```
+ 2. Accede a Swagger en tu navegador usando la siguiente URL:
+- http://localhost:3000/api#/
+- Modificar el puerto dependiendo de la configuracion establecida.
 
-## License
 
-Nest is [MIT licensed](LICENSE).
+## 8. Flujo de Trabajo
+ En este proyecto, seguimos un flujo de trabajo basado en
+ ramas para el desarrollo de nuevas características y
+ corrección de errores. A continuación, se detalla cómo crear
+ nuevas ramas, integrarlas y desplegar a producción.
+ ### Branch Principal
+ La rama principal de este proyecto es main. Esta rama
+ contiene la última versión estable del proyecto y no debe
+ modificarse directamente.
+ ### Creación de Branches para Desarrollo
+ Cuando se desarrolla una nueva funcionalidad o se corrige un
+ error, es necesario crear una rama específica para ello,
+ derivada de main.
+ #### Nomenclatura de las Ramas- Ramas para nuevas funcionalidades:
+ Deben comenzar con el prefijo xxxx/nombre-funcionalidad.
+ Ejemplo: xxxx/autenticacion-usuarios- Ramas para corrección de errores:
+ Prefijo: yyyy/nombre-del-error
+ Ejemplo: fix/error-en-login
+ ### Integración a Producción
+ Una vez completados los cambios en tu rama, crea un Pull
+ Request (PR) hacia la rama main para revisión. El PR debe
+ contener una descripción clara de los cambios y cualquier
+ instrucción necesaria para probarlos.
+
+
+## 9. Contacto
+ Si tienes alguna pregunta, puedes contactarnos a través
+ de:
+- Nicole Carvajal
+    - Email: nicole.carvajalg@gmail.com
+    - GitHub: [NicoleCG](https://github.com/NicoleCG)
+- José Martínez
+    - Email: jsmoing@gmail.com
+    - GitHub: [Snoxdev](https://github.com/Snoxdev)
+- Sebastian Flores
+    - Email: sebastian.floresram@gmail.com
+    - GitHub: [x2n1](https://github.com/x2n1)

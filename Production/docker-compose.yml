@@ -1,6 +1,6 @@
 services:
   api:
-    image: ncarvajalg/grupo-6-backend:v1.0.1
+    image: ncarvajalg/grupo-6-backend:v1.0.0
     container_name: g6_backend
     environment:
       - ARCHIVO_ENV=production

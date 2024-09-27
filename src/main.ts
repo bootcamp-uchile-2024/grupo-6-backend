@@ -7,59 +7,91 @@ import { BooksInterceptor } from './books/books.interceptor';
 import { BooksFilter } from './books/books.filter';
 import { ConfigService } from '@nestjs/config';
 
+import * as fs from 'fs';
+import { UsersModule } from './users/users.module';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService: ConfigService = app.get(ConfigService);
-  console.log('AMBIENTE:', configService.get("ENVIROMENT"));
 
   app.useGlobalInterceptors(new BooksInterceptor());
-
   app.useGlobalFilters(new BooksFilter());
 
+
+  const title = `${process.env.npm_package_name.replaceAll("-", " ")} - Módulo ${configService.get("ENVIROMENT")}`;
+  const description = process.env.npm_package_description;
+  const version = process.env.npm_package_version;
+  const authorName = process.env.npm_package_author_name;
+  const authorUrl = process.env.npm_package_author_url;
+  const authorEmail = process.env.npm_package_author_email;
+  const licence = process.env.npm_package_license;
+
+  console.log('AMBIENTE:', configService.get("ENVIROMENT"));
+  console.log('PUERTO:', configService.get("PORT"));
+
   const configApp = new DocumentBuilder()
-    .setTitle('API Páginas Selectas Backend')
-    .setDescription(
-      'Esta api describe la app general del e-commerce Páginas Selectas, para ir a productos localhost:3000/api/porducts, para ir a carrito de compras localhost:3000/api/shoppingcart',
-    )
-    .setVersion('1.0.0')
+    .setTitle(title)
+    .setDescription(description)
+    .setVersion(version)
+    .setContact(authorName, authorUrl, authorEmail)
+    .setLicense(licence, "")
     .addTag('App')
     .build();
 
   const configProducts = new DocumentBuilder()
-    .setTitle('API Páginas Selectas Backend')
-    .setDescription(
-      'Esta api describe el apartado de products del e-commerce Páginas Selectas',
-    )
-    .setVersion('1.0.0')
+    .setTitle(title)
+    .setDescription(description)
+    .setVersion(version)
+    .setContact(authorName, authorUrl, authorEmail)
+    .setLicense(licence, "")
     .addTag('Products')
     .build();
 
   const configShoppingcart = new DocumentBuilder()
-    .setTitle('API Páginas Selectas Backend')
-    .setDescription(
-      'Esta api describe el apartado de Shoppincart del e-commerce Páginas Selectas',
-    )
-    .setVersion('1.0.0')
+    .setTitle(title)
+    .setDescription(description)
+    .setVersion(version)
+    .setContact(authorName, authorUrl, authorEmail)
+    .setLicense(licence, "")
     .addTag('Shoppingcart')
     .build();
 
+  const configUser = new DocumentBuilder()
+    .setTitle(title)
+    .setDescription(description)
+    .setVersion(version)
+    .setContact(authorName, authorUrl, authorEmail)
+    .setLicense(licence, "")
+    .addTag('Users')
+    .build();
+
   const documentApp = SwaggerModule.createDocument(app, configApp);
-  const documentProducts = SwaggerModule.createDocument(app, configProducts, {
-    include: [ProductsModule],
-  });
+  const documentProducts = SwaggerModule.createDocument(
+    app, 
+    configProducts, 
+    { 
+      include: [ProductsModule] 
+    }
+  );
   const documentShoppincart = SwaggerModule.createDocument(
     app,
     configShoppingcart,
     {
       include: [ShoppingcartModule],
-    },
+    }
+  );
+  const documentUsers = SwaggerModule.createDocument(
+    app,
+    configUser,
+    {
+      include: [UsersModule],
+    }
   );
 
   SwaggerModule.setup('api', app, documentApp);
-
   SwaggerModule.setup('api/products', app, documentProducts);
-
   SwaggerModule.setup('api/shoppingcart', app, documentShoppincart);
+  SwaggerModule.setup('api/users', app, documentUsers);
 
   await app.listen(configService.get('PORT'));
 }

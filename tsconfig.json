@@ -8,7 +8,7 @@
     "allowSyntheticDefaultImports": true,
     "target": "ES2021",
     "sourceMap": true,
-    "outDir": "Production/dist",
+    "outDir": "Production/manual/dist",
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,

@@ -1,0 +1,36 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Genero = void 0;
+var Genero;
+(function (Genero) {
+    Genero["THRILLER"] = "Thriller";
+    Genero["NOVELA_HISTORICA"] = "Novela hist\u00F3rica";
+    Genero["ROMANCE"] = "Romance";
+    Genero["CIENCIA_FICCION"] = "Ciencia ficci\u00F3n";
+    Genero["DISTOPIA"] = "Dist\u00F3pia";
+    Genero["AVENTURA"] = "Aventura";
+    Genero["FANTASIA"] = "Fantas\u00EDa";
+    Genero["COMTEMPORANEO"] = "Contempor\u00E1neo";
+    Genero["TERROR"] = "Terror";
+    Genero["PARANORMAL"] = "Paranormal";
+    Genero["POESIA"] = "Poes\u00EDa";
+    Genero["JUVENIL"] = "Juvenil";
+    Genero["INFANTIL"] = "Infantil";
+    Genero["NOVELA"] = "Novela";
+    Genero["CLASICO"] = "Cl\u00E1sico";
+    Genero["AUTOAYUDA"] = "Autoayuda";
+    Genero["SALUD"] = "Salud y deporte";
+    Genero["TECNICOS"] = "T\u00E9cnicos y especializados";
+    Genero["BIOGRAFIAS"] = "Biograf\u00EDas y autobiograf\u00EDas";
+    Genero["COCINA"] = "Cocina";
+    Genero["VIAJES"] = "Viajes";
+    Genero["ARTE"] = "Arte";
+    Genero["CIENCIA_MATEMATICA"] = "Ciencia y matem\u00E1ticas";
+    Genero["COMPUTACION"] = "Computaci\u00F3n";
+    Genero["DERECHO_POLITICA"] = "Derecho y pol\u00EDtica";
+    Genero["ECONOMIA"] = "Econom\u00EDa y finanzas";
+    Genero["HISTORIA"] = "Historia";
+    Genero["FILOSOFIA_RELIGION"] = "Filosof\u00EDa y religi\u00F3n";
+    Genero["EDUCACION"] = "Educaci\u00F3n";
+})(Genero || (exports.Genero = Genero = {}));
+//# sourceMappingURL=genero.js.map

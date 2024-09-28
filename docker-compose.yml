@@ -1,17 +1,13 @@
 services:
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    image: ncarvajalg/grupo-6-backend-dev:v1.0.0
+    image: ncarvajalg/grupo-6-backend-dev:v2.0.0
+
     volumes:
       - .:/home/node/app
-      - /home/node/app/node_modules
-    ports:
-      - "3000:4000"
-    env_file:
-      - .env.development
+
     environment:
       - NODE_ENV=development # Define el entorno como desarrollo
-    stdin_open: true  # Permite la interacción con el contenedor
-    tty: true # Asigna una terminal al contenedor
+    
+    ports:
+      - "3000:4000"
+    

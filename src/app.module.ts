@@ -8,6 +8,7 @@ import { HomeModule } from './home/home.module';
 import { BooksMiddleware } from './books/books.middleware';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { OrderHistoryModule } from './order-history/order-history.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ConfigModule } from '@nestjs/config';
         };
       },
     }),
+    OrderHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

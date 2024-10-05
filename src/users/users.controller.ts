@@ -17,9 +17,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
 import { User } from './entities/user.entity';
 import { Address } from './entities/address.entity';
 import { ClientType } from './entities/clientType.entity';

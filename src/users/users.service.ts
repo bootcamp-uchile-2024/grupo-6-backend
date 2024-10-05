@@ -1,14 +1,11 @@
 import { HttpException, Injectable, ParseEnumPipe } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { TipoDireccion } from './entities/tipoDireccion.entity';
 import { ClientType } from './entities/clientType.entity';
 import { ClientState } from './entities/clientState.entity';
 import { Address } from './entities/address.entity';
-import { ErrorStatus } from 'src/errorStatus';
 import { error } from 'console';
-import { concat } from 'rxjs';
 import { isArray } from 'class-validator';
 
 @Injectable()

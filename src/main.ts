@@ -7,7 +7,6 @@ import { BooksInterceptor } from './books/books.interceptor';
 import { BooksFilter } from './books/books.filter';
 import { ConfigService } from '@nestjs/config';
 
-import * as fs from 'fs';
 import { UsersModule } from './users/users.module';
 
 async function bootstrap() {

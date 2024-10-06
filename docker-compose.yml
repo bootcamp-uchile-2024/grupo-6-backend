@@ -1,12 +1,19 @@
 services:
   api:
-    image: ncarvajalg/grupo-6-backend-dev:v2.0.0
+    image: "node:22-alpine3.19"
+
+    command: "npm run start:dev"
+
+    user: node
+
+    working_dir: /home/node/nest
 
     volumes:
-      - .:/home/node/app
+      - .:/home/node/nest
 
     environment:
       - NODE_ENV=development # Define el entorno como desarrollo
+      - ARCHIVO_ENV=development
     
     ports:
       - "3000:4000"

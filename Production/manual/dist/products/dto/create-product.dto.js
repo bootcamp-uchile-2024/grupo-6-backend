@@ -15,6 +15,7 @@ const encuadernacion_1 = require("../entities/encuadernacion");
 const genero_1 = require("../entities/genero");
 const idioma_1 = require("../entities/idioma");
 const class_validator_1 = require("class-validator");
+const class_transformer_1 = require("class-transformer");
 class CreateProductDto {
 }
 exports.CreateProductDto = CreateProductDto;
@@ -110,7 +111,7 @@ __decorate([
         ],
         example: idioma_1.Idioma.ESPANOL,
     }),
-    (0, class_validator_1.IsEnum)({ entity: idioma_1.Idioma }),
+    (0, class_validator_1.IsEnum)(idioma_1.Idioma),
     __metadata("design:type", String)
 ], CreateProductDto.prototype, "idioma", void 0);
 __decorate([
@@ -132,6 +133,7 @@ __decorate([
         example: new Date(2015, 0),
     }),
     (0, class_validator_1.IsDate)(),
+    (0, class_transformer_1.Type)(() => Date),
     (0, class_validator_1.MaxDate)(() => new Date(), {
         message: () => `No se puede ingresar una fecha mayor al día de hoy: ${new Date().toDateString()})`
     }),

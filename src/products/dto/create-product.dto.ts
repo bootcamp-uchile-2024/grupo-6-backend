@@ -93,7 +93,7 @@ export class CreateProductDto {
     ],
     example: Idioma.ESPANOL,
   })
-  @IsEnum({entity: Idioma})
+  @IsEnum(Idioma)
   public idioma: Idioma;
 
   @ApiProperty({
@@ -113,6 +113,7 @@ export class CreateProductDto {
     example: new Date(2015, 0),
   })
   @IsDate()
+  @Type(() => Date)
   @MaxDate( () => new Date(), {
     message: () =>
       `No se puede ingresar una fecha mayor al día de hoy: ${new Date().toDateString()})`

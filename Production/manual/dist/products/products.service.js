@@ -12,7 +12,8 @@ const product_entity_1 = require("./entities/product.entity");
 const genero_1 = require("./entities/genero");
 const idioma_1 = require("./entities/idioma");
 const encuadernacion_1 = require("./entities/encuadernacion");
-const errorStatus_1 = require("../errorStatus");
+const errorStatus_1 = require("./errorStatus");
+const product_dto_1 = require("./dto/product.dto");
 let ProductsService = class ProductsService {
     constructor() {
         this.products = [
@@ -32,14 +33,14 @@ let ProductsService = class ProductsService {
         ];
     }
     create(createProductDto) {
-        return 'This action adds a new product';
-    }
-    nombreEpica() {
-        return `Este modulo corresponde a la epica "Obtencion de Producto".`;
+        let product = new product_entity_1.Product(createProductDto.isbn, createProductDto.nombre, createProductDto.autor, createProductDto.stockLibro, createProductDto.precio, createProductDto.genero, createProductDto.editorial, createProductDto.idioma, createProductDto.encuadernacion, createProductDto.agnoPublicacion, createProductDto.numeroPaginas, createProductDto.descuento, createProductDto.caratula, createProductDto.dimensiones, createProductDto.ean, createProductDto.resumen);
+        this.products.push(product);
+        console.log(this.products.map(p => p.isbn));
+        return createProductDto;
     }
     findOne(isbn) {
         const producto = this.products.find((element) => element.isbn == isbn);
-        return producto;
+        return new product_dto_1.ProductDTO(producto);
     }
     applyFilterProducts(filteredProducts, filters) {
         if (filters.autor) {
@@ -92,14 +93,16 @@ let ProductsService = class ProductsService {
         return filteredProducts.slice(offset, offset + limit);
     }
     getFilteredProducts(filters) {
+        console.log(this.products.map(p => p.isbn));
         let filteredProducts = this.products;
         filteredProducts = this.applyFilterProducts(filteredProducts, filters);
         filteredProducts = this.sortProducts(filteredProducts, filters);
         filteredProducts = this.paginationProducts(filteredProducts, filters);
+        console.log('Filtrado: ', filteredProducts.map(p => p.isbn));
         if (!filteredProducts) {
             throw new errorStatus_1.ErrorStatus('No existen productos que cumplan la solicitud', 404);
         }
-        return filteredProducts;
+        return filteredProducts.map(product => new product_dto_1.ProductDTO(product));
     }
     getSearchedProductos(query, filters) {
         let filteredProducts = this.products;
@@ -112,7 +115,7 @@ let ProductsService = class ProductsService {
         if (filteredProducts.length == 0) {
             throw new errorStatus_1.ErrorStatus('No existen productos que cumplan la solicitud', 404);
         }
-        return filteredProducts;
+        return filteredProducts.map(product => new product_dto_1.ProductDTO(product));
     }
     getGenres() {
         return Object.values(genero_1.Genero);

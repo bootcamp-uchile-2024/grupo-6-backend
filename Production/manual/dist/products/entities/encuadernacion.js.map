@@ -1,1 +1,1 @@
-{"version":3,"file":"encuadernacion.js","sourceRoot":"","sources":["../../../../src/products/entities/encuadernacion.ts"],"names":[],"mappings":";;;AAAA,IAAY,cAIX;AAJD,WAAY,cAAc;IACxB,yCAAuB,CAAA;IACvB,6CAA2B,CAAA;IAC3B,2EAAoD,CAAA;AACtD,CAAC,EAJW,cAAc,8BAAd,cAAc,QAIzB"}
+{"version":3,"file":"encuadernacion.js","sourceRoot":"","sources":["../../../../../src/products/entities/encuadernacion.ts"],"names":[],"mappings":";;;AAAA,IAAY,cAIX;AAJD,WAAY,cAAc;IACxB,yCAAuB,CAAA;IACvB,6CAA2B,CAAA;IAC3B,2EAAoD,CAAA;AACtD,CAAC,EAJW,cAAc,8BAAd,cAAc,QAIzB"}

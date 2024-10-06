@@ -1,7 +1,0 @@
-services:
-  api:
-    image: ncarvajalg/grupo-6-backend:v2.0.1
-    environment:
-      - ARCHIVO_ENV=production
-    ports:
-      - "3000:5000"

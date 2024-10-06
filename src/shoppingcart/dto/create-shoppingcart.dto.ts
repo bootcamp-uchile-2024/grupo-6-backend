@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Encuadernacion } from 'src/products/entities/encuadernacion';
-import { Genero } from 'src/products/entities/genero';
+
 
 export class CreateShoppingcartDto {
   public isbn: string;
@@ -13,11 +13,6 @@ export class CreateShoppingcartDto {
   public stockLibro: number;
   @ApiProperty({ example: 16000, description: 'Precio del libro' })
   public precio: number;
-  @ApiProperty({
-    example: ['Fantasía'],
-    description: 'Generos literarios a lo que pertenece el libro',
-  })
-  public genero: Genero[];
   @ApiProperty({
     example: 'Salvat',
     description: 'Editorial a la que pertenece este libro',

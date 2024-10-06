@@ -3,28 +3,19 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
-  Res,
   NotFoundException,
-  ImATeapotException,
-  NotImplementedException,
   ParseIntPipe,
 } from '@nestjs/common';
 import { ShoppingcartService } from './shoppingcart.service';
-import { CreateShoppingcartDto } from './dto/create-shoppingcart.dto';
-import { UpdateShoppingcartDto } from './dto/update-shoppingcart.dto';
-import { Response } from 'express';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ProductsService } from 'src/products/products.service';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 
 @Controller('shoppingcart')
 export class ShoppingcartController {
   constructor(
     private readonly shoppingcartService: ShoppingcartService,
-    private readonly productService: ProductsService,
   ) {}
 
   @ApiTags('Shopping cart')
@@ -38,22 +29,10 @@ export class ShoppingcartController {
   })
   @Post()
   create(
-    @Body() createProductDto: CreateProductDto /*@Res() response:Response*/,
+    @Body() createProductDto: CreateProductDto,
   ) {
-    return this.shoppingcartService.create(createProductDto); //response.status(201).send(this.shoppingcartService.create(createShoppingcartDto));
+    return this.shoppingcartService.create(createProductDto);
   }
-  /*@ApiTags('Obtención de nombre de la Épica')
-  @Get()
-  obtenerNombreEpica(@Res() res:Response): void {
-    let encontrado = this.shoppingcartService.obtenerNombreEpica();
-    if(encontrado != null){
-      res.status(200).send(encontrado);
-    }else{
-      res.status(404).send("No se encuentra información requerida");
-    }
-    
-  }*/
-
   @ApiTags('Shopping cart')
   @ApiResponse({ status: 200, description: 'Obtención de carrito de compras' })
   @ApiResponse({
@@ -61,24 +40,10 @@ export class ShoppingcartController {
     description: 'No se puede obtener carrito de compras',
   })
   @Get()
-  obtenerProductos(/*@Res() res:Response*/) {
+  obtenerProductos() {
     const encontrado = this.shoppingcartService.obtenerProductos();
-    //if(encontrado != null){
-    return encontrado; //res.status(200).send(encontrado);
-    /*}else{
-      throw new NotImplementedException(); //return 'No se encuentra información requerida' //res.status(404).send("No se encuentra información requerida");
-    }*/
-  }
-
-  /*@Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.shoppingcartService.findOne(+id);
-  }*/
-
-  /*@Patch(':id')
-  update(@Param('id') id: string, @Body() updateShoppingcartDto: UpdateShoppingcartDto) {
-    return this.shoppingcartService.update(+id, updateShoppingcartDto);
-  }*/
+    return encontrado;
+  }  
   @ApiTags('Shopping cart')
   @ApiResponse({
     status: 200,
@@ -94,13 +59,13 @@ export class ShoppingcartController {
       'item',
       new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
     )
-    item: number /*@Res() response:Response*/,
+    item: number,
   ) {
     const encontrado = this.shoppingcartService.remove(item);
     if (encontrado) {
-      return 'Producto eliminado del carrito de compra'; //response.status(200).send('Producto eliminado del carrito de compra');
+      return 'Producto eliminado del carrito de compra';
     } else {
-      throw new NotFoundException(); //return 'Producto no existe'//response.status(404).send('Producto no existe en el carrito de compra');
+      throw new NotFoundException();
     }
   }
 }

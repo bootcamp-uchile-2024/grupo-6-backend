@@ -9,16 +9,37 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateProductDto = void 0;
+exports.ProductDTO = void 0;
 const swagger_1 = require("@nestjs/swagger");
-const encuadernacion_1 = require("../entities/encuadernacion");
-const genero_1 = require("../entities/genero");
-const idioma_1 = require("../entities/idioma");
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
-class CreateProductDto {
+const genero_1 = require("../entities/genero");
+const idioma_1 = require("../entities/idioma");
+const review_1 = require("../entities/review");
+const encuadernacion_1 = require("../entities/encuadernacion");
+class ProductDTO {
+    constructor(product) {
+        this.isbn = product.isbn;
+        this.nombre = product.nombre;
+        this.autor = product.autor;
+        this.stockLibro = product.stockLibro;
+        this.precio = product.precio;
+        this.rating = product.rating;
+        this.genero = product.genero;
+        this.editorial = product.editorial;
+        this.idioma = product.idioma;
+        this.encuadernacion = product.encuadernacion;
+        this.agnoPublicacion = product.agnoPublicacion;
+        this.numeroPaginas = product.numeroPaginas;
+        this.resenas = product.resenas;
+        this.descuento = product.descuento;
+        this.caratula = product.caratula;
+        this.dimensiones = product.dimensiones;
+        this.ean = product.ean;
+        this.resumen = product.resumen;
+    }
 }
-exports.CreateProductDto = CreateProductDto;
+exports.ProductDTO = ProductDTO;
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'ISBN 13 del libro',
@@ -27,7 +48,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateProductDto.prototype, "isbn", void 0);
+], ProductDTO.prototype, "isbn", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Nombre del libro',
@@ -36,40 +57,48 @@ __decorate([
     }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateProductDto.prototype, "nombre", void 0);
+], ProductDTO.prototype, "nombre", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Array con los nombres de los autores del libro',
         type: [String],
-        example: 'Miguel de Cervantes',
-        isArray: true,
     }),
     (0, class_validator_1.IsArray)(),
     __metadata("design:type", Array)
-], CreateProductDto.prototype, "autor", void 0);
+], ProductDTO.prototype, "autor", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Número de libros en stock',
         minimum: 1,
         type: Number,
-        example: 50,
     }),
     (0, class_validator_1.Min)(1),
     __metadata("design:type", Number)
-], CreateProductDto.prototype, "stockLibro", void 0);
+], ProductDTO.prototype, "stockLibro", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Precio del libro (sin descuento)',
         type: Number,
         minimum: 1,
         maximum: 10000000,
-        example: 19000,
     }),
     (0, class_validator_1.IsInt)(),
     (0, class_validator_1.Min)(1),
     (0, class_validator_1.Max)(10000000),
     __metadata("design:type", Number)
-], CreateProductDto.prototype, "precio", void 0);
+], ProductDTO.prototype, "precio", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Calificación del libro de 0 a 5. Valor autocalculado con las reseñas.',
+        minimum: 0,
+        maximum: 5,
+        default: 0,
+        type: Number
+    }),
+    (0, class_validator_1.Min)(0),
+    (0, class_validator_1.Max)(5),
+    __metadata("design:type", Number)
+], ProductDTO.prototype, "rating", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Lista con el o los géneros del libro',
@@ -88,7 +117,7 @@ __decorate([
     }),
     (0, class_validator_1.ArrayNotEmpty)(),
     __metadata("design:type", Array)
-], CreateProductDto.prototype, "genero", void 0);
+], ProductDTO.prototype, "genero", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Nombre de la editorial del libro',
@@ -97,7 +126,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateProductDto.prototype, "editorial", void 0);
+], ProductDTO.prototype, "editorial", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Idioma del libro',
@@ -111,21 +140,22 @@ __decorate([
         ],
         example: idioma_1.Idioma.ESPANOL,
     }),
-    (0, class_validator_1.IsEnum)(idioma_1.Idioma),
+    (0, class_validator_1.IsEnum)({ entity: idioma_1.Idioma }),
     __metadata("design:type", String)
-], CreateProductDto.prototype, "idioma", void 0);
+], ProductDTO.prototype, "idioma", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: encuadernacion_1.Encuadernacion.TAPA_DURA,
         description: 'Tipo de encuadernación del libro',
         enum: [
             'Tapa dura',
             'Tapa blanda',
             'Encuadernación en espiral',
-        ]
+        ],
+        example: encuadernacion_1.Encuadernacion.TAPA_DURA,
     }),
+    (0, class_validator_1.IsEnum)({ entity: encuadernacion_1.Encuadernacion }),
     __metadata("design:type", String)
-], CreateProductDto.prototype, "encuadernacion", void 0);
+], ProductDTO.prototype, "encuadernacion", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Año de publicación del libro',
@@ -133,12 +163,11 @@ __decorate([
         example: new Date(2015, 0),
     }),
     (0, class_validator_1.IsDate)(),
-    (0, class_transformer_1.Type)(() => Date),
     (0, class_validator_1.MaxDate)(() => new Date(), {
         message: () => `No se puede ingresar una fecha mayor al día de hoy: ${new Date().toDateString()})`
     }),
     __metadata("design:type", Date)
-], CreateProductDto.prototype, "agnoPublicacion", void 0);
+], ProductDTO.prototype, "agnoPublicacion", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Número de páginas del libro',
@@ -151,7 +180,19 @@ __decorate([
     (0, class_validator_1.Min)(1),
     (0, class_validator_1.Max)(10000),
     __metadata("design:type", Number)
-], CreateProductDto.prototype, "numeroPaginas", void 0);
+], ProductDTO.prototype, "numeroPaginas", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Lista con las reseñas realizadas por los usuarios',
+        type: [review_1.Review],
+        default: [],
+        isArray: true,
+    }),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => review_1.Review),
+    __metadata("design:type", Array)
+], ProductDTO.prototype, "resenas", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Descuento aplicado al producto de 0 a 100',
@@ -164,7 +205,7 @@ __decorate([
     (0, class_validator_1.Min)(0),
     (0, class_validator_1.Max)(100),
     __metadata("design:type", Number)
-], CreateProductDto.prototype, "descuento", void 0);
+], ProductDTO.prototype, "descuento", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Ruta de la carátula del libro',
@@ -173,7 +214,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateProductDto.prototype, "caratula", void 0);
+], ProductDTO.prototype, "caratula", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Dimensiones del libro en formato "Ancho cm x Alto cm"',
@@ -183,7 +224,7 @@ __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.Contains)('x'),
     __metadata("design:type", String)
-], CreateProductDto.prototype, "dimensiones", void 0);
+], ProductDTO.prototype, "dimensiones", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Código de barra del libro en formato EAN-13',
@@ -192,7 +233,7 @@ __decorate([
     }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateProductDto.prototype, "ean", void 0);
+], ProductDTO.prototype, "ean", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Resumen del libro',
@@ -201,5 +242,5 @@ __decorate([
     }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateProductDto.prototype, "resumen", void 0);
-//# sourceMappingURL=create-product.dto.js.map
+], ProductDTO.prototype, "resumen", void 0);
+//# sourceMappingURL=product.dto.js.map

@@ -1,12 +1,11 @@
 import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './entities/product.entity';
-import { Genero } from './entities/genero';
 import { Encuadernacion } from './entities/encuadernacion';
+import { ProductDTO } from './dto/product.dto';
 export declare class ProductsService {
     products: Product[];
-    create(createProductDto: CreateProductDto): string;
-    nombreEpica(): string;
-    findOne(isbn: string): Product;
+    create(createProductDto: CreateProductDto): CreateProductDto;
+    findOne(isbn: string): ProductDTO;
     applyFilterProducts(filteredProducts: Product[], filters: {
         priceMin?: number;
         priceMax?: number;
@@ -44,7 +43,7 @@ export declare class ProductsService {
         encuadernacion?: Encuadernacion;
         agnoPublicacionMin?: number;
         agnoPublicacionMax?: number;
-    }): Product[];
+    }): ProductDTO[];
     getSearchedProductos(query: string, filters: {
         priceMin?: number;
         priceMax?: number;
@@ -59,6 +58,6 @@ export declare class ProductsService {
         encuadernacion?: Encuadernacion;
         agnoPublicacionMin?: number;
         agnoPublicacionMax?: number;
-    }): Product[];
-    getGenres(): Genero[];
+    }): ProductDTO[];
+    getGenres(): string[];
 }

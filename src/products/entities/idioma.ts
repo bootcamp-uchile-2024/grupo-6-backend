@@ -1,5 +1,5 @@
 export enum Idioma {
-  ESPANOL = 'Español',
+  ESPANOL = "Español",
   INGLES = 'Inglés',
   FRANCES = 'Francés',
   ALEMAN = 'Alemán',

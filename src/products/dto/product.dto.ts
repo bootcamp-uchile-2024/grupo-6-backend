@@ -1,12 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Encuadernacion } from '../entities/encuadernacion';
+import { ArrayNotEmpty, Contains, IsArray, IsDate, IsEnum, IsInt, IsString, Max, MaxDate, 
+    Min, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 import { Genero } from '../entities/genero';
 import { Idioma } from '../entities/idioma';
 import { Review } from '../entities/review';
-import { ArrayNotEmpty, Contains, IsArray, IsDate, IsEnum, IsInt, IsString, Max, MaxDate, Min, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Encuadernacion } from '../entities/encuadernacion';
+import { Product } from '../entities/product.entity';
 
-export class CreateProductDto {
+export class ProductDTO {
+
   @ApiProperty({
     description: 'ISBN 13 del libro',
     type: String,
@@ -26,17 +29,14 @@ export class CreateProductDto {
   @ApiProperty({
     description: 'Array con los nombres de los autores del libro',
     type: [String],
-    example: 'Miguel de Cervantes',
-    isArray: true,
   })
   @IsArray()
   public autor: string[];
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Número de libros en stock',
     minimum: 1,
     type: Number,
-    example: 50, 
   })
   @Min(1)
   public stockLibro: number;
@@ -46,13 +46,21 @@ export class CreateProductDto {
     type: Number,
     minimum: 1,
     maximum: 10000000,
-    example: 19000, 
   })
   @IsInt()
   @Min(1)
   @Max(10000000)
   public precio: number;
 
+  @ApiProperty({
+    description: 'Calificación del libro de 0 a 5. Valor autocalculado con las reseñas.',
+    minimum: 0,
+    maximum: 5,
+    default: 0,
+    type: Number
+  })
+  @Min(0)
+  @Max(5)
   public rating: number;
 
   @ApiProperty({
@@ -93,18 +101,19 @@ export class CreateProductDto {
     ],
     example: Idioma.ESPANOL,
   })
-  @IsEnum(Idioma)
+  @IsEnum({entity: Idioma})
   public idioma: Idioma;
 
   @ApiProperty({
-    example: Encuadernacion.TAPA_DURA,
     description: 'Tipo de encuadernación del libro',
     enum: [
       'Tapa dura',
       'Tapa blanda',
       'Encuadernación en espiral',
-    ]
+    ],
+    example: Encuadernacion.TAPA_DURA,
   })
+  @IsEnum({entity: Encuadernacion})
   public encuadernacion: Encuadernacion;
 
   @ApiProperty({
@@ -113,14 +122,13 @@ export class CreateProductDto {
     example: new Date(2015, 0),
   })
   @IsDate()
-  @Type(() => Date)
   @MaxDate( () => new Date(), {
     message: () =>
       `No se puede ingresar una fecha mayor al día de hoy: ${new Date().toDateString()})`
   })
   public agnoPublicacion: Date;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Número de páginas del libro',
     type: Number,
     minimum: 1,
@@ -132,9 +140,18 @@ export class CreateProductDto {
   @Max(10000)
   public numeroPaginas: number;
 
+  @ApiProperty({
+    description: 'Lista con las reseñas realizadas por los usuarios',
+    type: [Review],
+    default: [],
+    isArray: true,
+  })
+  @IsArray()
+  @ValidateNested({each: true})
+  @Type( () => Review)
   public resenas: Review[];
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Descuento aplicado al producto de 0 a 100',
     type: Number,
     default: 0,
@@ -169,8 +186,8 @@ export class CreateProductDto {
     type: String,
   })
   @IsString()
-  public ean: string;
-
+  public ean: string; // Código de barra del producto
+  
   @ApiProperty({
     description: 'Resumen del libro',
     type: String,
@@ -179,4 +196,26 @@ export class CreateProductDto {
   })
   @IsString()
   public resumen: string;
+
+  constructor(product: Product){
+    
+    this.isbn = product.isbn;
+    this.nombre = product.nombre;
+    this.autor = product.autor;
+    this.stockLibro = product.stockLibro;
+    this.precio = product.precio;
+    this.rating = product.rating;
+    this.genero = product.genero;
+    this.editorial = product.editorial;
+    this.idioma = product.idioma;
+    this.encuadernacion = product.encuadernacion;
+    this.agnoPublicacion = product.agnoPublicacion;
+    this.numeroPaginas = product.numeroPaginas;
+    this.resenas = product.resenas;
+    this.descuento = product.descuento;
+    this.caratula = product.caratula;
+    this.dimensiones = product.dimensiones;
+    this.ean = product.ean;
+    this.resumen = product.resumen;
+  }
 }

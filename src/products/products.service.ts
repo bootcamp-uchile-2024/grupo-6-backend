@@ -5,7 +5,8 @@ import { Product } from './entities/product.entity';
 import { Genero } from './entities/genero';
 import { Idioma } from './entities/idioma';
 import { Encuadernacion } from './entities/encuadernacion';
-import { ErrorStatus } from 'src/errorStatus';
+import { ErrorStatus } from 'src/products/errorStatus';
+import { ProductDTO } from './dto/product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -247,23 +248,38 @@ export class ProductsService {
     ),
   ];
 
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  create(createProductDto: CreateProductDto): CreateProductDto {
+    let product = new Product(
+      createProductDto.isbn,
+      createProductDto.nombre,
+      createProductDto.autor,
+      createProductDto.stockLibro,
+      createProductDto.precio,
+      createProductDto.genero,
+      createProductDto.editorial,
+      createProductDto.idioma,
+      createProductDto.encuadernacion,
+      createProductDto.agnoPublicacion,
+      createProductDto.numeroPaginas,
+      createProductDto.descuento,
+      createProductDto.caratula,
+      createProductDto.dimensiones,
+      createProductDto.ean,
+      createProductDto.resumen,
+    )
+
+    // Almacenar en lista de productos
+    this.products.push(product);
+    console.log(this.products.map(p=> p.isbn))
+
+    return createProductDto;
   }
 
-  // findAll() {
-  //   return `This action returns all products`;
-  // }
-
-  nombreEpica() {
-    return `Este modulo corresponde a la epica "Obtencion de Producto".`;
-  }
-
-  findOne(isbn: string): Product {
+  findOne(isbn: string): ProductDTO {
     const producto: Product = this.products.find(
       (element: Product) => element.isbn == isbn,
     );
-    return producto;
+    return new ProductDTO(producto);
   }
 
   applyFilterProducts(
@@ -282,7 +298,7 @@ export class ProductsService {
       agnoPublicacionMin?: number;
       agnoPublicacionMax?: number;
     },
-  ) {
+  ): Product[] {
     // Filtro autor
     if (filters.autor) {
       filteredProducts = filteredProducts.filter((book) =>
@@ -329,9 +345,6 @@ export class ProductsService {
     }
     // Filtro idioma
     if (filters.idioma) {
-      // const idiomas = Array.isArray(filters.idioma) ? filters.idioma : [filters.idioma];
-      // const idiomasEnums = idiomas.map(idioma => Idioma[idioma as keyof typeof Idioma]); // Convertir a enums
-
       filteredProducts = filteredProducts.filter((book) =>
         filters.idioma.includes(book.idioma),
       );
@@ -371,7 +384,7 @@ export class ProductsService {
     filters: {
       sortBy?: string;
     },
-  ) {
+  ): Product[] {
     if (filters.sortBy) {
       filteredProducts = filteredProducts.sort((a, b) =>
         a[filters.sortBy] > b[filters.sortBy] ? 1 : -1,
@@ -386,7 +399,7 @@ export class ProductsService {
       limit?: number;
       offset?: number;
     },
-  ) {
+  ): Product[] {
     const offset = filters.offset || 0;
     const limit = filters.limit || filteredProducts.length;
 
@@ -409,7 +422,9 @@ export class ProductsService {
     encuadernacion?: Encuadernacion;
     agnoPublicacionMin?: number;
     agnoPublicacionMax?: number;
-  }) {
+  }): ProductDTO[] {
+    console.log(this.products.map(p=>p.isbn))
+    
     let filteredProducts = this.products;
 
     // Aplicar filtros
@@ -420,6 +435,7 @@ export class ProductsService {
 
     // Paginación
     filteredProducts = this.paginationProducts(filteredProducts, filters);
+    console.log('Filtrado: ',filteredProducts.map(p=>p.isbn))
 
     // Gestión de errores
     if (!filteredProducts) {
@@ -428,8 +444,8 @@ export class ProductsService {
         404,
       );
     }
-
-    return filteredProducts;
+    
+    return filteredProducts.map( product => new ProductDTO(product));
   }
 
   getSearchedProductos(
@@ -449,7 +465,7 @@ export class ProductsService {
       agnoPublicacionMin?: number;
       agnoPublicacionMax?: number;
     },
-  ) {
+  ): ProductDTO[] {
     let filteredProducts = this.products;
     // Filtro por solicitud
     filteredProducts = filteredProducts.filter(
@@ -477,19 +493,11 @@ export class ProductsService {
       );
     }
 
-    return filteredProducts;
+    return filteredProducts.map( product => new ProductDTO(product) );
   }
 
   // Obtener generos de los libros
-  getGenres() {
+  getGenres(): string[] {
     return Object.values(Genero);
   }
-
-  // update(id: number, updateProductDto: UpdateProductDto) {
-  //   return `This action updates a #${id} product`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} product`;
-  // }
 }

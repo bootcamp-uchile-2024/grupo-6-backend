@@ -20,9 +20,9 @@ const genero_1 = require("./entities/genero");
 const encuadernacion_1 = require("./entities/encuadernacion");
 const idioma_1 = require("./entities/idioma");
 const swagger_1 = require("@nestjs/swagger");
-const product_entity_1 = require("./entities/product.entity");
 const parse_enum_genero_array_pipe_pipe_1 = require("../parse-enum-array-pipe/parse-enum-genero-array-pipe.pipe");
 const parse_enum_idioma_array_pipe_1 = require("../parse-enum-array-pipe/parse-enum-idioma-array-pipe");
+const product_dto_1 = require("./dto/product.dto");
 let ProductsController = class ProductsController {
     constructor(productsService) {
         this.productsService = productsService;
@@ -99,11 +99,21 @@ let ProductsController = class ProductsController {
 exports.ProductsController = ProductsController;
 __decorate([
     (0, swagger_1.ApiTags)('Products'),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Creación de producto exitosa',
+        type: product_dto_1.ProductDTO
+    }),
+    (0, swagger_1.ApiResponse)({
+        status: 404,
+        description: 'Error al crear producto. Revisar datos ingresados',
+    }),
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_product_dto_1.CreateProductDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", create_product_dto_1.CreateProductDto)
 ], ProductsController.prototype, "create", null);
 __decorate([
     (0, swagger_1.ApiTags)('Products'),
@@ -196,7 +206,9 @@ __decorate([
     }),
     (0, swagger_1.ApiResponse)({
         status: 200,
-        description: 'Solicitud generada correctamente'
+        description: 'Solicitud generada correctamente',
+        type: product_dto_1.ProductDTO,
+        isArray: true
     }),
     (0, swagger_1.ApiResponse)({
         status: 404,
@@ -220,7 +232,7 @@ __decorate([
     __param(14, (0, common_1.Query)('agnoPublicacionMax', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number, Object, Object, String, String, String, Number, Object, Object, Object, String, String, Number, Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Array)
 ], ProductsController.prototype, "getFilteredProducts", null);
 __decorate([
     (0, swagger_1.ApiTags)('Products'),
@@ -303,7 +315,12 @@ __decorate([
         required: false,
         example: 2024,
     }),
-    (0, swagger_1.ApiResponse)({ status: 200, description: 'Solicitud generada correctamente' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Solicitud generada correctamente',
+        type: product_dto_1.ProductDTO,
+        isArray: true
+    }),
     (0, swagger_1.ApiResponse)({
         status: 404,
         description: 'No existen productos que cumplan la solicitud',
@@ -325,13 +342,14 @@ __decorate([
     __param(13, (0, common_1.Query)('agnoPublicacionMax', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Number, Number, Object, Object, String, String, Number, Object, Object, Object, String, Number, Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Array)
 ], ProductsController.prototype, "getSearchedProducts", null);
 __decorate([
     (0, swagger_1.ApiTags)('Products'),
     (0, swagger_1.ApiResponse)({
         status: 200,
         description: 'Este codigo se debe a que se pudo enviar el libro en base al isbn ingresado.',
+        type: product_dto_1.ProductDTO,
     }),
     (0, swagger_1.ApiResponse)({
         status: 404,
@@ -341,13 +359,15 @@ __decorate([
     __param(0, (0, common_1.Param)('isbn')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", product_entity_1.Product)
+    __metadata("design:returntype", product_dto_1.ProductDTO)
 ], ProductsController.prototype, "findOne", null);
 __decorate([
     (0, swagger_1.ApiTags)('Products'),
     (0, swagger_1.ApiResponse)({
         status: 200,
         description: 'Se obtuvo la lista de generos de forma satisfactoria.',
+        type: String,
+        isArray: true
     }),
     (0, swagger_1.ApiResponse)({
         status: 400,
@@ -356,7 +376,7 @@ __decorate([
     (0, common_1.Get)('genres'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Array)
 ], ProductsController.prototype, "getGenres", null);
 exports.ProductsController = ProductsController = __decorate([
     (0, common_1.Controller)('products'),

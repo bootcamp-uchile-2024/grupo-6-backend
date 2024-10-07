@@ -10,8 +10,6 @@ exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const user_entity_1 = require("./entities/user.entity");
 const tipoDireccion_entity_1 = require("./entities/tipoDireccion.entity");
-const clientType_entity_1 = require("./entities/clientType.entity");
-const clientState_entity_1 = require("./entities/clientState.entity");
 const address_entity_1 = require("./entities/address.entity");
 const console_1 = require("console");
 const class_validator_1 = require("class-validator");
@@ -20,10 +18,10 @@ let UsersService = class UsersService {
         this.usuarios = [
             new user_entity_1.User(1, 'Cristobal Andres', 'Sanchez', 'Ossandon', 'c.sanch.oss@gmail.com', 'qwerty', [
                 new address_entity_1.Address(1, 'El condor', '125', 'N/A', 'Nunoa', 'Santiago', 'Region Metropolitana', [tipoDireccion_entity_1.TipoDireccion.ENVIO, tipoDireccion_entity_1.TipoDireccion.FACTURACION], 'CASA'),
-            ], clientType_entity_1.ClientType.PREMIUM, clientState_entity_1.ClientState.ACTIVO),
+            ]),
             new user_entity_1.User(2, 'Daniel Antonio', 'Fernandez', 'Correa', 'd.fernandez.correa@gmail.com', '12345', [
                 new address_entity_1.Address(1, 'San Marcos', '27', 'N/A', 'Penalolen', 'Santiago', 'Region Metropolitana', [tipoDireccion_entity_1.TipoDireccion.ENVIO, tipoDireccion_entity_1.TipoDireccion.FACTURACION], 'CASA'),
-            ], clientType_entity_1.ClientType.ESTANDAR, clientState_entity_1.ClientState.ACTIVO),
+            ]),
         ];
     }
     createSHA256Hash(inputString) {
@@ -37,7 +35,7 @@ let UsersService = class UsersService {
         if (existeUsuario != -1) {
             throw new console_1.error();
         }
-        const usuario = new user_entity_1.User(this.usuarios.length + 1, createUserDto.nombres, createUserDto.apellidoPaterno, createUserDto.apellidoMaterno, createUserDto.correoElectronico, this.createSHA256Hash(createUserDto.contrasena), [], createUserDto.tipoCliente, createUserDto.estado);
+        const usuario = new user_entity_1.User(this.usuarios.length + 1, createUserDto.nombres, createUserDto.apellidoPaterno, createUserDto.apellidoMaterno, createUserDto.correoElectronico, this.createSHA256Hash(createUserDto.contrasena), []);
         this.usuarios.push(usuario);
         return usuario;
     }
@@ -48,7 +46,7 @@ let UsersService = class UsersService {
         }
         return usuario;
     }
-    update(id, nombres, apellidoPaterno, apellidoMaterno, correoElectronico, contrasena, tipoCliente, estado) {
+    update(id, nombres, apellidoPaterno, apellidoMaterno, correoElectronico, contrasena) {
         const elemento = this.usuarios.findIndex((element) => element.idUsuario == id);
         if (elemento == -1) {
             throw new Error();
@@ -67,12 +65,6 @@ let UsersService = class UsersService {
         }
         if (contrasena) {
             this.usuarios[elemento].contrasena = this.createSHA256Hash(contrasena);
-        }
-        if (tipoCliente) {
-            this.usuarios[elemento].tipoCliente = tipoCliente;
-        }
-        if (estado) {
-            this.usuarios[elemento].estado = estado;
         }
         return this.usuarios[elemento];
     }

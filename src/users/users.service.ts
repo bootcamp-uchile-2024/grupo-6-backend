@@ -1,9 +1,7 @@
-import { HttpException, Injectable, ParseEnumPipe } from '@nestjs/common';
+import { HttpException, Injectable} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { TipoDireccion } from './entities/tipoDireccion.entity';
-import { ClientType } from './entities/clientType.entity';
-import { ClientState } from './entities/clientState.entity';
 import { Address } from './entities/address.entity';
 import { error } from 'console';
 import { isArray } from 'class-validator';
@@ -30,9 +28,7 @@ export class UsersService {
           [TipoDireccion.ENVIO, TipoDireccion.FACTURACION],
           'CASA',
         ),
-      ],
-      ClientType.PREMIUM,
-      ClientState.ACTIVO,
+      ]
     ),
     new User(
       2,
@@ -53,9 +49,7 @@ export class UsersService {
           [TipoDireccion.ENVIO, TipoDireccion.FACTURACION],
           'CASA',
         ),
-      ],
-      ClientType.ESTANDAR,
-      ClientState.ACTIVO,
+      ]
     ),
   ];
 
@@ -81,9 +75,7 @@ export class UsersService {
       createUserDto.apellidoMaterno,
       createUserDto.correoElectronico,
       this.createSHA256Hash(createUserDto.contrasena),
-      [],
-      createUserDto.tipoCliente,
-      createUserDto.estado,
+      []
     );
 
     this.usuarios.push(usuario);
@@ -106,9 +98,7 @@ export class UsersService {
     apellidoPaterno?: string,
     apellidoMaterno?: string,
     correoElectronico?: string,
-    contrasena?: string,
-    tipoCliente?: ClientType,
-    estado?: ClientState,
+    contrasena?: string
   ): CreateUserDto {
     const elemento: number = this.usuarios.findIndex(
       (element: User) => element.idUsuario == id,
@@ -130,12 +120,6 @@ export class UsersService {
     }
     if (contrasena) {
       this.usuarios[elemento].contrasena = this.createSHA256Hash(contrasena);
-    }
-    if (tipoCliente) {
-      this.usuarios[elemento].tipoCliente = tipoCliente;
-    }
-    if (estado) {
-      this.usuarios[elemento].estado = estado;
     }
     return this.usuarios[elemento];
   }

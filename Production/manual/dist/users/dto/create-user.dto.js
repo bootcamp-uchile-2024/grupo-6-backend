@@ -11,9 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateUserDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
-const clientType_entity_1 = require("../entities/clientType.entity");
-const clientState_entity_1 = require("../entities/clientState.entity");
-const address_entity_1 = require("../entities/address.entity");
 const class_validator_1 = require("class-validator");
 class CreateUserDto {
 }
@@ -54,34 +51,4 @@ __decorate([
     (0, swagger_1.ApiProperty)({ example: '12345', description: 'Contrasena del usuario.' }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "contrasena", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'Direccion del usuario, puede ser direccion de envio y/o facturacion.',
-        default: [],
-        type: address_entity_1.Address,
-    }),
-    __metadata("design:type", Array)
-], CreateUserDto.prototype, "direccion", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        example: clientType_entity_1.ClientType.ESTANDAR,
-        description: 'Tipo de usuario, puede ser Premium o Estandar.',
-        enum: clientType_entity_1.ClientType,
-    }),
-    (0, class_validator_1.IsEnum)(clientType_entity_1.ClientType, {
-        message: "El tipo del usuario tiene que ser el formato correcto. Ej: 'Premium' o 'Estandar'.",
-    }),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "tipoCliente", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        example: clientState_entity_1.ClientState.ACTIVO,
-        description: 'Estado del usuario, puede ser Activo o Baneado.',
-        enum: clientState_entity_1.ClientState,
-    }),
-    (0, class_validator_1.IsEnum)(clientState_entity_1.ClientState, {
-        message: "El estado del usuario tiene que ser el formato correcto. Ej: 'Activo' o 'Baneado'.",
-    }),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "estado", void 0);
 //# sourceMappingURL=create-user.dto.js.map

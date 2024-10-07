@@ -1,5 +1,4 @@
 import { Encuadernacion } from 'src/products/entities/encuadernacion';
-import { Genero } from 'src/products/entities/genero';
 export declare class CreateShoppingcartDto {
     isbn: string;
     item: number;
@@ -7,7 +6,6 @@ export declare class CreateShoppingcartDto {
     autor: string[];
     stockLibro: number;
     precio: number;
-    genero: Genero[];
     editorial: string;
     encuadernacion: Encuadernacion;
     descuento: number;

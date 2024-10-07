@@ -19,8 +19,6 @@ const create_user_dto_1 = require("./dto/create-user.dto");
 const swagger_1 = require("@nestjs/swagger");
 const user_entity_1 = require("./entities/user.entity");
 const address_entity_1 = require("./entities/address.entity");
-const clientType_entity_1 = require("./entities/clientType.entity");
-const clientState_entity_1 = require("./entities/clientState.entity");
 const tipoDireccion_entity_1 = require("./entities/tipoDireccion.entity");
 let UsersController = class UsersController {
     constructor(usersService) {
@@ -48,9 +46,9 @@ let UsersController = class UsersController {
             throw new common_1.HttpException('No existe usuario con el id ingresado.', 404);
         }
     }
-    update(id, nombres, apellidoPaterno, apellidoMaterno, correoElectronico, contrasena, tipoCliente, estado) {
+    update(id, nombres, apellidoPaterno, apellidoMaterno, correoElectronico, contrasena) {
         try {
-            const updateUsuario = this.usersService.update(id, nombres, apellidoPaterno, apellidoMaterno, correoElectronico, contrasena, tipoCliente, estado);
+            const updateUsuario = this.usersService.update(id, nombres, apellidoPaterno, apellidoMaterno, correoElectronico, contrasena);
             return updateUsuario;
         }
         catch (error) {
@@ -209,18 +207,6 @@ __decorate([
         description: 'Contrasena del usuario.',
         required: false,
     }),
-    (0, swagger_1.ApiQuery)({
-        name: 'tipoCliente',
-        description: 'Tipo de usuario, puede ser Premium o Estandar.',
-        required: false,
-        enum: clientType_entity_1.ClientType,
-    }),
-    (0, swagger_1.ApiQuery)({
-        name: 'estado',
-        description: 'Estado del usuario, puede ser Activo o Baneado.',
-        required: false,
-        enum: clientState_entity_1.ClientState,
-    }),
     (0, swagger_1.ApiTags)('Users'),
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.Put)(':id'),
@@ -230,10 +216,8 @@ __decorate([
     __param(3, (0, common_1.Query)('apellidoMaterno')),
     __param(4, (0, common_1.Query)('correoElectronico')),
     __param(5, (0, common_1.Query)('contrasena')),
-    __param(6, (0, common_1.Query)('tipoCliente')),
-    __param(7, (0, common_1.Query)('estado')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String, String, String, String, String, String, String]),
+    __metadata("design:paramtypes", [Number, String, String, String, String, String]),
     __metadata("design:returntype", create_user_dto_1.CreateUserDto)
 ], UsersController.prototype, "update", null);
 __decorate([

@@ -3,10 +3,8 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
-  Res,
   Query,
   Put,
   HttpException,
@@ -20,8 +18,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 import { Address } from './entities/address.entity';
-import { ClientType } from './entities/clientType.entity';
-import { ClientState } from './entities/clientState.entity';
 import { TipoDireccion } from './entities/tipoDireccion.entity';
 
 @Controller('users')
@@ -134,7 +130,6 @@ export class UsersController {
     @Query('numeroDepartamento') numeroDepartamento?: string,
     @Query('informacionAdicional') informacionAdicional?: string,
   ): Address {
-    // try {
     const createAddress: Address = this.usersService.createAddress(
       idUsuario,
       calle,
@@ -212,18 +207,6 @@ export class UsersController {
     description: 'Contrasena del usuario.',
     required: false,
   })
-  @ApiQuery({
-    name: 'tipoCliente',
-    description: 'Tipo de usuario, puede ser Premium o Estandar.',
-    required: false,
-    enum: ClientType,
-  })
-  @ApiQuery({
-    name: 'estado',
-    description: 'Estado del usuario, puede ser Activo o Baneado.',
-    required: false,
-    enum: ClientState,
-  })
   @ApiTags('Users')
   @UsePipes(new ValidationPipe())
   @Put(':id')
@@ -234,9 +217,7 @@ export class UsersController {
     @Query('apellidoPaterno') apellidoPaterno?: string,
     @Query('apellidoMaterno') apellidoMaterno?: string,
     @Query('correoElectronico') correoElectronico?: string,
-    @Query('contrasena') contrasena?: string,
-    @Query('tipoCliente') tipoCliente?: ClientType,
-    @Query('estado') estado?: ClientState,
+    @Query('contrasena') contrasena?: string
   ): CreateUserDto {
     try {
       const updateUsuario: CreateUserDto = this.usersService.update(
@@ -246,8 +227,6 @@ export class UsersController {
         apellidoMaterno,
         correoElectronico,
         contrasena,
-        tipoCliente,
-        estado,
       );
       return updateUsuario;
     } catch (error) {
@@ -341,7 +320,6 @@ export class UsersController {
     tipoDireccion?: string | string[],
     @Query('informacionAdicional') informacionAdicional?: string,
   ): Address {
-    // try {
     const updateAddress: Address = this.usersService.updateAddress(
       idUsuario,
       idDireccion,

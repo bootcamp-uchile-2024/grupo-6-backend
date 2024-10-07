@@ -11,10 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const swagger_1 = require("@nestjs/swagger");
-const clientType_entity_1 = require("./clientType.entity");
-const clientState_entity_1 = require("./clientState.entity");
 class User {
-    constructor(idUsuario, nombres, apellidoPaterno, apellidoMaterno, correoElectronico, contrasena, direccion, tipoCliente, estado) {
+    constructor(idUsuario, nombres, apellidoPaterno, apellidoMaterno, correoElectronico, contrasena, direccion) {
         this.idUsuario = idUsuario;
         this.nombres = nombres;
         this.apellidoPaterno = apellidoPaterno;
@@ -22,8 +20,6 @@ class User {
         this.correoElectronico = correoElectronico;
         this.contrasena = contrasena;
         this.direccion = direccion;
-        this.tipoCliente = tipoCliente;
-        this.estado = estado;
     }
 }
 exports.User = User;
@@ -55,12 +51,4 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Array)
 ], User.prototype, "direccion", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    __metadata("design:type", String)
-], User.prototype, "tipoCliente", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    __metadata("design:type", String)
-], User.prototype, "estado", void 0);
 //# sourceMappingURL=user.entity.js.map

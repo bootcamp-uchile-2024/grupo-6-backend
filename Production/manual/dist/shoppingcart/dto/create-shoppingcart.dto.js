@@ -21,13 +21,6 @@ __decorate([
 ], CreateShoppingcartDto.prototype, "precio", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        example: ['Fantasía'],
-        description: 'Generos literarios a lo que pertenece el libro',
-    }),
-    __metadata("design:type", Array)
-], CreateShoppingcartDto.prototype, "genero", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
         example: 'Salvat',
         description: 'Editorial a la que pertenece este libro',
     }),

@@ -16,12 +16,10 @@ exports.ShoppingcartController = void 0;
 const common_1 = require("@nestjs/common");
 const shoppingcart_service_1 = require("./shoppingcart.service");
 const swagger_1 = require("@nestjs/swagger");
-const products_service_1 = require("../products/products.service");
 const create_product_dto_1 = require("../products/dto/create-product.dto");
 let ShoppingcartController = class ShoppingcartController {
-    constructor(shoppingcartService, productService) {
+    constructor(shoppingcartService) {
         this.shoppingcartService = shoppingcartService;
-        this.productService = productService;
     }
     create(createProductDto) {
         return this.shoppingcartService.create(createProductDto);
@@ -87,7 +85,6 @@ __decorate([
 ], ShoppingcartController.prototype, "remove", null);
 exports.ShoppingcartController = ShoppingcartController = __decorate([
     (0, common_1.Controller)('shoppingcart'),
-    __metadata("design:paramtypes", [shoppingcart_service_1.ShoppingcartService,
-        products_service_1.ProductsService])
+    __metadata("design:paramtypes", [shoppingcart_service_1.ShoppingcartService])
 ], ShoppingcartController);
 //# sourceMappingURL=shoppingcart.controller.js.map

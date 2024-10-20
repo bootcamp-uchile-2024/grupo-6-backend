@@ -1,3 +1,5 @@
+USE Paginas_Selectas;
+
 -- 1. Insertar en la tabla `usuario`
 INSERT INTO usuario (nombre, segundo_nombre, apellido_paterno, apellido_materno, correo_electronico, contrasena) VALUES 
 ('Juan', 'Carlos', 'Pérez', 'González', 'juan.perez@gmail.com', 'password123'),
@@ -92,26 +94,8 @@ INSERT INTO comuna (nombre, id_ciudad) VALUES
 
 -- 5. Insertar en la tabla `tipoDireccion`
 INSERT INTO tipoDireccion (descripcion) VALUES 
-('Residencial'),
-('Laboral'),
-('Postal'),
-('Fiscal'),
-('Secundaria'),
-('Oficina'),
-('Comercial'),
-('Entrega'),
-('Recolección'),
-('Correspondencia'),
-('Almacén'),
-('Principal'),
-('Backup'),
-('Evento'),
-('Punto de Venta'),
-('Acceso Controlado'),
-('Recepción'),
-('Sucursal'),
-('Local'),
-('Entrega Especial');
+('Envio'),
+('Facturacion');
 
 -- 6. Insertar en la tabla `direccion`
 INSERT INTO direccion (id_usuario, id_tipo_direccion, calle, numero_calle, numero_departamento, id_comuna, informacion_adicional) VALUES 
@@ -125,16 +109,16 @@ INSERT INTO direccion (id_usuario, id_tipo_direccion, calle, numero_calle, numer
 (8, 8, 'Avenida Los Leones', '600', NULL, 8, NULL),
 (9, 9, 'Av. Apoquindo', '700', NULL, 9, 'Junto al metro'),
 (10, 10, 'Alameda', '800', '7C', 10, 'Frente al mall'),
-(11, 1, 'El Volcán', '900', '2B', 11, NULL),
-(12, 2, 'Las Torres', '1000', NULL, 12, NULL),
-(13, 3, 'Paseo Peatonal', '1100', '6A', 13, 'Frente a la plaza'),
-(14, 4, 'Camino del Inca', '1200', '5B', 14, NULL),
-(15, 5, 'Los Aromos', '1300', NULL, 15, NULL),
-(16, 6, 'Río Baker', '1400', '1C', 16, NULL),
-(17, 7, 'Avenida Cordillera', '1500', '4A', 17, 'Junto al río'),
-(18, 8, 'Ruta 5', '1600', NULL, 18, NULL),
-(19, 9, 'El Litoral', '1700', '3A', 19, 'Frente al mar'),
-(20, 10, 'Paseo de los Andes', '1800', NULL, 20, NULL);
+(11, 11, 'El Volcán', '900', '2B', 11, NULL),
+(12, 12, 'Las Torres', '1000', NULL, 12, NULL),
+(13, 13, 'Paseo Peatonal', '1100', '6A', 13, 'Frente a la plaza'),
+(14, 14, 'Camino del Inca', '1200', '5B', 14, NULL),
+(15, 15, 'Los Aromos', '1300', NULL, 15, NULL),
+(16, 16, 'Río Baker', '1400', '1C', 16, NULL),
+(17, 17, 'Avenida Cordillera', '1500', '4A', 17, 'Junto al río'),
+(18, 18, 'Ruta 5', '1600', NULL, 18, NULL),
+(19, 19, 'El Litoral', '1700', '3A', 19, 'Frente al mar'),
+(20, 20, 'Paseo de los Andes', '1800', NULL, 20, NULL);
 
 -- 7. Insertar en la tabla `genero`
 INSERT INTO genero (descripcion) VALUES 
@@ -309,3 +293,27 @@ INSERT INTO resena (id_usuario, id_libro, comentario, rating, fecha) VALUES
 (18, 18, 'Una historia sobre la culpa y el castigo', 4, '2023-01-18'),
 (19, 19, 'Una ópera espacial que cambia el juego', 5, '2023-01-19'),
 (20, 20, 'Sátira política muy ingeniosa', 5, '2023-01-20');
+
+
+-- 16. Inserta en tabla `direccion_tipoDireccion`
+INSERT INTO direccion_tipoDireccion (id_direccion,id_tipoDireccion) VALUES 
+(1,1),
+(2,1),
+(3,1),
+(4,1),
+(5,1),
+(6,1),
+(7,1),
+(8,1),
+(9,1),
+(10,1),
+(11,1),
+(12,1),
+(13,1),
+(14,1),
+(15,1),
+(16,1),
+(17,1),
+(18,1),
+(19,1),
+(20,1);

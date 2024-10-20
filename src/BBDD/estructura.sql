@@ -90,12 +90,12 @@ CREATE TABLE editorial (
 
 CREATE TABLE libro (
 	id INT AUTO_INCREMENT PRIMARY KEY,
-    isbn VARCHAR(50) NOT NULL,
+    isbn VARCHAR(30) NOT NULL,
     id_idioma INT,
     id_encuadernacion INT,
-    nombre VARCHAR(150),
-    stock_libro INT,
-    precio INT,
+    nombre VARCHAR(150) NOT NULL,
+    stock_libro INT NOT NULL,
+    precio INT NOT NULL,
     rating INT,
     id_editorial INT,
     agno_publicacion INT,

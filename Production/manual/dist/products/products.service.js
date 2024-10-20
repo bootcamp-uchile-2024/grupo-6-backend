@@ -5,6 +5,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductsService = void 0;
 const common_1 = require("@nestjs/common");
@@ -14,8 +20,13 @@ const idioma_1 = require("./entities/idioma");
 const encuadernacion_1 = require("./entities/encuadernacion");
 const errorStatus_1 = require("./errorStatus");
 const product_dto_1 = require("./dto/product.dto");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
+const proConexDTO_1 = require("./dto/proConexDTO");
 let ProductsService = class ProductsService {
-    constructor() {
+    constructor(dataSource) {
+        this.dataSource = dataSource;
+        this.proConex = [];
         this.products = [
             new product_entity_1.Product('9788420412146', 'Don Quijote de la Mancha', ['Miguel de Cervantes'], 50, 19000, [genero_1.Genero.NOVELA, genero_1.Genero.CLASICO], 'Lengua Viva', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_DURA, new Date(2015, 0), 1376, 0, '9788420412146.jpg', '15cm x 25cm', '978-8-42-041214-6', 'La obra maestra de Miguel de Cervantes narra las aventuras de Alonso Quijano, quien, tras leer muchos libros de caballerías, decide convertirse en un caballero andante, Don Quijote. Acompañado por su fiel escudero Sancho Panza, busca revivir la caballería en un mundo moderno. Es una sátira profunda sobre la realidad y la ficción, y un clásico de la literatura universal.'),
             new product_entity_1.Product('9789585581616', 'Cien Años de Soledad', ['Gabriel García Márquez'], 70, 20500, [genero_1.Genero.NOVELA, genero_1.Genero.CLASICO], 'Literatura Random House', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_DURA, new Date(2021, 0), 400, 20, '9789585581616.jpeg', '13cm x 25cm', '978-9-58-558161-6', 'Gabriel García Márquez cuenta la historia de la familia Buendía en el mítico pueblo de Macondo. Con un estilo de realismo mágico, explora temas como el destino, la soledad y los ciclos de la vida. La novela es un referente del boom latinoamericano y una de las más importantes del siglo XX.'),
@@ -37,6 +48,18 @@ let ProductsService = class ProductsService {
         this.products.push(product);
         console.log(this.products.map(p => p.isbn));
         return createProductDto;
+    }
+    async getConexion() {
+        const conexionBD = "SELECT isbn, nombre, precio FROM libro;";
+        const result = await this.dataSource.query(conexionBD);
+        for (const productoFila of result) {
+            const proDTO = new proConexDTO_1.proConexDTO();
+            proDTO.isbn = productoFila.isbn;
+            proDTO.nombre = productoFila.nombre;
+            proDTO.precio = productoFila.precio;
+            this.proConex.push(proDTO);
+        }
+        return this.proConex;
     }
     findOne(isbn) {
         const producto = this.products.find((element) => element.isbn == isbn);
@@ -123,6 +146,8 @@ let ProductsService = class ProductsService {
 };
 exports.ProductsService = ProductsService;
 exports.ProductsService = ProductsService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectDataSource)()),
+    __metadata("design:paramtypes", [typeorm_2.DataSource])
 ], ProductsService);
 //# sourceMappingURL=products.service.js.map

@@ -39,7 +39,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       port: 3306,
       username: 'root',
       password: 'grupo-6',
-      database: 'Paginas_Selectas'
+      database: 'paginas_selectas'
     })
   ],
   controllers: [AppController],

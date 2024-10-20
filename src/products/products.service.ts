@@ -7,10 +7,21 @@ import { Idioma } from './entities/idioma';
 import { Encuadernacion } from './entities/encuadernacion';
 import { ErrorStatus } from 'src/products/errorStatus';
 import { ProductDTO } from './dto/product.dto';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { Any, DataSource } from 'typeorm';
+import { proConexDTO } from './dto/proConexDTO';
 
 @Injectable()
 export class ProductsService {
   // Libros de prueba
+
+  constructor(
+    @InjectDataSource() private readonly dataSource: DataSource
+    ) {}
+
+  
+  public proConex: proConexDTO[] = [];
+
   public products: Product[] = [
     new Product(
       '9788420412146',
@@ -273,6 +284,20 @@ export class ProductsService {
     console.log(this.products.map(p=> p.isbn))
 
     return createProductDto;
+  }
+
+  async getConexion():Promise<proConexDTO[]> {
+    const conexionBD = "SELECT isbn, nombre, precio FROM libro;";
+    const result = await this.dataSource.query(conexionBD);
+
+    for (const productoFila of result){
+      const proDTO = new proConexDTO();
+      proDTO.isbn = productoFila.isbn;
+      proDTO.nombre = productoFila.nombre;
+      proDTO.precio = productoFila.precio;
+      this.proConex.push(proDTO);
+    }
+    return this.proConex;
   }
 
   findOne(isbn: string): ProductDTO {

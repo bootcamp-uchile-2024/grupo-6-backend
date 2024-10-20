@@ -9,6 +9,7 @@ import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ParseEnumGeneroArrayPipe } from 'src/parse-enum-array-pipe/parse-enum-genero-array-pipe.pipe';
 import { ParseEnumIdiomaArrayPipe } from 'src/parse-enum-array-pipe/parse-enum-idioma-array-pipe';
 import { ProductDTO } from './dto/product.dto';
+import { proConexDTO } from './dto/proConexDTO';
 
 @Controller('products')
 export class ProductsController {
@@ -346,5 +347,11 @@ export class ProductsController {
     } catch (error) {
       throw new HttpException('Error al obtener los géneros de libros', 400);
     }
+  }
+
+  @Get('conexion')
+  async getConexion(): Promise<proConexDTO[]> {
+    const resolucion = await this.productsService.getConexion();
+    return resolucion;
   }
 }

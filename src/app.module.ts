@@ -8,6 +8,7 @@ import { HomeModule } from './home/home.module';
 import { BooksMiddleware } from './books/books.middleware';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -32,6 +33,14 @@ import { ConfigModule } from '@nestjs/config';
         };
       },
     }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'mysql',
+      port: 3306,
+      username: 'root',
+      password: 'grupo-6',
+      database: 'Paginas_Selectas'
+    })
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,7 +1,22 @@
 erDiagram
     USUARIO ||--o{ DIRECCION : tiene
-    USUARIO ||--o{ HISTORIAL-COMPRA : tiene
-    HISTORIAL-COMPRA ||--|{ PRODUCTO : tiene
-    PRODUCTO }|--|| CARRITO-COMPRA : tiene
+    DIRECCION ||--|{ DIRECCION_TIPODIRECCION : tiene
+    TIPODIRECCION ||--|{ DIRECCION_TIPODIRECCION : tiene
+    COMUNA ||--|{ DIRECCION : tiene
+    CIUDAD ||--|{ COMUNA : tiene
+    REGION ||--|{ CIUDAD : tiene
+
+
+    USUARIO ||--o{ HISTORIAL_COMPRA: tiene
+    LIBRO_COMPRA}|--|| LIBRO : tiene
+    HISTORIAL_COMPRA||--|{ LIBRO_COMPRA : tiene
     USUARIO ||--o{ RESENA : realiza
-    PRODUCTO ||--o{ RESENA : tiene
+    
+    LIBRO ||--o{ RESENA : tiene
+    IDIOMA_LIBRO ||--|{ LIBRO : tiene
+    ENCUADERNACION ||--|{ LIBRO : tiene
+    EDITORIAL ||--|{ LIBRO : tiene
+    LIBRO ||--|{ GENERO_LIBRO : tiene
+    GENERO ||--|{ GENERO_LIBRO : tiene
+    LIBRO ||--|{ AUTOR_LIBRO : tiene
+    AUTOR ||--|{ AUTOR_LIBRO : tiene

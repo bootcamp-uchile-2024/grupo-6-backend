@@ -5,7 +5,7 @@ Table usuario {
   apellido_paterno varchar(50) [not null]
   apellido_materno varchar(50) [not null]
   correo_electronico varchar(50) [not null]
-  contrasena varchar(255) [not null]
+  contrasena varchar(255) [not null, unique]
 }
 
 Table direccion {
@@ -45,9 +45,9 @@ Table libro {
   nombre varchar(150)
   stock_libro integer
   precio integer
-  rating integer
+  rating decimal(2,1)
   id_editorial integer
-  agno_publicacion year
+  agno_publicacion integer
   numero_paginas integer
   descuento integer
   caratula varchar(50)

@@ -2,9 +2,15 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './entities/product.entity';
 import { Encuadernacion } from './entities/encuadernacion';
 import { ProductDTO } from './dto/product.dto';
+import { DataSource } from 'typeorm';
+import { proConexDTO } from './dto/proConexDTO';
 export declare class ProductsService {
+    private readonly dataSource;
+    constructor(dataSource: DataSource);
+    proConex: proConexDTO[];
     products: Product[];
     create(createProductDto: CreateProductDto): CreateProductDto;
+    getConexion(): Promise<proConexDTO[]>;
     findOne(isbn: string): ProductDTO;
     applyFilterProducts(filteredProducts: Product[], filters: {
         priceMin?: number;

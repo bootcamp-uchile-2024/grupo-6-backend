@@ -17,6 +17,7 @@ const home_module_1 = require("./home/home.module");
 const books_middleware_1 = require("./books/books.middleware");
 const users_module_1 = require("./users/users.module");
 const config_1 = require("@nestjs/config");
+const typeorm_1 = require("@nestjs/typeorm");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
@@ -49,6 +50,14 @@ exports.AppModule = AppModule = __decorate([
                     };
                 },
             }),
+            typeorm_1.TypeOrmModule.forRoot({
+                type: 'mysql',
+                host: 'mysql',
+                port: 3306,
+                username: 'root',
+                password: 'grupo-6',
+                database: 'paginas_selectas'
+            })
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

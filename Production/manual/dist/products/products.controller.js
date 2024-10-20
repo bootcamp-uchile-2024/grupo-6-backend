@@ -95,6 +95,10 @@ let ProductsController = class ProductsController {
             throw new common_1.HttpException('Error al obtener los géneros de libros', 400);
         }
     }
+    async getConexion() {
+        const resolucion = await this.productsService.getConexion();
+        return resolucion;
+    }
 };
 exports.ProductsController = ProductsController;
 __decorate([
@@ -378,6 +382,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Array)
 ], ProductsController.prototype, "getGenres", null);
+__decorate([
+    (0, common_1.Get)('conexion'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ProductsController.prototype, "getConexion", null);
 exports.ProductsController = ProductsController = __decorate([
     (0, common_1.Controller)('products'),
     __metadata("design:paramtypes", [products_service_1.ProductsService])

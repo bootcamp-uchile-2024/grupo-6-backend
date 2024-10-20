@@ -1,0 +1,7 @@
+erDiagram
+    USUARIO ||--o{ DIRECCION : tiene
+    USUARIO ||--o{ HISTORIAL-COMPRA : tiene
+    HISTORIAL-COMPRA ||--|{ PRODUCTO : tiene
+    PRODUCTO }|--|| CARRITO-COMPRA : tiene
+    USUARIO ||--o{ RESENA : realiza
+    PRODUCTO ||--o{ RESENA : tiene

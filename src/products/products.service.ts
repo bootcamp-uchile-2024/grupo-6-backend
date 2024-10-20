@@ -287,7 +287,7 @@ export class ProductsService {
   }
 
   async getConexion():Promise<proConexDTO[]> {
-    const conexionBD = "SELECT isbn, nombre, precio FROM libros;";
+    const conexionBD = "SELECT isbn, nombre, precio FROM libro;";
     const result = await this.dataSource.query(conexionBD);
 
     for (const productoFila of result){

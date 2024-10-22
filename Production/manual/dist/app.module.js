@@ -17,7 +17,7 @@ const home_module_1 = require("./home/home.module");
 const books_middleware_1 = require("./books/books.middleware");
 const users_module_1 = require("./users/users.module");
 const config_1 = require("@nestjs/config");
-const typeorm_1 = require("@nestjs/typeorm");
+const orm_module_1 = require("./orm/orm.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
@@ -34,6 +34,7 @@ exports.AppModule = AppModule = __decorate([
             shoppingcart_module_1.ShoppingcartModule,
             home_module_1.HomeModule,
             users_module_1.UsersModule,
+            orm_module_1.OrmModule,
             config_1.ConfigModule.forRoot({
                 envFilePath: process.env.ARCHIVO_ENV ? `.env.${process.env.ARCHIVO_ENV}` : '.env',
                 isGlobal: true,
@@ -50,14 +51,6 @@ exports.AppModule = AppModule = __decorate([
                     };
                 },
             }),
-            typeorm_1.TypeOrmModule.forRoot({
-                type: 'mysql',
-                host: 'mysql',
-                port: 3306,
-                username: 'root',
-                password: 'grupo-6',
-                database: 'paginas_selectas'
-            })
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

@@ -8,7 +8,7 @@ import { HomeModule } from './home/home.module';
 import { BooksMiddleware } from './books/books.middleware';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { OrmModule } from './orm/orm.module';
 
 @Module({
   imports: [
@@ -17,6 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     ShoppingcartModule,
     HomeModule,
     UsersModule,
+    OrmModule,
     ConfigModule.forRoot({
       envFilePath: process.env.ARCHIVO_ENV ? `.env.${process.env.ARCHIVO_ENV}` : '.env',
       isGlobal: true,
@@ -33,14 +34,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         };
       },
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'mysql',
-      port: 3306,
-      username: 'root',
-      password: 'grupo-6',
-      database: 'paginas_selectas'
-    })
+    
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,5 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
-import { GeneroLibro } from "./genero_libro";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from "typeorm";
+import { Libro } from "./libro";
 
 @Entity({name: "genero"})
 export class Genero {
@@ -9,6 +9,16 @@ export class Genero {
     @Column()
     descripcion: string;
 
-    @OneToMany(() => GeneroLibro, (generoLibro) => generoLibro.genero)
-    generoLibro: GeneroLibro[];
+    @ManyToMany(() => Libro)
+    @JoinTable({ name: 'genero_libro',
+        joinColumn: {
+            name: 'id_genero',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'id_libro',
+            referencedColumnName: 'id',
+        },
+    })
+    libros: Libro[];
 }

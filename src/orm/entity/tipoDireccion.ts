@@ -1,5 +1,5 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
-import { DireccionTipoDireccion } from "./direccion_tipoDireccion";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from "typeorm";
+import { Direccion } from "./direccion";
 
 @Entity({name: "tipoDireccion"})
 export class TipoDireccion {
@@ -9,6 +9,16 @@ export class TipoDireccion {
     @Column()
     descripcion: string;
 
-    @OneToMany(() => DireccionTipoDireccion, (direccionTipoDireccion) => direccionTipoDireccion.tipoDireccion)
-    direccionTipoDireccion: DireccionTipoDireccion[];
+    @ManyToMany(() => Direccion)
+    @JoinTable({ name: 'direccion_tipoDireccion',
+        joinColumn: {
+            name: 'id_tipoDireccion',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'id_direccion',
+            referencedColumnName: 'id',
+        },
+    })
+    direcciones: Direccion[];
 }

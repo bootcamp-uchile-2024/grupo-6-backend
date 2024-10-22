@@ -1,8 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { Comuna } from "./comuna";
 import { Usuario } from "./usuario";
-import { DireccionTipoDireccion } from "./direccion_tipoDireccion";
 import { HistorialCompra } from "./historial_compra";
+import { TipoDireccion } from "./tipoDireccion";
 
 @Entity({name: "direccion"})
 export class Direccion {
@@ -38,8 +38,8 @@ export class Direccion {
     @JoinColumn({ name: "id_usuario" })
     usuario: Usuario;
 
-    @OneToMany(() => DireccionTipoDireccion, (direccionTipoDireccion) => direccionTipoDireccion.direccion)
-    direccionTipoDireccion: DireccionTipoDireccion[];
+    @ManyToMany(() => TipoDireccion, (tipoDireccion) => tipoDireccion.direcciones)
+    tipodirecciones: TipoDireccion[];
 
     @OneToMany(() => HistorialCompra, (historialCompra) => historialCompra.direccion)
     historialCompra: HistorialCompra[];

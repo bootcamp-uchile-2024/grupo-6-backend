@@ -1,5 +1,5 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
-import { AutorLibro } from "./autor_libro";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from "typeorm";
+import { Libro } from "./libro";
 
 @Entity({name: "autor"})
 export class Autor {
@@ -9,6 +9,16 @@ export class Autor {
     @Column()
     nombre: string;
 
-    @OneToMany(() => AutorLibro, (autorLibro) => autorLibro.autor)
-    autorLibro: AutorLibro[];
+    @ManyToMany(() => Libro)
+    @JoinTable({ name: 'autor_libro',
+        joinColumn: {
+            name: 'id_autor',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'id_libro',
+            referencedColumnName: 'id',
+        },
+    })
+    libros: Libro[];
 }

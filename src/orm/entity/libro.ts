@@ -1,11 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { Editorial } from "./editorial";
 import { IdiomaLibro } from "./idioma_libro";
 import { Encuadernacion } from "./encuadernacion";
-import { GeneroLibro } from "./genero_libro";
-import { AutorLibro } from "./autor_libro";
 import { Resena } from "./resena";
 import { LibroCompra } from "./libro_compra";
+import { Genero } from "./genero";
+import { Autor } from "./autor";
 
 @Entity({name: "libro"})
 export class Libro {
@@ -69,11 +69,11 @@ export class Libro {
     @JoinColumn({ name: "id_encuadernacion" })
     encuadernacion: Encuadernacion;
 
-    @OneToMany(() => GeneroLibro, (generoLibro) => generoLibro.libro)
-    generoLibro: GeneroLibro[];
+    @ManyToMany(() => Genero, (genero) => genero.libros)
+    generos: Genero[];
 
-    @OneToMany(() => AutorLibro, (autorLibro) => autorLibro.libro)
-    autorLibro: AutorLibro[];
+    @ManyToMany(() => Autor, (autor) => autor.libros)
+    autores: Autor[];
 
     @OneToMany(() => Resena, (resena) => resena.libro)
     resena: Resena[];

@@ -1,5 +1,5 @@
 import { Encuadernacion } from '../entities/encuadernacion';
-import { Genero } from '../entities/genero';
+import { GeneroEnum } from '../entities/generoEnum';
 import { Idioma } from '../entities/idioma';
 import { Review } from '../entities/review';
 export declare class CreateProductDto {
@@ -9,7 +9,7 @@ export declare class CreateProductDto {
     stockLibro: number;
     precio: number;
     rating: number;
-    genero: Genero[];
+    genero: GeneroEnum[];
     editorial: string;
     idioma: Idioma;
     encuadernacion: Encuadernacion;

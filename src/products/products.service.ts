@@ -2,21 +2,24 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
-import { Genero } from './entities/genero';
+import { GeneroEnum } from './entities/generoEnum';
 import { Idioma } from './entities/idioma';
 import { Encuadernacion } from './entities/encuadernacion';
 import { ErrorStatus } from 'src/products/errorStatus';
 import { ProductDTO } from './dto/product.dto';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { Any, DataSource } from 'typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { Any, Between, DataSource, In, LessThanOrEqual, Like, MoreThanOrEqual, Repository } from 'typeorm';
 import { proConexDTO } from './dto/proConexDTO';
+import { Libro } from 'src/orm/entity/libro';
+import { LibroMapper } from './mappers/libro.mapper';
 
 @Injectable()
 export class ProductsService {
   // Libros de prueba
 
   constructor(
-    @InjectDataSource() private readonly dataSource: DataSource
+    @InjectDataSource() private readonly dataSource: DataSource,
+    @InjectRepository(Libro) private readonly productRepository: Repository<Libro>
     ) {}
 
   
@@ -29,7 +32,7 @@ export class ProductsService {
       ['Miguel de Cervantes'],
       50,
       19000,
-      [Genero.NOVELA, Genero.CLASICO],
+      [GeneroEnum.NOVELA, GeneroEnum.CLASICO],
       'Lengua Viva',
       Idioma.ESPANOL,
       Encuadernacion.TAPA_DURA,
@@ -47,7 +50,7 @@ export class ProductsService {
       ['Gabriel García Márquez'],
       70,
       20500,
-      [Genero.NOVELA, Genero.CLASICO],
+      [GeneroEnum.NOVELA, GeneroEnum.CLASICO],
       'Literatura Random House',
       Idioma.ESPANOL,
       Encuadernacion.TAPA_DURA,
@@ -65,7 +68,7 @@ export class ProductsService {
       ['George Orwell'],
       20,
       12000,
-      [Genero.DISTOPIA, Genero.CIENCIA_FICCION],
+      [GeneroEnum.DISTOPIA, GeneroEnum.CIENCIA_FICCION],
       'Alma classic',
       Idioma.INGLES,
       Encuadernacion.TAPA_BLANDA,
@@ -83,7 +86,7 @@ export class ProductsService {
       ['Jane Austen'],
       30,
       30000,
-      [Genero.ROMANCE, Genero.CLASICO],
+      [GeneroEnum.ROMANCE, GeneroEnum.CLASICO],
       'Alba Editorial',
       Idioma.ESPANOL,
       Encuadernacion.TAPA_DURA,
@@ -101,7 +104,7 @@ export class ProductsService {
       ['R. R. Tolkien'],
       100,
       17200,
-      [Genero.FANTASIA, Genero.AVENTURA],
+      [GeneroEnum.FANTASIA, GeneroEnum.AVENTURA],
       'Minotauro',
       Idioma.ESPANOL,
       Encuadernacion.TAPA_BLANDA,
@@ -119,7 +122,7 @@ export class ProductsService {
       ['Neil Gaiman', 'Collen Duran'],
       25,
       17500,
-      [Genero.FANTASIA, Genero.TERROR],
+      [GeneroEnum.FANTASIA, GeneroEnum.TERROR],
       'Planeta Comic',
       Idioma.ESPANOL,
       Encuadernacion.TAPA_DURA,
@@ -137,7 +140,7 @@ export class ProductsService {
       ['Neil Gaiman'],
       12,
       21500,
-      [Genero.FANTASIA, Genero.HISTORIA],
+      [GeneroEnum.FANTASIA, GeneroEnum.HISTORIA],
       'Destino',
       Idioma.ESPANOL,
       Encuadernacion.TAPA_BLANDA,
@@ -155,7 +158,7 @@ export class ProductsService {
       ['Yuval Noah Harari'],
       120,
       14000,
-      [Genero.HISTORIA],
+      [GeneroEnum.HISTORIA],
       'Debate',
       Idioma.ESPANOL,
       Encuadernacion.TAPA_BLANDA,
@@ -173,7 +176,7 @@ export class ProductsService {
       ['Antoine De Saint-Exupéry'],
       96,
       17050,
-      [Genero.INFANTIL, Genero.FILOSOFIA_RELIGION],
+      [GeneroEnum.INFANTIL, GeneroEnum.FILOSOFIA],
       'Mariner Books',
       Idioma.FRANCES,
       Encuadernacion.TAPA_BLANDA,
@@ -191,7 +194,7 @@ export class ProductsService {
       ['Tara Westover'],
       8,
       22300,
-      [Genero.BIOGRAFIAS],
+      [GeneroEnum.BIOGRAFIAS],
       'Lumen',
       Idioma.ESPANOL,
       Encuadernacion.TAPA_BLANDA,
@@ -209,7 +212,7 @@ export class ProductsService {
       ['Gabriela Mistral'],
       25,
       11900,
-      [Genero.POESIA],
+      [GeneroEnum.POESIA],
       'Lumen',
       Idioma.ESPANOL,
       Encuadernacion.TAPA_BLANDA,
@@ -227,7 +230,7 @@ export class ProductsService {
       ['Stephen Hawking'],
       23,
       12550,
-      [Genero.CIENCIA_MATEMATICA],
+      [GeneroEnum.CIENCIA_MATEMATICA],
       'Crítica',
       Idioma.ESPANOL,
       Encuadernacion.TAPA_BLANDA,
@@ -245,7 +248,7 @@ export class ProductsService {
       ['Marco Aurelio'],
       30,
       11500,
-      [Genero.FILOSOFIA_RELIGION, Genero.CLASICO],
+      [GeneroEnum.FILOSOFIA, GeneroEnum.CLASICO],
       'Taurus',
       Idioma.ESPANOL,
       Encuadernacion.TAPA_BLANDA,
@@ -300,11 +303,22 @@ export class ProductsService {
     return this.proConex;
   }
 
-  findOne(isbn: string): ProductDTO {
-    const producto: Product = this.products.find(
-      (element: Product) => element.isbn == isbn,
-    );
-    return new ProductDTO(producto);
+
+  async findOne(isbn: string): Promise<ProductDTO> {
+    const producto: Libro = await this.productRepository.findOne({
+      where: {
+        isbn: isbn
+      },
+      relations: {
+        editorial: true,
+        idiomaLibro: true,
+        encuadernacion: true,
+        generos: true,
+        autores: true
+      }
+    })
+
+    return LibroMapper.entityToDto(producto);
   }
 
   applyFilterProducts(
@@ -431,7 +445,8 @@ export class ProductsService {
     return filteredProducts.slice(offset, offset + limit);
   }
 
-  getFilteredProducts(filters: {
+  // HU Catálogo de productos
+  async getFilteredProducts(filters: {
     priceMin?: number;
     priceMax?: number;
     limit?: number;
@@ -447,31 +462,108 @@ export class ProductsService {
     encuadernacion?: Encuadernacion;
     agnoPublicacionMin?: number;
     agnoPublicacionMax?: number;
-  }): ProductDTO[] {
-    console.log(this.products.map(p=>p.isbn))
+  }): Promise<ProductDTO[]> {
+
+    // Condiciones aplicados al "where"
+    let condiciones: { [key: string]: any } = {};
     
-    let filteredProducts = this.products;
+    // Filtro nombre
+    if (filters.nombre) {
+      condiciones.nombre = Like(`%${filters.nombre}%`);
+    }
+    // Filtro rating
+    if (filters.rating !== undefined) {
+      condiciones.rating = MoreThanOrEqual(filters.rating);
+    }
+    // Filtro precio mínimo y máximo
+    const priceMin = filters.priceMin ? filters.priceMin : -1e6;
+    const priceMax = filters.priceMax ? filters.priceMax : 1e6;
 
-    // Aplicar filtros
-    filteredProducts = this.applyFilterProducts(filteredProducts, filters);
+    if (filters.priceMin !== undefined || filters.priceMax !== undefined) {
+      condiciones.precio = Between(priceMin, priceMax);
+    }
+    // Filtro isbn
+    if (filters.isbn) {
+      condiciones.isbn = filters.isbn;
+    }
+    // Filtro año publicación mínimo y máximo
+    const agnoMin = filters.agnoPublicacionMin ? filters.agnoPublicacionMin : -1e6;
+    const agnoMax = filters.agnoPublicacionMax ? filters.agnoPublicacionMax : 1e6;
 
+    if (filters.agnoPublicacionMin !== undefined || filters.agnoPublicacionMax !== undefined) {
+      condiciones.agno_publicacion = Between(
+        agnoMin, 
+        agnoMax
+      )};
+
+    // Filtro autor
+    if (filters.autor) {
+      condiciones.autores = {
+        nombre: Like(`%${filters.autor}%`)
+      };
+    } 
+    // Filtro editorial
+    if (filters.editorial) {
+      condiciones.editorial = {
+        descripcion: Like(`%${filters.editorial}%`)
+      }
+    }
+    // Filtro idioma
+    if (filters.idioma) {
+      condiciones.idiomaLibro = {
+        descripcion: filters.idioma
+      }
+    }
+    // Filtro encuadernación
+    if (filters.encuadernacion) {
+      condiciones.encuadernacion = {
+        descripcion: filters.encuadernacion
+      }
+    }
+    
+    // // Filtro genero
+    if (filters.genero !== undefined) {
+      condiciones.generos = {
+        descripcion: filters.genero
+      }
+    }
+    
     // Ordenar
-    filteredProducts = this.sortProducts(filteredProducts, filters);
+    let orderBy: { [key: string]: any } = {}
 
+    if (filters.sortBy){
+      orderBy = {
+        [filters.sortBy]: 'ASC'
+      }
+    }
+      
     // Paginación
-    filteredProducts = this.paginationProducts(filteredProducts, filters);
-    console.log('Filtrado: ',filteredProducts.map(p=>p.isbn))
-
+    const results : [ Libro[], number ] = await this.productRepository.findAndCount({
+      relations: {
+        editorial: true,
+        idiomaLibro: true,
+        encuadernacion: true,
+        generos: true,
+        autores: true
+      },
+      where: {...condiciones,},
+      order: orderBy,
+      take: filters.limit,
+      skip: filters.offset
+    })
+    const result = results[0]
+    
     // Gestión de errores
-    if (!filteredProducts) {
+    if (!result) {
       throw new ErrorStatus(
         'No existen productos que cumplan la solicitud',
         404,
       );
     }
-    
-    return filteredProducts.map( product => new ProductDTO(product));
+    const productsDto: ProductDTO[] = LibroMapper.entityListToDtoList(result)
+    return productsDto;
   }
+
 
   getSearchedProductos(
     query: string,
@@ -523,6 +615,6 @@ export class ProductsService {
 
   // Obtener generos de los libros
   getGenres(): string[] {
-    return Object.values(Genero);
+    return Object.values(GeneroEnum);
   }
 }

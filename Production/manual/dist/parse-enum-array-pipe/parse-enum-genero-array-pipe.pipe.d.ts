@@ -1,7 +1,7 @@
 import { PipeTransform } from '@nestjs/common';
-import { Genero } from 'src/products/entities/genero';
+import { GeneroEnum } from 'src/products/entities/generoEnum';
 export declare class ParseEnumGeneroArrayPipe implements PipeTransform {
-    private readonly Genero;
-    constructor(Genero: object);
-    transform(value: Genero[]): Genero[];
+    private readonly GeneroEnum;
+    constructor(GeneroEnum: object);
+    transform(value: GeneroEnum[]): GeneroEnum[];
 }

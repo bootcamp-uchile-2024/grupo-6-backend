@@ -1,5 +1,5 @@
 import { Encuadernacion } from './encuadernacion';
-import { Genero } from './genero';
+import { GeneroEnum } from './generoEnum';
 import { Idioma } from './idioma';
 import { Review } from './review';
 export declare class Product {
@@ -9,7 +9,7 @@ export declare class Product {
     stockLibro: number;
     precio: number;
     rating: number;
-    genero: Genero[];
+    genero: GeneroEnum[];
     editorial: string;
     idioma: Idioma;
     encuadernacion: Encuadernacion;
@@ -21,5 +21,5 @@ export declare class Product {
     dimensiones: string;
     ean: string;
     resumen: string;
-    constructor(isbn: string, nombre: string, autor: string[], stockLibro: number, precio: number, genero: Genero[], editorial: string, idioma: Idioma, encuadernacion: Encuadernacion, agnoPublicacion: Date, numeroPaginas: number, descuento: number, caratula: string, dimensiones: string, ean: string, resumen: string);
+    constructor(isbn: string, nombre: string, autor: string[], stockLibro: number, precio: number, genero: GeneroEnum[], editorial: string, idioma: Idioma, encuadernacion: Encuadernacion, agnoPublicacion: Date, numeroPaginas: number, descuento: number, caratula: string, dimensiones: string, ean: string, resumen: string);
 }

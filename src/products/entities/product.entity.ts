@@ -1,6 +1,6 @@
 
 import { Encuadernacion } from './encuadernacion';
-import { Genero } from './genero';
+import { GeneroEnum } from './generoEnum';
 import { Idioma } from './idioma';
 import { Review } from './review';
 
@@ -12,7 +12,7 @@ export class Product {
   public stockLibro: number;
   public precio: number;
   public rating: number;
-  public genero: Genero[];
+  public genero: GeneroEnum[];
   public editorial: string;
   public idioma: Idioma;
   public encuadernacion: Encuadernacion;
@@ -31,7 +31,7 @@ export class Product {
     autor: string[],
     stockLibro: number,
     precio: number,
-    genero: Genero[],
+    genero: GeneroEnum[],
     editorial: string,
     idioma: Idioma,
     encuadernacion: Encuadernacion,

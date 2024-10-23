@@ -9,7 +9,7 @@ export class Autor {
     @Column()
     nombre: string;
 
-    @ManyToMany(() => Libro)
+    @ManyToMany(() => Libro, (libro) => libro.autores)
     @JoinTable({ name: 'autor_libro',
         joinColumn: {
             name: 'id_autor',

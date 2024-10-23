@@ -2,16 +2,18 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './entities/product.entity';
 import { Encuadernacion } from './entities/encuadernacion';
 import { ProductDTO } from './dto/product.dto';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { proConexDTO } from './dto/proConexDTO';
+import { Libro } from 'src/orm/entity/libro';
 export declare class ProductsService {
     private readonly dataSource;
-    constructor(dataSource: DataSource);
+    private readonly productRepository;
+    constructor(dataSource: DataSource, productRepository: Repository<Libro>);
     proConex: proConexDTO[];
     products: Product[];
     create(createProductDto: CreateProductDto): CreateProductDto;
     getConexion(): Promise<proConexDTO[]>;
-    findOne(isbn: string): ProductDTO;
+    findOne(isbn: string): Promise<ProductDTO>;
     applyFilterProducts(filteredProducts: Product[], filters: {
         priceMin?: number;
         priceMax?: number;
@@ -49,7 +51,7 @@ export declare class ProductsService {
         encuadernacion?: Encuadernacion;
         agnoPublicacionMin?: number;
         agnoPublicacionMax?: number;
-    }): ProductDTO[];
+    }): Promise<ProductDTO[]>;
     getSearchedProductos(query: string, filters: {
         priceMin?: number;
         priceMax?: number;

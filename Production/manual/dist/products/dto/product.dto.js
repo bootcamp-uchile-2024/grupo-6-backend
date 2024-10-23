@@ -13,7 +13,7 @@ exports.ProductDTO = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
-const genero_1 = require("../entities/genero");
+const generoEnum_1 = require("../entities/generoEnum");
 const idioma_1 = require("../entities/idioma");
 const review_1 = require("../entities/review");
 const encuadernacion_1 = require("../entities/encuadernacion");
@@ -103,17 +103,13 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Lista con el o los géneros del libro',
         enum: [
-            'Thriller', 'Novela histórica', 'Romance', 'Ciencia ficción',
-            'Distópia', 'Aventura', 'Fantasía', 'Contemporáneo', 'Terror',
-            'Paranormal', 'Poesía', 'Juvenil', 'Infantil', 'Novela',
-            'Clásico', 'Autoayuda', 'Salud y deporte',
-            'Técnicos y especializados', 'Biografías y autobiografías',
-            'Cocina', 'Viajes', 'Arte', 'Ciencia y matemáticas',
-            'Computación', 'Derecho y política', 'Economía y finanzas',
-            'Historia', 'Filosofía y religión', 'Educación',
+            'Suspenso', 'Histórico', 'Romance', 'Ciencia Ficción', 'Distópia', 'Aventura', 'Fantasía', 'Contemporáneo', 'Terror',
+            'Paranormal', 'Poesía', 'Juvenil', 'Infantil', 'Novela', 'Clásico', 'Policiaco', 'Drama', 'Comedia', 'Autoayuda',
+            'Salud y deporte', 'Técnicos y especializados', 'Biografía', 'Cocina', 'Viajes', 'Arte', 'Ciencia y matemáticas',
+            'Computación', 'Derecho y política', 'Economía y finanzas', 'Historia', 'Religión', 'Filosofía', 'Educativo', 'Ensayo',
         ],
         isArray: true,
-        example: [genero_1.Genero.NOVELA, genero_1.Genero.CLASICO],
+        example: [generoEnum_1.GeneroEnum.NOVELA, generoEnum_1.GeneroEnum.CLASICO],
     }),
     (0, class_validator_1.ArrayNotEmpty)(),
     __metadata("design:type", Array)

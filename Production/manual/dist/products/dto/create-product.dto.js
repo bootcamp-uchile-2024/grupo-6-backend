@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateProductDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const encuadernacion_1 = require("../entities/encuadernacion");
-const genero_1 = require("../entities/genero");
+const generoEnum_1 = require("../entities/generoEnum");
 const idioma_1 = require("../entities/idioma");
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
@@ -84,7 +84,7 @@ __decorate([
             'Historia', 'Filosofía y religión', 'Educación',
         ],
         isArray: true,
-        example: [genero_1.Genero.NOVELA, genero_1.Genero.CLASICO],
+        example: [generoEnum_1.GeneroEnum.NOVELA, generoEnum_1.GeneroEnum.CLASICO],
     }),
     (0, class_validator_1.ArrayNotEmpty)(),
     __metadata("design:type", Array)

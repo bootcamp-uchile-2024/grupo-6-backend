@@ -1,5 +1,5 @@
 import { Encuadernacion } from 'src/products/entities/encuadernacion';
-import { Genero } from 'src/products/entities/genero';
+import { GeneroEnum } from 'src/products/entities/generoEnum';
 export declare class Shoppingcart {
     isbn: string;
     item: number;
@@ -7,7 +7,7 @@ export declare class Shoppingcart {
     autor: string[];
     stockLibro: number;
     precio: number;
-    genero: Genero[];
+    genero: GeneroEnum[];
     editorial: string;
     encuadernacion: Encuadernacion;
     descuento: number;

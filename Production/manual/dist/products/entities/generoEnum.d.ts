@@ -1,8 +1,8 @@
-export declare enum Genero {
-    THRILLER = "Thriller",
-    NOVELA_HISTORICA = "Novela hist\u00F3rica",
+export declare enum GeneroEnum {
+    THRILLER = "Suspenso",
+    NOVELA_HISTORICA = "Hist\u00F3rico",
     ROMANCE = "Romance",
-    CIENCIA_FICCION = "Ciencia ficci\u00F3n",
+    CIENCIA_FICCION = "Ciencia Ficci\u00F3n",
     DISTOPIA = "Dist\u00F3pia",
     AVENTURA = "Aventura",
     FANTASIA = "Fantas\u00EDa",
@@ -14,10 +14,13 @@ export declare enum Genero {
     INFANTIL = "Infantil",
     NOVELA = "Novela",
     CLASICO = "Cl\u00E1sico",
+    POLICIACO = "Policiaco",
+    DRAMA = "Drama",
+    COMEDIA = "Comedia",
     AUTOAYUDA = "Autoayuda",
     SALUD = "Salud y deporte",
     TECNICOS = "T\u00E9cnicos y especializados",
-    BIOGRAFIAS = "Biograf\u00EDas y autobiograf\u00EDas",
+    BIOGRAFIAS = "Biograf\u00EDa",
     COCINA = "Cocina",
     VIAJES = "Viajes",
     ARTE = "Arte",
@@ -26,6 +29,9 @@ export declare enum Genero {
     DERECHO_POLITICA = "Derecho y pol\u00EDtica",
     ECONOMIA = "Econom\u00EDa y finanzas",
     HISTORIA = "Historia",
-    FILOSOFIA_RELIGION = "Filosof\u00EDa y religi\u00F3n",
-    EDUCACION = "Educaci\u00F3n"
+    RELIGION = "Religi\u00F3n",
+    FILOSOFIA = "Filosof\u00EDa",
+    EDUCACION = "Educativo",
+    ENSAYO = "Ensayo",
+    POLITICA = "Pol\u00EDtica"
 }

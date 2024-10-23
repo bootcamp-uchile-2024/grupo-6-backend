@@ -37,7 +37,7 @@ export class Libro {
     id_editorial:number;
 
     @Column()
-    agno_publicacion: number;
+    agno_publicacion: Date;
 
     @Column()
     numero_paginas: number;

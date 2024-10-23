@@ -14,15 +14,15 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductsController = void 0;
 const common_1 = require("@nestjs/common");
-const products_service_1 = require("./products.service");
-const create_product_dto_1 = require("./dto/create-product.dto");
-const genero_1 = require("./entities/genero");
-const encuadernacion_1 = require("./entities/encuadernacion");
-const idioma_1 = require("./entities/idioma");
 const swagger_1 = require("@nestjs/swagger");
 const parse_enum_genero_array_pipe_pipe_1 = require("../parse-enum-array-pipe/parse-enum-genero-array-pipe.pipe");
 const parse_enum_idioma_array_pipe_1 = require("../parse-enum-array-pipe/parse-enum-idioma-array-pipe");
+const create_product_dto_1 = require("./dto/create-product.dto");
 const product_dto_1 = require("./dto/product.dto");
+const encuadernacion_1 = require("./entities/encuadernacion");
+const generoEnum_1 = require("./entities/generoEnum");
+const idioma_1 = require("./entities/idioma");
+const products_service_1 = require("./products.service");
 let ProductsController = class ProductsController {
     constructor(productsService) {
         this.productsService = productsService;
@@ -30,7 +30,7 @@ let ProductsController = class ProductsController {
     create(createProductDto) {
         return this.productsService.create(createProductDto);
     }
-    getFilteredProducts(priceMin, priceMax, limit = 10, offset = 0, sortBy, autor, nombre, rating, genero, editorial, idioma, isbn, encuadernacion, agnoPublicacionMin, agnoPublicacionMax) {
+    async getFilteredProducts(priceMin, priceMax, limit = 10, offset = 0, sortBy, autor, nombre, rating, genero, editorial, idioma, isbn, encuadernacion, agnoPublicacionMin, agnoPublicacionMax) {
         const filters = {
             priceMin,
             priceMax,
@@ -49,7 +49,7 @@ let ProductsController = class ProductsController {
             agnoPublicacionMax,
         };
         try {
-            return this.productsService.getFilteredProducts(filters);
+            return await this.productsService.getFilteredProducts(filters);
         }
         catch (error) {
             throw new common_1.HttpException('Error al obtener categorias', 400);
@@ -79,9 +79,9 @@ let ProductsController = class ProductsController {
             throw new common_1.HttpException('No se ha encontrado ningún producto con estas características', 404);
         }
     }
-    findOne(isbn) {
+    async findOne(isbn) {
         try {
-            return this.productsService.findOne(isbn);
+            return await this.productsService.findOne(isbn);
         }
         catch (error) {
             throw new common_1.HttpException('Error al obtener el producto', 400);
@@ -168,7 +168,7 @@ __decorate([
         name: 'genero',
         description: 'Genero del libro. Puede filtrarse con más de uno',
         required: false,
-        enum: genero_1.Genero,
+        enum: generoEnum_1.GeneroEnum,
         isArray: true,
     }),
     (0, swagger_1.ApiQuery)({
@@ -227,7 +227,7 @@ __decorate([
     __param(5, (0, common_1.Query)('autor')),
     __param(6, (0, common_1.Query)('nombre')),
     __param(7, (0, common_1.Query)('rating', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
-    __param(8, (0, common_1.Query)('genero', new parse_enum_genero_array_pipe_pipe_1.ParseEnumGeneroArrayPipe(genero_1.Genero))),
+    __param(8, (0, common_1.Query)('genero', new parse_enum_genero_array_pipe_pipe_1.ParseEnumGeneroArrayPipe(generoEnum_1.GeneroEnum))),
     __param(9, (0, common_1.Query)('editorial', new common_1.ParseArrayPipe({ items: String, separator: ',', optional: true, errorHttpStatusCode: 400, }))),
     __param(10, (0, common_1.Query)('idioma', new parse_enum_idioma_array_pipe_1.ParseEnumIdiomaArrayPipe(idioma_1.Idioma))),
     __param(11, (0, common_1.Query)('isbn')),
@@ -236,7 +236,7 @@ __decorate([
     __param(14, (0, common_1.Query)('agnoPublicacionMax', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number, Object, Object, String, String, String, Number, Object, Object, Object, String, String, Number, Number]),
-    __metadata("design:returntype", Array)
+    __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "getFilteredProducts", null);
 __decorate([
     (0, swagger_1.ApiTags)('Products'),
@@ -285,7 +285,7 @@ __decorate([
         name: 'genero',
         description: 'Genero del libro. Puede filtrarse con más de uno',
         required: false,
-        enum: genero_1.Genero,
+        enum: generoEnum_1.GeneroEnum,
         isArray: true,
     }),
     (0, swagger_1.ApiQuery)({
@@ -338,7 +338,7 @@ __decorate([
     __param(5, (0, common_1.Query)('sortBy')),
     __param(6, (0, common_1.Query)('autor')),
     __param(7, (0, common_1.Query)('rating', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
-    __param(8, (0, common_1.Query)('genero', new parse_enum_genero_array_pipe_pipe_1.ParseEnumGeneroArrayPipe(genero_1.Genero))),
+    __param(8, (0, common_1.Query)('genero', new parse_enum_genero_array_pipe_pipe_1.ParseEnumGeneroArrayPipe(generoEnum_1.GeneroEnum))),
     __param(9, (0, common_1.Query)('editorial', new common_1.ParseArrayPipe({ items: String, separator: ',', optional: true, errorHttpStatusCode: 400, }))),
     __param(10, (0, common_1.Query)('idioma', new parse_enum_idioma_array_pipe_1.ParseEnumIdiomaArrayPipe(idioma_1.Idioma))),
     __param(11, (0, common_1.Query)('encuadernacion', new common_1.ParseEnumPipe(encuadernacion_1.Encuadernacion, { optional: true }))),
@@ -363,7 +363,7 @@ __decorate([
     __param(0, (0, common_1.Param)('isbn')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", product_dto_1.ProductDTO)
+    __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "findOne", null);
 __decorate([
     (0, swagger_1.ApiTags)('Products'),

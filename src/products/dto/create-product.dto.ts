@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Encuadernacion } from '../entities/encuadernacion';
-import { Genero } from '../entities/genero';
+import { GeneroEnum } from '../entities/generoEnum';
 import { Idioma } from '../entities/idioma';
 import { Review } from '../entities/review';
 import { ArrayNotEmpty, Contains, IsArray, IsDate, IsEnum, IsInt, IsString, Max, MaxDate, Min, ValidateNested } from 'class-validator';
@@ -68,10 +68,10 @@ export class CreateProductDto {
       'Historia', 'Filosofía y religión', 'Educación',
     ],
     isArray: true,
-    example: [Genero.NOVELA, Genero.CLASICO],
+    example: [GeneroEnum.NOVELA, GeneroEnum.CLASICO],
   })
   @ArrayNotEmpty()
-  public genero: Genero[];
+  public genero: GeneroEnum[];
 
   @ApiProperty({
     description: 'Nombre de la editorial del libro',

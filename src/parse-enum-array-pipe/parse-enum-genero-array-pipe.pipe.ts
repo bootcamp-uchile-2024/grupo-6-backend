@@ -1,11 +1,11 @@
-import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
-import { Genero } from 'src/products/entities/genero';
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+import { GeneroEnum } from 'src/products/entities/generoEnum';
 
 @Injectable()
 export class ParseEnumGeneroArrayPipe implements PipeTransform {
-  constructor(private readonly Genero: object) {}
+  constructor(private readonly GeneroEnum: object) {}
 
-  transform(value: Genero[]) {
+  transform(value: GeneroEnum[]) {
     if (value !== undefined) {
       // Se revisa que sea un array o string el valor ingresado
       if (!Array.isArray(value) && typeof value != 'string') {
@@ -14,7 +14,7 @@ export class ParseEnumGeneroArrayPipe implements PipeTransform {
 
       // En caso de que es un string se convierte a un array
       const generos = Array.isArray(value) ? value : [value];
-      const generoValues = Object.values(Genero);
+      const generoValues = Object.values(GeneroEnum);
 
       return generos.map((item) => {
         const transformedItem = generoValues.find(

@@ -1,4 +1,4 @@
-import { Genero } from '../entities/genero';
+import { GeneroEnum } from '../entities/generoEnum';
 import { Idioma } from '../entities/idioma';
 import { Review } from '../entities/review';
 import { Encuadernacion } from '../entities/encuadernacion';
@@ -10,7 +10,7 @@ export declare class ProductDTO {
     stockLibro: number;
     precio: number;
     rating: number;
-    genero: Genero[];
+    genero: GeneroEnum[];
     editorial: string;
     idioma: Idioma;
     encuadernacion: Encuadernacion;

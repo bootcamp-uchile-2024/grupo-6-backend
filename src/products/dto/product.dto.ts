@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ArrayNotEmpty, Contains, IsArray, IsDate, IsEnum, IsInt, IsString, Max, MaxDate, 
     Min, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Genero } from '../entities/genero';
+import { GeneroEnum } from '../entities/generoEnum';
 import { Idioma } from '../entities/idioma';
 import { Review } from '../entities/review';
 import { Encuadernacion } from '../entities/encuadernacion';
@@ -66,20 +66,16 @@ export class ProductDTO {
   @ApiProperty({
     description: 'Lista con el o los géneros del libro',
     enum: [
-      'Thriller', 'Novela histórica', 'Romance', 'Ciencia ficción',
-      'Distópia', 'Aventura', 'Fantasía', 'Contemporáneo', 'Terror',
-      'Paranormal', 'Poesía', 'Juvenil', 'Infantil', 'Novela',
-      'Clásico', 'Autoayuda', 'Salud y deporte',
-      'Técnicos y especializados', 'Biografías y autobiografías',
-      'Cocina', 'Viajes', 'Arte', 'Ciencia y matemáticas',
-      'Computación', 'Derecho y política', 'Economía y finanzas',
-      'Historia', 'Filosofía y religión', 'Educación',
+      'Suspenso', 'Histórico', 'Romance', 'Ciencia Ficción', 'Distópia', 'Aventura', 'Fantasía', 'Contemporáneo', 'Terror', 
+      'Paranormal', 'Poesía', 'Juvenil', 'Infantil', 'Novela', 'Clásico', 'Policiaco', 'Drama', 'Comedia',  'Autoayuda',
+      'Salud y deporte', 'Técnicos y especializados', 'Biografía', 'Cocina', 'Viajes', 'Arte', 'Ciencia y matemáticas', 
+      'Computación', 'Derecho y política', 'Economía y finanzas', 'Historia', 'Religión', 'Filosofía', 'Educativo', 'Ensayo',   
     ],
     isArray: true,
-    example: [Genero.NOVELA, Genero.CLASICO],
+    example: [GeneroEnum.NOVELA, GeneroEnum.CLASICO],
   })
   @ArrayNotEmpty()
-  public genero: Genero[];
+  public genero: GeneroEnum[];
 
   @ApiProperty({
     description: 'Nombre de la editorial del libro',

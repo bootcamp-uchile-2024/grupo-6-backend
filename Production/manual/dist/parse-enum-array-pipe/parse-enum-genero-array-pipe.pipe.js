@@ -11,10 +11,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParseEnumGeneroArrayPipe = void 0;
 const common_1 = require("@nestjs/common");
-const genero_1 = require("../products/entities/genero");
+const generoEnum_1 = require("../products/entities/generoEnum");
 let ParseEnumGeneroArrayPipe = class ParseEnumGeneroArrayPipe {
-    constructor(Genero) {
-        this.Genero = Genero;
+    constructor(GeneroEnum) {
+        this.GeneroEnum = GeneroEnum;
     }
     transform(value) {
         if (value !== undefined) {
@@ -22,7 +22,7 @@ let ParseEnumGeneroArrayPipe = class ParseEnumGeneroArrayPipe {
                 throw new common_1.BadRequestException('Se espera un array de strings');
             }
             const generos = Array.isArray(value) ? value : [value];
-            const generoValues = Object.values(genero_1.Genero);
+            const generoValues = Object.values(generoEnum_1.GeneroEnum);
             return generos.map((item) => {
                 const transformedItem = generoValues.find((enumVal) => enumVal === item);
                 if (!transformedItem) {

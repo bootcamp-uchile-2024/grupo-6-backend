@@ -1,9 +1,10 @@
-export enum Genero {
+export enum GeneroEnum {
+
   // Libros de ficción
-  THRILLER = 'Thriller',
-  NOVELA_HISTORICA = 'Novela histórica',
+  THRILLER = 'Suspenso',
+  NOVELA_HISTORICA = 'Histórico',
   ROMANCE = 'Romance',
-  CIENCIA_FICCION = 'Ciencia ficción',
+  CIENCIA_FICCION = 'Ciencia Ficción',
   DISTOPIA = 'Distópia',
   AVENTURA = 'Aventura',
   FANTASIA = 'Fantasía',
@@ -15,12 +16,15 @@ export enum Genero {
   INFANTIL = 'Infantil',
   NOVELA = 'Novela',
   CLASICO = 'Clásico',
+  POLICIACO = 'Policiaco',
+  DRAMA = 'Drama',
+  COMEDIA = 'Comedia',
 
   // Libros de no-ficción
   AUTOAYUDA = 'Autoayuda',
   SALUD = 'Salud y deporte',
   TECNICOS = 'Técnicos y especializados',
-  BIOGRAFIAS = 'Biografías y autobiografías',
+  BIOGRAFIAS = 'Biografía',
   COCINA = 'Cocina',
   VIAJES = 'Viajes',
   ARTE = 'Arte',
@@ -29,6 +33,9 @@ export enum Genero {
   DERECHO_POLITICA = 'Derecho y política',
   ECONOMIA = 'Economía y finanzas',
   HISTORIA = 'Historia',
-  FILOSOFIA_RELIGION = 'Filosofía y religión',
-  EDUCACION = 'Educación',
+  RELIGION = 'Religión',
+  FILOSOFIA = 'Filosofía',
+  EDUCACION = 'Educativo',
+  ENSAYO = 'Ensayo',
+  POLITICA = 'Política',
 }

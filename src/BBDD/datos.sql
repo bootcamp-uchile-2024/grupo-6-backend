@@ -98,27 +98,27 @@ INSERT INTO tipoDireccion (descripcion) VALUES
 ('Facturacion');
 
 -- 6. Insertar en la tabla `direccion`
-INSERT INTO direccion (id_usuario, id_tipo_direccion, calle, numero_calle, numero_departamento, id_comuna, informacion_adicional) VALUES 
-(1, 1, 'Calle Falsa', '123', '12B', 1, 'Cerca del parque'),
-(2, 2, 'Avenida Principal', '456', NULL, 2, NULL),
-(3, 3, 'Los Robles', '789', '5A', 3, 'Al lado del colegio'),
-(4, 4, 'Paseo Ahumada', '101', NULL, 4, NULL),
-(5, 5, 'Callejón Oscuro', '202', '2C', 5, 'Entre las montañas'),
-(6, 6, 'Av. Las Condes', '300', '8F', 6, NULL),
-(7, 7, 'El Bosque', '400', '1A', 7, 'A una cuadra del supermercado'),
-(8, 8, 'Avenida Los Leones', '600', NULL, 8, NULL),
-(9, 9, 'Av. Apoquindo', '700', NULL, 9, 'Junto al metro'),
-(10, 10, 'Alameda', '800', '7C', 10, 'Frente al mall'),
-(11, 11, 'El Volcán', '900', '2B', 11, NULL),
-(12, 12, 'Las Torres', '1000', NULL, 12, NULL),
-(13, 13, 'Paseo Peatonal', '1100', '6A', 13, 'Frente a la plaza'),
-(14, 14, 'Camino del Inca', '1200', '5B', 14, NULL),
-(15, 15, 'Los Aromos', '1300', NULL, 15, NULL),
-(16, 16, 'Río Baker', '1400', '1C', 16, NULL),
-(17, 17, 'Avenida Cordillera', '1500', '4A', 17, 'Junto al río'),
-(18, 18, 'Ruta 5', '1600', NULL, 18, NULL),
-(19, 19, 'El Litoral', '1700', '3A', 19, 'Frente al mar'),
-(20, 20, 'Paseo de los Andes', '1800', NULL, 20, NULL);
+INSERT INTO direccion (id_usuario, calle, numero_calle, numero_departamento, id_comuna, informacion_adicional) VALUES 
+(1, 'Calle Falsa', '123', '12B', 1, 'Cerca del parque'),
+(2, 'Avenida Principal', '456', NULL, 2, NULL),
+(3, 'Los Robles', '789', '5A', 3, 'Al lado del colegio'),
+(4, 'Paseo Ahumada', '101', NULL, 4, NULL),
+(5, 'Callejón Oscuro', '202', '2C', 5, 'Entre las montañas'),
+(6, 'Av. Las Condes', '300', '8F', 6, NULL),
+(7, 'El Bosque', '400', '1A', 7, 'A una cuadra del supermercado'),
+(8, 'Avenida Los Leones', '600', NULL, 8, NULL),
+(9, 'Av. Apoquindo', '700', NULL, 9, 'Junto al metro'),
+(10, 'Alameda', '800', '7C', 10, 'Frente al mall'),
+(11, 'El Volcán', '900', '2B', 11, NULL),
+(12, 'Las Torres', '1000', NULL, 12, NULL),
+(13, 'Paseo Peatonal', '1100', '6A', 13, 'Frente a la plaza'),
+(14, 'Camino del Inca', '1200', '5B', 14, NULL),
+(15, 'Los Aromos', '1300', NULL, 15, NULL),
+(16, 'Río Baker', '1400', '1C', 16, NULL),
+(17, 'Avenida Cordillera', '1500', '4A', 17, 'Junto al río'),
+(18, 'Ruta 5', '1600', NULL, 18, NULL),
+(19, 'El Litoral', '1700', '3A', 19, 'Frente al mar'),
+(20, 'Paseo de los Andes', '1800', NULL, 20, NULL);
 
 -- 7. Insertar en la tabla `genero`
 INSERT INTO genero (descripcion) VALUES 

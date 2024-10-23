@@ -39,7 +39,6 @@ CREATE TABLE comuna (
 CREATE TABLE direccion (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
-    id_tipo_direccion INT NOT NULL,
     calle VARCHAR(150) NOT NULL,
     numero_calle VARCHAR(10) NOT NULL,
     numero_departamento VARCHAR(10),

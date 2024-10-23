@@ -11,7 +11,6 @@ Table usuario {
 Table direccion {
   id integer [primary key, increment]
   id_usuario integer [not null]
-  id_tipo_direccion integer [not null]
   calle varchar(150) [not null]
   numero_calle varchar(10) [not null]
   numero_departamento varchar(10)

@@ -28,4 +28,4 @@ services:
       - ./sql:/var/lib/mysql
 
     environment:
-      MYSQL_ROOT_PASSWORD: grupo-6
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}

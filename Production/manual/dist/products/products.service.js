@@ -182,6 +182,7 @@ let ProductsService = class ProductsService {
                 [filters.sortBy]: 'ASC'
             };
         }
+        console.log(filters.offset);
         const results = await this.productRepository.findAndCount({
             relations: {
                 editorial: true,
@@ -200,6 +201,7 @@ let ProductsService = class ProductsService {
             throw new errorStatus_1.ErrorStatus('No existen productos que cumplan la solicitud', 404);
         }
         const productsDto = libro_mapper_1.LibroMapper.entityListToDtoList(result);
+        console.log(productsDto);
         return productsDto;
     }
     getSearchedProductos(query, filters) {

@@ -10,13 +10,14 @@
  1. [Requisitos Previos](#requisitos-previos)
  2. [Instalación](#instalacion)
  3. [Configuración](#configuracion)
- 4. [Ejecucion ambiente Desarrollo](#ejecucion-ambiente-desarrollo)
- 5. [Ejecucion ambiente Produccion](#ejecucion-ambiente-produccion)
- 6. [Configurar Dbeaver para conectar con MYSQL](#Configurar-Dbeaver-para-conectar-con-MYSQL)
- 7. [Estructura del Proyecto](#estructura-del-proyecto)
- 8. [Documentación de la API](#documentacion-de-la-api)
- 9. [Flujo de Trabajo](#flujo-de-trabajo)
- 10. [Contacto](#contacto)
+ 4. [Configuracion del ORM](#configuracion-del-orm)
+ 5. [Ejecucion ambiente Desarrollo](#ejecucion-ambiente-desarrollo)
+ 6. [Ejecucion ambiente Produccion](#ejecucion-ambiente-produccion)
+ 7. [Configurar Dbeaver para conectar con MYSQL](#Configurar-Dbeaver-para-conectar-con-MYSQL)
+ 8. [Estructura del Proyecto](#estructura-del-proyecto)
+ 9. [Documentación de la API](#documentacion-de-la-api)
+ 10. [Flujo de Trabajo](#flujo-de-trabajo)
+ 11. [Contacto](#contacto)
 
  ## Requisitos Previos
  Antes de ejecutar el proyecto, asegúrate de tener
@@ -85,7 +86,7 @@ MYSQL_USER=root
 MYSQL_PASSWORD=grupo-6
 PORT_DB=3307
 ```
- ## Configuración del ORM
+ ## Configuracion del ORM
  Para poder conectar la API con la base de datos es necesario realizar lo siguiente:
 
  ### Instalación del ORM en nuetro proyecto NEST

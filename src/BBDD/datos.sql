@@ -98,27 +98,27 @@ INSERT INTO tipoDireccion (descripcion) VALUES
 ('Facturacion');
 
 -- 6. Insertar en la tabla `direccion`
-INSERT INTO direccion (id_usuario, id_tipo_direccion, calle, numero_calle, numero_departamento, id_comuna, informacion_adicional) VALUES 
-(1, 1, 'Calle Falsa', '123', '12B', 1, 'Cerca del parque'),
-(2, 2, 'Avenida Principal', '456', NULL, 2, NULL),
-(3, 3, 'Los Robles', '789', '5A', 3, 'Al lado del colegio'),
-(4, 4, 'Paseo Ahumada', '101', NULL, 4, NULL),
-(5, 5, 'Callejón Oscuro', '202', '2C', 5, 'Entre las montañas'),
-(6, 6, 'Av. Las Condes', '300', '8F', 6, NULL),
-(7, 7, 'El Bosque', '400', '1A', 7, 'A una cuadra del supermercado'),
-(8, 8, 'Avenida Los Leones', '600', NULL, 8, NULL),
-(9, 9, 'Av. Apoquindo', '700', NULL, 9, 'Junto al metro'),
-(10, 10, 'Alameda', '800', '7C', 10, 'Frente al mall'),
-(11, 11, 'El Volcán', '900', '2B', 11, NULL),
-(12, 12, 'Las Torres', '1000', NULL, 12, NULL),
-(13, 13, 'Paseo Peatonal', '1100', '6A', 13, 'Frente a la plaza'),
-(14, 14, 'Camino del Inca', '1200', '5B', 14, NULL),
-(15, 15, 'Los Aromos', '1300', NULL, 15, NULL),
-(16, 16, 'Río Baker', '1400', '1C', 16, NULL),
-(17, 17, 'Avenida Cordillera', '1500', '4A', 17, 'Junto al río'),
-(18, 18, 'Ruta 5', '1600', NULL, 18, NULL),
-(19, 19, 'El Litoral', '1700', '3A', 19, 'Frente al mar'),
-(20, 20, 'Paseo de los Andes', '1800', NULL, 20, NULL);
+INSERT INTO direccion (id_usuario, calle, numero_calle, numero_departamento, id_comuna, informacion_adicional) VALUES 
+(1, 'Calle Falsa', '123', '12B', 1, 'Cerca del parque'),
+(2, 'Avenida Principal', '456', NULL, 2, NULL),
+(3, 'Los Robles', '789', '5A', 3, 'Al lado del colegio'),
+(4, 'Paseo Ahumada', '101', NULL, 4, NULL),
+(5, 'Callejón Oscuro', '202', '2C', 5, 'Entre las montañas'),
+(6, 'Av. Las Condes', '300', '8F', 6, NULL),
+(7, 'El Bosque', '400', '1A', 7, 'A una cuadra del supermercado'),
+(8, 'Avenida Los Leones', '600', NULL, 8, NULL),
+(9, 'Av. Apoquindo', '700', NULL, 9, 'Junto al metro'),
+(10, 'Alameda', '800', '7C', 10, 'Frente al mall'),
+(11, 'El Volcán', '900', '2B', 11, NULL),
+(12, 'Las Torres', '1000', NULL, 12, NULL),
+(13, 'Paseo Peatonal', '1100', '6A', 13, 'Frente a la plaza'),
+(14, 'Camino del Inca', '1200', '5B', 14, NULL),
+(15, 'Los Aromos', '1300', NULL, 15, NULL),
+(16, 'Río Baker', '1400', '1C', 16, NULL),
+(17, 'Avenida Cordillera', '1500', '4A', 17, 'Junto al río'),
+(18, 'Ruta 5', '1600', NULL, 18, NULL),
+(19, 'El Litoral', '1700', '3A', 19, 'Frente al mar'),
+(20, 'Paseo de los Andes', '1800', NULL, 20, NULL);
 
 -- 7. Insertar en la tabla `genero`
 INSERT INTO genero (descripcion) VALUES 
@@ -317,3 +317,48 @@ INSERT INTO direccion_tipoDireccion (id_direccion,id_tipoDireccion) VALUES
 (18,1),
 (19,1),
 (20,1);
+
+INSERT INTO historial_compra (id_usuario, estatus_compra, fecha_compra, fecha_entrega, id_direccion_entrega) VALUES
+(1, 'Completada', '2024-10-01', '2024-10-05', 1),
+(2, 'En proceso', '2024-10-02', '2024-10-06', 2),
+(3, 'Cancelada', '2024-10-03', '2024-10-07', 3),
+(4, 'Completada', '2024-09-25', '2024-09-29', 4),
+(5, 'En espera de pago', '2024-10-04', '2024-10-08', 5),
+(6, 'Completada', '2024-09-22', '2024-09-26', 6),
+(7, 'En proceso', '2024-09-29', '2024-10-03', 7),
+(8, 'Completada', '2024-10-05', '2024-10-09', 8),
+(9, 'En proceso', '2024-10-06', '2024-10-10', 9),
+(10, 'Cancelada', '2024-09-15', '2024-09-20', 10),
+(11, 'Completada', '2024-09-12', '2024-09-17', 11),
+(12, 'En proceso', '2024-10-07', '2024-10-11', 12),
+(13, 'Completada', '2024-10-01', '2024-10-05', 13),
+(14, 'En espera de pago', '2024-10-08', '2024-10-12', 14),
+(15, 'Completada', '2024-09-10', '2024-09-14', 15),
+(16, 'En proceso', '2024-09-30', '2024-10-04', 16),
+(17, 'Completada', '2024-09-05', '2024-09-09', 17),
+(18, 'En espera de pago', '2024-09-12', '2024-09-16', 18),
+(19, 'En proceso', '2024-09-28', '2024-10-02', 19),
+(20, 'Completada', '2024-09-20', '2024-09-25', 20);
+
+
+INSERT INTO libro_compra (id_compra, id_libro, cantidad) VALUES
+(1, 1, 2),
+(2, 2, 1),
+(3, 3, 3),
+(4, 4, 1),
+(5, 5, 2),
+(6, 6, 1),
+(7, 7, 3),
+(8, 8, 1),
+(9, 9, 2),
+(10, 10, 1),
+(11, 11, 4),
+(12, 12, 1),
+(13, 13, 2),
+(14, 14, 3),
+(15, 15, 1),
+(16, 16, 2),
+(17, 17, 1),
+(18, 18, 4),
+(19, 19, 2),
+(20, 20, 3);

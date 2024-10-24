@@ -167,7 +167,7 @@ export class OrmModule {
  
 ### 1. Crear conexion con BBDD
 
-![Descripción de la imagen](/Images/dbeaver_1.png)
+![Descripción de la imagen](/Images/dbeaver_1.PNG)
 
 ### 2. Seleccionar BBDD MYSQL
 

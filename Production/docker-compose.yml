@@ -36,3 +36,4 @@ services:
       
     env_file:
       - manual/.env.production
+    

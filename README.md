@@ -64,22 +64,77 @@
  ## Configuracion
  1. Se deben completar las siguientes variables de
  entorno:
-- ENVIRONMENT: Ambiente en donde se ejecuta la app.
+- ENVIRONMENT: Ambiente en donde se ejecuta la app y la BBDD.
 - PORT: Numero del puerto.
 
  2. Completar el archivo .env en la raíz del proyecto,
  configurando las siguientes variables de entorno:
  ```bash
 ENVIROMENT=DEVELOPMENT
-PORT=4000 
+PORT=4000
+MYSQL_ROOT_PASSWORD=grupo-6
 ```
  3. En caso que se ejecute en ambiente productivo,
  se deben modificar ambas variables:
   ```bash
 ENVIROMENT=PRODUCTION
 PORT=5000
+MYSQL_ROOT_PASSWORD=grupo-6
+MYSQL_DATABASE="paginas_selectas"
+MYSQL_USER=root
+MYSQL_PASSWORD=grupo-6
+PORT_DB=3307
 ```
+ ## Configuración del ORM
+ Para poder conectar la API con la base de datos es necesario realizar lo siguiente:
 
+ ### Instalación del ORM en nuetro proyecto NEST
+```bash
+    npm install @nestjs/typeorm typeorm mysql2
+```
+Luego de ello toca configurar el ORM de forma modular, creando el modulo
+
+```bash
+    nest g module 
+```
+y luego en la sección de import desarrollar la siguiente estructura:
+
+```bash
+@Module({
+    imports: [
+        TypeOrmModule.forRoot({
+            type: 'mysql',
+            host: 'mysql',
+            port: 3306,
+            username: 'root',
+            password: 'grupo-6',
+            database: 'paginas_selectas',
+            entities: [
+                Usuario,
+                Region,
+                Ciudad,
+                Comuna,
+                Direccion,
+                TipoDireccion,
+                Genero,
+                Autor,
+                IdiomaLibro,
+                Encuadernacion,
+                Editorial,
+                Libro,
+                Resena,
+                HistorialCompra,
+                LibroCompra                
+            ]
+        }),
+        OrmModule,
+    ],
+})
+
+export class OrmModule {
+
+}
+```
 
  ## Ejecucion ambiente Desarrollo
  Para ejecutar el proyecto en modo desarrollo, usa el siguiente comando:

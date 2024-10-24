@@ -1,31 +1,22 @@
 services:
   api:
     image: "node:22-alpine3.19"
-
     command: "npm run start:dev"
-
     user: node
-
     working_dir: /home/node/nest
-
     volumes:
       - .:/home/node/nest
-
     environment:
-      - NODE_ENV=development # Define el entorno como desarrollo
+      - NODE_ENV=development
       - ARCHIVO_ENV=development
-    
     ports:
       - "3000:4000"
       
   mysql:
     image: mysql:8.0.39-debian
-
     ports:
       - "3307:3306"
-
     volumes:
       - ./sql:/var/lib/mysql
-
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}

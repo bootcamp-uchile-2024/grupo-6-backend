@@ -1,8 +1,38 @@
 services:
   api:
-    image: ncarvajalg/grupo-6-backend:v2.0.0
+    image: ncarvajalg/grupo-6-backend:v3.0.0
+
     container_name: g6_backend
+
     environment:
       - ARCHIVO_ENV=production
+      - NODE_ENV=production
+
     ports:
       - "3000:5000"
+
+    depends_on:
+      - mysql
+
+    env_file:
+      - manual/.env.production
+    
+  mysql:
+    image: mysql:8.0.39-debian
+
+    container_name: g6_backend_bd
+
+    ports:
+      - "3307:${PORT_DB}"
+
+    volumes:
+      - ./sql:/var/lib/mysql
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      
+    env_file:
+      - manual/.env.production

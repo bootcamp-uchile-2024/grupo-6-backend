@@ -12,10 +12,11 @@
  3. [Configuración](#configuracion)
  4. [Ejecucion ambiente Desarrollo](#ejecucion-ambiente-desarrollo)
  5. [Ejecucion ambiente Produccion](#ejecucion-ambiente-produccion)
- 6. [Estructura del Proyecto](#estructura-del-proyecto)
- 7. [Documentación de la API](#documentacion-de-la-api)
- 8. [Flujo de Trabajo](#flujo-de-trabajo)
- 9. [Contacto](#contacto)
+ 6. [Configurar Dbeaver para conectar con MYSQL](#Configurar-Dbeaver-para-conectar-con-MYSQL)
+ 7. [Estructura del Proyecto](#estructura-del-proyecto)
+ 8. [Documentación de la API](#documentacion-de-la-api)
+ 9. [Flujo de Trabajo](#flujo-de-trabajo)
+ 10. [Contacto](#contacto)
 
  ## Requisitos Previos
  Antes de ejecutar el proyecto, asegúrate de tener
@@ -40,6 +41,7 @@
 - **Otras Aplicaciones**: 
     - [Docker:](https://www.docker.com/products/docker-desktop/) Para desplegar aplicaciones dentro de contenedores virtuales.
     - [Docker Compose:](https://docs.docker.com/compose/install/) Para definir y gestionar aplicaciones multi-contenedor.
+    - [Dbeaver:](https://dbeaver.io/download/) Para gestionar bases de datos como MYSQL, PostgreSQL.
 
 
 
@@ -80,12 +82,7 @@ PORT=5000
 
 
  ## Ejecucion ambiente Desarrollo
- Para ejecutar el proyecto en modo desarrollo, usa los siguientes comandos:
-
- ### Realizar Pull a imagen:
- ```bash
- docker pull ncarvajalg/grupo-6-backend-dev:v1.0.0
- ```
+ Para ejecutar el proyecto en modo desarrollo, usa el siguiente comando:
 
  ### Correr contenedor:
  ```bash
@@ -102,7 +99,7 @@ PORT=5000
 
  ### Realizar Pull a imagen:
  ```bash
- docker pull ncarvajalg/grupo-6-backend:v1.0.0
+ docker pull ncarvajalg/grupo-6-backend:v3.0.0
  ```
 
  ### Correr contenedor:
@@ -110,12 +107,50 @@ PORT=5000
  docker compose up
  ```
 
+## Configurar Dbeaver para conectar con MYSQL
+ Para poder cargar las distintas tablas con sus respectivas relaciones, llaves primarias, llaves secundarias, etc, abrir el programa de Dbeaver y conectarse al puerto establecido en el docker compose:
+ 
+### 1. Crear conexion con BBDD
+
+![Descripción de la imagen](/Images/dbeaver_1.png)
+
+### 2. Seleccionar BBDD MYSQL
+
+![Descripción de la imagen](/Images/dbeaver_2.png)
+
+
+### 3. Editar conexion a la BBDD
+
+![Descripción de la imagen](/Images/dbeaver_3.png)
+
+Editar conexion con los siguientes datos que aparecen en la imagen:
+- Server Host: localhost
+- Port: 3307
+- Username: root
+- Password: grupo-6
+
+### 4. Crear las tablas del modelo de datos:
+
+El modelo conceptual y el modelo de entidad relacion aparecen en la carpeta `/modelo_de_datos`.
+- En base a estos modelos se crean dos scripts escritos en SQL que permiten crear las tablas e insertar datos para poder testear.
+    - Estos scripts se encuentran en la carpeta `/src/BBDD`.
+    - El archivo `estructura.sql` contiene como crear las tablas, y el archivo `datos.sql` contiene como insertar los datos de ejemplo.
+    - Correr los scripts en ese mismo orden, apuntando a la misma conexion establecida anteriormente.
 
 ## Estructura del Proyecto
  ```bash
+ ├───modelo_de_datos/ # Carpeta que contiene el modelo conceptual y modelo de entidad relacion.
+│   ├───diagrama-conceptual.png # Imagen del modelo conceptual.
+│   ├───diagrama-conceptual.txt # Codigo para crear el modelo conceptual.
+│   ├───diagrama-mer.png # Imagen del modelo entidad-relacion.
+│   └───diagrama-mer.txt # Codigo para crear el modelo entidad-relacion.
+
  src/
-├───app.module.ts 
-├───main.ts 
+├───BBDD/ # Contiene los scripts para crear las tablas contenidas en el modelo de datos.
+│   ├───estructura.sql # Script para crear todas las tablas y sus llaves primarias, foraneas, etc.
+│   └───datos.sql # Script para insertar datos de ejemplo en las tablas.
+├───app.module.ts
+├───main.ts
 ├───books/ # books contiene Componentes de Nestjs (Interceptors, middleware y filtros de excepcion)
 │   ├───books.filter.ts # Permite gestionar excepciones y errores lanzado durante el procesamiento de solicitudes. 
 │   ├───books.interceptor.ts # Permite transformar las respuestas y gestionar excepciones.

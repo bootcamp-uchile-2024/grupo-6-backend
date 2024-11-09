@@ -3,11 +3,12 @@ import { proConexDTO } from './dto/proConexDTO';
 import { ProductDTO } from './dto/product.dto';
 import { Encuadernacion } from './entities/encuadernacion';
 import { ProductsService } from './products.service';
+import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
 export declare class ProductsController {
     private readonly productsService;
     constructor(productsService: ProductsService);
     create(createProductDto: CreateProductDto): CreateProductDto;
-    getFilteredProducts(priceMin?: number, priceMax?: number, limit?: number, offset?: number, sortBy?: string, autor?: string, nombre?: string, rating?: number, genero?: string | string[], editorial?: string | string[], idioma?: string | string[], isbn?: string, encuadernacion?: Encuadernacion, agnoPublicacionMin?: number, agnoPublicacionMax?: number): Promise<ProductDTO[]>;
+    getFilteredProducts(priceMin?: number, priceMax?: number, pagina?: number, cantidad?: number, sortBy?: string, autor?: string, nombre?: string, rating?: number, genero?: string | string[], editorial?: string | string[], idioma?: string | string[], isbn?: string, encuadernacion?: Encuadernacion, agnoPublicacionMin?: number, agnoPublicacionMax?: number): Promise<GetFilteredProductsDto>;
     getSearchedProducts(query: string, priceMin?: number, priceMax?: number, limit?: number, offset?: number, sortBy?: string, autor?: string, rating?: number, genero?: string | string[], editorial?: string | string[], idioma?: string | string[], encuadernacion?: Encuadernacion, agnoPublicacionMin?: number, agnoPublicacionMax?: number): ProductDTO[];
     findOne(isbn: string): Promise<ProductDTO>;
     getGenres(): string[];

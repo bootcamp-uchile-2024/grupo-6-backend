@@ -12,6 +12,7 @@ import { Any, Between, DataSource, In, LessThanOrEqual, Like, MoreThanOrEqual, R
 import { proConexDTO } from './dto/proConexDTO';
 import { Libro } from 'src/orm/entity/libro';
 import { LibroMapper } from './mappers/libro.mapper';
+import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
 
 @Injectable()
 export class ProductsService {
@@ -449,8 +450,8 @@ export class ProductsService {
   async getFilteredProducts(filters: {
     priceMin?: number;
     priceMax?: number;
-    limit?: number;
-    offset?: number;
+    pagina?: number;
+    cantidad?: number;
     sortBy?: string;
     autor?: string;
     nombre?: string;
@@ -462,7 +463,7 @@ export class ProductsService {
     encuadernacion?: Encuadernacion;
     agnoPublicacionMin?: number;
     agnoPublicacionMax?: number;
-  }): Promise<ProductDTO[]> {
+  }): Promise<GetFilteredProductsDto> {
 
     // Condiciones aplicados al "where"
     let condiciones: { [key: string]: any } = {};
@@ -538,6 +539,9 @@ export class ProductsService {
     }
       
     // Paginación
+    const nroPaginaValido: number = (filters.pagina - 1);
+    const offset: number = filters.cantidad * nroPaginaValido;
+
     const results : [ Libro[], number ] = await this.productRepository.findAndCount({
       relations: {
         editorial: true,
@@ -548,20 +552,25 @@ export class ProductsService {
       },
       where: {...condiciones,},
       order: orderBy,
-      take: filters.limit,
-      skip: filters.offset
+      take: filters.cantidad,
+      skip: offset
     })
-    const result = results[0]
     
+    const products = results[0];
+    const totalProductos: number = results[1];
+
     // Gestión de errores
-    if (!result) {
+    if (!products) {
       throw new ErrorStatus(
         'No existen productos que cumplan la solicitud',
         404,
       );
     }
-    const productsDto: ProductDTO[] = LibroMapper.entityListToDtoList(result)
-    return productsDto;
+    const productsDto: ProductDTO[] = LibroMapper.entityListToDtoList(products)
+
+    return LibroMapper.entityToDtoPaginacion(
+      productsDto, totalProductos, filters.cantidad, filters.pagina
+    );
   }
 
 

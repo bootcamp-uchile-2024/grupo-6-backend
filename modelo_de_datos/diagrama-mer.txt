@@ -14,7 +14,9 @@ Table direccion {
   calle varchar(150) [not null]
   numero_calle varchar(10) [not null]
   numero_departamento varchar(10)
-  id_comuna integer [not null]
+  nombre_comuna varchar(50) [not null]
+  nombre_ciudad varchar(50) [not null]
+  nombre_region varchar(50) [not null]
   informacion_adicional varchar(500)
 }
 
@@ -106,29 +108,10 @@ Table editorial {
   descripcion varchar(100) [not null]
 }
 
-Table comuna {
-  id integer [primary key, increment]
-  nombre varchar(100) [not null]
-  id_ciudad integer [not null]
-}
-
-Table ciudad {
-  id integer [primary key, increment]
-  nombre varchar(100) [not null]
-  id_region integer [not null]
-}
-
-Table region {
-  id integer [primary key, increment]
-  nombre varchar(100) [not null]
-}
 
 Ref: direccion.id_usuario > usuario.id 
 Ref: direccion.id < direccion_tipoDireccion.id_direccion
 Ref: tipoDireccion.id < direccion_tipoDireccion.id_tipoDireccion
-Ref: direccion.id_comuna > comuna.id
-Ref: comuna.id_ciudad > ciudad.id
-Ref: ciudad.id_region > region.id
 Ref: libro.isbn < resena.isbn_libro
 Ref: libro.id_editorial > editorial.id
 Ref: autor_libro.id_libro > libro.isbn

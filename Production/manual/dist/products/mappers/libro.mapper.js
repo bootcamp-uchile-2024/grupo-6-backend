@@ -4,6 +4,7 @@ exports.LibroMapper = void 0;
 const product_dto_1 = require("../dto/product.dto");
 const product_entity_1 = require("../entities/product.entity");
 const generoEnum_1 = require("../entities/generoEnum");
+const get_filtered_products_dto_1 = require("../dto/get-filtered-products.dto");
 class LibroMapper {
     static entityToDto(entity) {
         const generoValues = Object.values(generoEnum_1.GeneroEnum);
@@ -18,6 +19,14 @@ class LibroMapper {
     }
     static entityListToDtoList(entityList) {
         return entityList.map((e) => LibroMapper.entityToDto(e));
+    }
+    static entityToDtoPaginacion(productos, totalProductos, cantidad, pagina) {
+        let outputDto = new get_filtered_products_dto_1.GetFilteredProductsDto();
+        outputDto.totalProductos = totalProductos;
+        outputDto.totalPaginas = Math.ceil(totalProductos / cantidad);
+        outputDto.nroPagina = pagina;
+        outputDto.productos = productos;
+        return outputDto;
     }
 }
 exports.LibroMapper = LibroMapper;

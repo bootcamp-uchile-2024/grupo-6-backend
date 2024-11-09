@@ -182,6 +182,8 @@ let ProductsService = class ProductsService {
                 [filters.sortBy]: 'ASC'
             };
         }
+        const nroPaginaValido = (filters.pagina - 1);
+        const offset = filters.cantidad * nroPaginaValido;
         const results = await this.productRepository.findAndCount({
             relations: {
                 editorial: true,
@@ -192,15 +194,16 @@ let ProductsService = class ProductsService {
             },
             where: { ...condiciones, },
             order: orderBy,
-            take: filters.limit,
-            skip: filters.offset
+            take: filters.cantidad,
+            skip: offset
         });
-        const result = results[0];
-        if (!result) {
+        const products = results[0];
+        const totalProductos = results[1];
+        if (!products) {
             throw new errorStatus_1.ErrorStatus('No existen productos que cumplan la solicitud', 404);
         }
-        const productsDto = libro_mapper_1.LibroMapper.entityListToDtoList(result);
-        return productsDto;
+        const productsDto = libro_mapper_1.LibroMapper.entityListToDtoList(products);
+        return libro_mapper_1.LibroMapper.entityToDtoPaginacion(productsDto, totalProductos, filters.cantidad, filters.pagina);
     }
     getSearchedProductos(query, filters) {
         let filteredProducts = this.products;

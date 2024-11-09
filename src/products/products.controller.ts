@@ -9,6 +9,7 @@ import { Encuadernacion } from './entities/encuadernacion';
 import { GeneroEnum } from './entities/generoEnum';
 import { Idioma } from './entities/idioma';
 import { ProductsService } from './products.service';
+import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -43,13 +44,13 @@ export class ProductsController {
     required: false,
   })
   @ApiQuery({
-    name: 'limit',
-    description: 'Número máximo de productos a entregar. Valor por defecto = 10',
+    name: 'pagina',
+    description: 'Número de la página a mostrar, empezando desde 1. Valor por defecto = 1',
     required: false,
   })
   @ApiQuery({
-    name: 'offset',
-    description: 'Desde qué posición empezar a devolver productos. Valor por defecto = 0',
+    name: 'cantidad',
+    description: 'Cantidad de productos a devolver. Valor por defecto = 12',
     required: false,
   })
   @ApiQuery({
@@ -133,8 +134,8 @@ export class ProductsController {
   async getFilteredProducts(
     @Query('priceMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMin?: number,
     @Query('priceMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMax?: number,
-    @Query('limit', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) limit = 10,
-    @Query('offset', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) offset = 0,
+    @Query('pagina', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) pagina = 1,
+    @Query('cantidad', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) cantidad = 12,
     @Query('sortBy') sortBy?: string,
     @Query('autor') autor?: string,
     @Query('nombre') nombre?: string,
@@ -146,12 +147,12 @@ export class ProductsController {
     @Query('encuadernacion', new ParseEnumPipe(Encuadernacion, { optional: true }), ) encuadernacion?: Encuadernacion,
     @Query('agnoPublicacionMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMin?: number,
     @Query( 'agnoPublicacionMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMax?: number,
-  ): Promise<ProductDTO[]> {
+  ): Promise<GetFilteredProductsDto> {
     const filters = {
       priceMin,
       priceMax,
-      limit,
-      offset,
+      pagina,
+      cantidad,
       sortBy,
       autor,
       nombre,

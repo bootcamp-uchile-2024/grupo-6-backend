@@ -9,13 +9,10 @@ import { HistorialCompra } from "./entity/historial_compra";
 import { IdiomaLibro } from "./entity/idioma_libro";
 import { Libro } from "./entity/libro";
 import { LibroCompra } from "./entity/libro_compra";
-<<<<<<< HEAD
 import { Carrito } from "./entity/carrito";
-=======
 import { Resena } from "./entity/resena";
 import { TipoDireccion } from "./entity/tipoDireccion";
 import { Usuario } from "./entity/usuario";
->>>>>>> main
 
 
 

@@ -18,6 +18,7 @@ const resena_1 = require("./resena");
 const libro_compra_1 = require("./libro_compra");
 const genero_1 = require("./genero");
 const autor_1 = require("./autor");
+const carrito_1 = require("./carrito");
 let Libro = class Libro {
 };
 exports.Libro = Libro;
@@ -116,6 +117,11 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => libro_compra_1.LibroCompra, (libroCompra) => libroCompra.libro),
     __metadata("design:type", Array)
 ], Libro.prototype, "libroCompra", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => carrito_1.Carrito),
+    (0, typeorm_1.JoinColumn)({ name: "id" }),
+    __metadata("design:type", carrito_1.Carrito)
+], Libro.prototype, "carrito", void 0);
 exports.Libro = Libro = __decorate([
     (0, typeorm_1.Entity)({ name: "libro" })
 ], Libro);

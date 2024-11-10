@@ -157,3 +157,14 @@ CREATE TABLE libro_compra (
     FOREIGN KEY (id_compra) REFERENCES historial_compra(id),
     FOREIGN KEY (id_libro) REFERENCES libro(id)
 );
+
+--adición de tabla carrito de compras
+
+CREATE TABLE carrito (
+    usuario_id INT,
+    libro_id INT,
+    cantidad INT,
+    PRIMARY KEY (usuario_id, libro_id),
+    FOREIGN KEY (usuario_id) REFERENCES usuario (id),
+    FOREIGN KEY (libro_id) REFERENCES libro(id)
+);

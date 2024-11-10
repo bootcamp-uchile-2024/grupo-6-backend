@@ -1,0 +1,28 @@
+erDiagram
+    USUARIO ||--o{ DIRECCION : tiene
+    DIRECCION ||--|{ DIRECCION_TIPODIRECCION : tiene
+    TIPODIRECCION ||--|{ DIRECCION_TIPODIRECCION : tiene
+    COMUNA ||--|{ DIRECCION : tiene
+    CIUDAD ||--|{ COMUNA : tiene
+    REGION ||--|{ CIUDAD : tiene
+
+
+    USUARIO ||--o{ HISTORIAL_COMPRA: tiene
+    LIBRO_COMPRA}|--|| LIBRO : tiene
+    HISTORIAL_COMPRA||--|{ LIBRO_COMPRA : tiene
+    USUARIO ||--o{ RESENA : realiza
+    
+    LIBRO ||--o{ RESENA : tiene
+    IDIOMA_LIBRO ||--|{ LIBRO : tiene
+    ENCUADERNACION ||--|{ LIBRO : tiene
+    EDITORIAL ||--|{ LIBRO : tiene
+    LIBRO ||--|{ GENERO_LIBRO : tiene
+    GENERO ||--|{ GENERO_LIBRO : tiene
+    LIBRO ||--|{ AUTOR_LIBRO : tiene
+    AUTOR ||--|{ AUTOR_LIBRO : tiene
+
+
+    CARRITO_COMPRAS ||--|{ LIBROS : tiene
+    HISTORIAL_COMPRA ||--|{ CARRITO_COMPRAS : tiene
+    USUARIO ||--|{ CARRITO_COMPRAS : tiene
+    CARRITO_COMPRAS |o--o|DIRECCION : tiene

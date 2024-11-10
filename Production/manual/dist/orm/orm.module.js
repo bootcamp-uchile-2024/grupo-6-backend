@@ -24,6 +24,7 @@ const libro_1 = require("./entity/libro");
 const resena_1 = require("./entity/resena");
 const historial_compra_1 = require("./entity/historial_compra");
 const libro_compra_1 = require("./entity/libro_compra");
+const carrito_1 = require("./entity/carrito");
 let OrmModule = class OrmModule {
 };
 exports.OrmModule = OrmModule;
@@ -52,7 +53,8 @@ exports.OrmModule = OrmModule = __decorate([
                     libro_1.Libro,
                     resena_1.Resena,
                     historial_compra_1.HistorialCompra,
-                    libro_compra_1.LibroCompra
+                    libro_compra_1.LibroCompra,
+                    carrito_1.Carrito
                 ]
             }),
             OrmModule,

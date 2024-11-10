@@ -15,6 +15,7 @@ import { Libro } from "./entity/libro";
 import { Resena } from "./entity/resena";
 import { HistorialCompra } from "./entity/historial_compra";
 import { LibroCompra } from "./entity/libro_compra";
+import { Carrito } from "./entity/carrito";
 
 
 
@@ -42,7 +43,8 @@ import { LibroCompra } from "./entity/libro_compra";
                 Libro,
                 Resena,
                 HistorialCompra,
-                LibroCompra                
+                LibroCompra,
+                Carrito                
             ]
         }),
         OrmModule,

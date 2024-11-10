@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const direccion_1 = require("./direccion");
 const resena_1 = require("./resena");
 const historial_compra_1 = require("./historial_compra");
+const carrito_1 = require("./carrito");
 let Usuario = class Usuario {
 };
 exports.Usuario = Usuario;
@@ -57,6 +58,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => historial_compra_1.HistorialCompra, (historialCompra) => historialCompra.usuario),
     __metadata("design:type", Array)
 ], Usuario.prototype, "historialCompra", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => carrito_1.Carrito, (carrito) => carrito.usuario),
+    __metadata("design:type", Array)
+], Usuario.prototype, "carritos", void 0);
 exports.Usuario = Usuario = __decorate([
     (0, typeorm_1.Entity)({ name: "usuario" })
 ], Usuario);

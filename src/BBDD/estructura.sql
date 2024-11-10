@@ -1,4 +1,4 @@
--- DROP DATABASE IF EXISTS Paginas_Selectas;
+DROP DATABASE IF EXISTS Paginas_Selectas;
 
 -- Crear la base de datos
 CREATE DATABASE Paginas_Selectas;
@@ -45,7 +45,7 @@ CREATE TABLE direccion (
     id_comuna INT NOT NULL,
     informacion_adicional VARCHAR(500),
     FOREIGN KEY (id_usuario) REFERENCES usuario(id),
-    FOREIGN KEY (id_comuna) REFERENCES comuna(id)
+    CONSTRAINT FK_id_comuna FOREIGN KEY (id_comuna) REFERENCES comuna(id)
 );
 
 CREATE TABLE tipoDireccion (

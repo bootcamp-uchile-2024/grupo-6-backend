@@ -30,12 +30,12 @@ let ProductsController = class ProductsController {
     create(createProductDto) {
         return this.productsService.create(createProductDto);
     }
-    async getFilteredProducts(priceMin, priceMax, limit = 10, offset = 0, sortBy, autor, nombre, rating, genero, editorial, idioma, isbn, encuadernacion, agnoPublicacionMin, agnoPublicacionMax) {
+    async getFilteredProducts(priceMin, priceMax, pagina = 1, cantidad = 12, sortBy, autor, nombre, rating, genero, editorial, idioma, isbn, encuadernacion, agnoPublicacionMin, agnoPublicacionMax) {
         const filters = {
             priceMin,
             priceMax,
-            limit,
-            offset,
+            pagina,
+            cantidad,
             sortBy,
             autor,
             nombre,
@@ -132,13 +132,13 @@ __decorate([
         required: false,
     }),
     (0, swagger_1.ApiQuery)({
-        name: 'limit',
-        description: 'Número máximo de productos a entregar. Valor por defecto = 10',
+        name: 'pagina',
+        description: 'Número de la página a mostrar, empezando desde 1. Valor por defecto = 1',
         required: false,
     }),
     (0, swagger_1.ApiQuery)({
-        name: 'offset',
-        description: 'Desde qué posición empezar a devolver productos. Valor por defecto = 0',
+        name: 'cantidad',
+        description: 'Cantidad de productos a devolver. Valor por defecto = 12',
         required: false,
     }),
     (0, swagger_1.ApiQuery)({
@@ -221,8 +221,8 @@ __decorate([
     (0, common_1.Get)('catalog'),
     __param(0, (0, common_1.Query)('priceMin', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
     __param(1, (0, common_1.Query)('priceMax', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
-    __param(2, (0, common_1.Query)('limit', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
-    __param(3, (0, common_1.Query)('offset', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
+    __param(2, (0, common_1.Query)('pagina', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
+    __param(3, (0, common_1.Query)('cantidad', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
     __param(4, (0, common_1.Query)('sortBy')),
     __param(5, (0, common_1.Query)('autor')),
     __param(6, (0, common_1.Query)('nombre')),

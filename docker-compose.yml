@@ -13,10 +13,11 @@ services:
       - "3000:4000"
       
   mysql:
-    image: mysql:8.0.39-debian
+    image: mysql:8.0.40-debian
     ports:
       - "3307:3306"
     volumes:
       - ./sql:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: grupo-6
+      # MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}

@@ -5,6 +5,7 @@ import { ProductDTO } from './dto/product.dto';
 import { DataSource, Repository } from 'typeorm';
 import { proConexDTO } from './dto/proConexDTO';
 import { Libro } from 'src/orm/entity/libro';
+import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
 export declare class ProductsService {
     private readonly dataSource;
     private readonly productRepository;
@@ -38,8 +39,8 @@ export declare class ProductsService {
     getFilteredProducts(filters: {
         priceMin?: number;
         priceMax?: number;
-        limit?: number;
-        offset?: number;
+        pagina?: number;
+        cantidad?: number;
         sortBy?: string;
         autor?: string;
         nombre?: string;
@@ -51,7 +52,7 @@ export declare class ProductsService {
         encuadernacion?: Encuadernacion;
         agnoPublicacionMin?: number;
         agnoPublicacionMax?: number;
-    }): Promise<ProductDTO[]>;
+    }): Promise<GetFilteredProductsDto>;
     getSearchedProductos(query: string, filters: {
         priceMin?: number;
         priceMax?: number;

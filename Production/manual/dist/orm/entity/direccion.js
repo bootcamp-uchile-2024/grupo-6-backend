@@ -11,10 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Direccion = void 0;
 const typeorm_1 = require("typeorm");
-const comuna_1 = require("./comuna");
-const usuario_1 = require("./usuario");
 const historial_compra_1 = require("./historial_compra");
 const tipoDireccion_1 = require("./tipoDireccion");
+const usuario_1 = require("./usuario");
 let Direccion = class Direccion {
 };
 exports.Direccion = Direccion;
@@ -44,17 +43,20 @@ __decorate([
 ], Direccion.prototype, "numero_departamento", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Direccion.prototype, "id_comuna", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Direccion.prototype, "informacion_adicional", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => comuna_1.Comuna),
-    (0, typeorm_1.JoinColumn)({ name: "id_comuna" }),
-    __metadata("design:type", comuna_1.Comuna)
-], Direccion.prototype, "comuna", void 0);
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Direccion.prototype, "nombre_comuna", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Direccion.prototype, "nombre_ciudad", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Direccion.prototype, "nombre_region", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => usuario_1.Usuario),
     (0, typeorm_1.JoinColumn)({ name: "id_usuario" }),

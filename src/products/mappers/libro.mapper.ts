@@ -4,6 +4,7 @@ import { Product } from "../entities/product.entity";
 import { GeneroEnum } from "../entities/generoEnum";
 import { Idioma } from "../entities/idioma";
 import { Encuadernacion } from "../entities/encuadernacion";
+import { GetFilteredProductsDto } from "../dto/get-filtered-products.dto";
 
 export class LibroMapper {
 
@@ -43,5 +44,22 @@ export class LibroMapper {
 
     static entityListToDtoList(entityList: Libro[]): ProductDTO[] {
         return entityList.map((e) => LibroMapper.entityToDto(e));
+    }
+
+    static entityToDtoPaginacion(
+        productos: ProductDTO[], 
+        totalProductos: number, 
+        cantidad: number,
+        pagina: number,
+    ): GetFilteredProductsDto{
+
+        let outputDto: GetFilteredProductsDto = new GetFilteredProductsDto();
+
+        outputDto.totalProductos = totalProductos;
+        outputDto.totalPaginas = Math.ceil( totalProductos /  cantidad );
+        outputDto.nroPagina = pagina;
+        outputDto.productos = productos;
+    
+        return outputDto;
     }
 }

@@ -1,11 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Resena } from 'src/orm/entity/resena';
-import { Repository } from 'typeorm';
-import { Usuario } from 'src/orm/entity/usuario';
 import { Libro } from 'src/orm/entity/libro';
+import { Resena } from 'src/orm/entity/resena';
+import { Usuario } from 'src/orm/entity/usuario';
+import { Repository } from 'typeorm';
+import { CreateReviewDto } from './dto/create-review.dto';
 import { ResenaMapper } from './mappers/review.mapper';
 
 @Injectable()
@@ -17,7 +16,8 @@ export class ReviewsService {
     @InjectRepository(Libro) private readonly libroRepository: Repository<Libro>
   ) {}
   
-  async createResena(idUsuario: number, isbnLibro: string, createReviewDto: CreateReviewDto): Promise<CreateReviewDto> {
+  async createResena(idUsuario: number, idLibro: number, createReviewDto: CreateReviewDto): Promise<CreateReviewDto> {
+    // async createResena(idUsuario: number, isbnLibro: string, createReviewDto: CreateReviewDto): Promise<CreateReviewDto> {
     const existeUsuario: boolean = await this.usuarioRepository.existsBy({
       id: idUsuario
     });
@@ -26,31 +26,43 @@ export class ReviewsService {
     }
 
     const existeLibro: boolean = await this.libroRepository.existsBy({
-      isbn: isbnLibro
+      id: idLibro
     });
     if(!existeLibro){
-      throw new BadRequestException('No existe el libro con el isbn ingresado.')
+      throw new BadRequestException('No existe el libro con el ID ingresado.')
     }
 
-    const resena: Resena = ResenaMapper.dtoToEntity(idUsuario,isbnLibro,createReviewDto);
+    // const existeLibro: boolean = await this.libroRepository.existsBy({
+    //   isbn: isbnLibro
+    // });
+    // if(!existeLibro){
+    //   throw new BadRequestException('No existe el libro con el isbn ingresado.')
+    // }
+
+    const resena: Resena = ResenaMapper.dtoToEntity(idUsuario,idLibro,createReviewDto);
+    // const resena: Resena = ResenaMapper.dtoToEntity(idUsuario,isbnLibro,createReviewDto);
     await this.resenaRepository.save(resena)
 
     return createReviewDto;
   }
 
-  findAll() {
-    return `This action returns all reviews`;
-  }
+  // async findResenasUsuario(idUsuario: number): Promise<getResenasUsuario> {
 
-  findOne(id: number) {
-    return `This action returns a #${id} review`;
-  }
+  //   const resenasUsuario: Promise<Resena[]> = await this.resenaRepository.find({
+  //     where: {
+  //       id_usuario: idUsuario
+  //     }
+  //   }) 
 
-  update(id: number, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
-  }
 
-  remove(id: number) {
-    return `This action removes a #${id} review`;
-  }
+
+  //   return `This action returns all reviews`;
+  // }
+
+  // findResenasLibro(id: number) {
+  //   return `This action returns a #${id} review`;
+  // }
+
+
+
 }

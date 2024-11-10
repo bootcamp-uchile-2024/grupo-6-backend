@@ -23,28 +23,16 @@ export class ReviewsController {
   @Post()
   async createResena(
     @Query('idUsuario', new ParseIntPipe({ errorHttpStatusCode: 400})) idUsuario: number,
-    @Query('isbnLibro') isbnLibro: string,
+    // @Query('isbnLibro') isbnLibro: string,
+    @Query('idLibro') idLibro: number,
     @Body() createReviewDto: CreateReviewDto): Promise<CreateReviewDto> {
-    return await this.reviewsService.createResena(idUsuario,isbnLibro,createReviewDto)
+    return await this.reviewsService.createResena(idUsuario,idLibro,createReviewDto)
+    // return await this.reviewsService.createResena(idUsuario,isbnLibro,createReviewDto)
   }
 
-  @Get()
-  findAll() {
-    return this.reviewsService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.reviewsService.findAll();
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reviewsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto) {
-    return this.reviewsService.update(+id, updateReviewDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reviewsService.remove(+id);
-  }
 }

@@ -1,8 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
-import { Comuna } from "./comuna";
-import { Usuario } from "./usuario";
 import { HistorialCompra } from "./historial_compra";
 import { TipoDireccion } from "./tipoDireccion";
+import { Usuario } from "./usuario";
 
 @Entity({name: "direccion"})
 export class Direccion {
@@ -25,14 +24,16 @@ export class Direccion {
     numero_departamento: string;
 
     @Column()
-    id_comuna: number;
+    informacion_adicional: string;
+    
+    @Column()
+    nombre_comuna: string;
 
     @Column()
-    informacion_adicional: string;
+    nombre_ciudad: string;
 
-    @ManyToOne(() => Comuna)
-    @JoinColumn({ name: "id_comuna" })
-    comuna: Comuna;
+    @Column()
+    nombre_region: string;
 
     @ManyToOne(() => Usuario)
     @JoinColumn({ name: "id_usuario" })

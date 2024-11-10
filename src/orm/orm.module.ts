@@ -1,20 +1,17 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Usuario } from "./entity/usuario";
-import { Region } from "./entity/region";
-import { Ciudad } from "./entity/ciudad";
-import { Comuna } from "./entity/comuna";
-import { Direccion } from "./entity/direccion";
-import { TipoDireccion } from "./entity/tipoDireccion";
-import { Genero } from "./entity/genero";
 import { Autor } from "./entity/autor";
-import { IdiomaLibro } from "./entity/idioma_libro";
-import { Encuadernacion } from "./entity/encuadernacion";
+import { Direccion } from "./entity/direccion";
 import { Editorial } from "./entity/editorial";
-import { Libro } from "./entity/libro";
-import { Resena } from "./entity/resena";
+import { Encuadernacion } from "./entity/encuadernacion";
+import { Genero } from "./entity/genero";
 import { HistorialCompra } from "./entity/historial_compra";
+import { IdiomaLibro } from "./entity/idioma_libro";
+import { Libro } from "./entity/libro";
 import { LibroCompra } from "./entity/libro_compra";
+import { Resena } from "./entity/resena";
+import { TipoDireccion } from "./entity/tipoDireccion";
+import { Usuario } from "./entity/usuario";
 
 
 
@@ -26,12 +23,9 @@ import { LibroCompra } from "./entity/libro_compra";
             port: 3306,
             username: 'root',
             password: 'grupo-6',
-            database: 'paginas_selectas',
+            database: 'Paginas_Selectas',
             entities: [
                 Usuario,
-                Region,
-                Ciudad,
-                Comuna,
                 Direccion,
                 TipoDireccion,
                 Genero,

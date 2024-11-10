@@ -1,7 +1,6 @@
-import { Comuna } from "./comuna";
-import { Usuario } from "./usuario";
 import { HistorialCompra } from "./historial_compra";
 import { TipoDireccion } from "./tipoDireccion";
+import { Usuario } from "./usuario";
 export declare class Direccion {
     id: number;
     id_usuario: number;
@@ -9,9 +8,10 @@ export declare class Direccion {
     calle: string;
     numero_calle: string;
     numero_departamento: string;
-    id_comuna: number;
     informacion_adicional: string;
-    comuna: Comuna;
+    nombre_comuna: string;
+    nombre_ciudad: string;
+    nombre_region: string;
     usuario: Usuario;
     tipodirecciones: TipoDireccion[];
     historialCompra: HistorialCompra[];

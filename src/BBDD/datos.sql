@@ -399,3 +399,20 @@ INSERT INTO libro_compra (id_compra, id_libro, cantidad) VALUES
 (18, 18, 4),
 (19, 19, 2),
 (20, 20, 3);
+
+-- nuvos valores para carrito de compras
+
+INSERT INTO carrito (usuario_id, libro_id, cantidad) VALUE
+(2, 5, 1),
+(2, 19, 2),
+(2, 2, 6),
+(5, 7, 2),
+(8, 8, 8),
+(8, 13, 1),
+(8, 17, 1),
+(8, 20, 2),
+(12, 1, 1),
+(12, 6, 1),
+(12, 15, 1),
+(12, 12, 1),
+(19, 4, 1);

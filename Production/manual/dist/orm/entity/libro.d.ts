@@ -5,6 +5,7 @@ import { Resena } from "./resena";
 import { LibroCompra } from "./libro_compra";
 import { Genero } from "./genero";
 import { Autor } from "./autor";
+import { Carrito } from "./carrito";
 export declare class Libro {
     id: number;
     isbn: string;
@@ -29,4 +30,5 @@ export declare class Libro {
     autores: Autor[];
     resena: Resena[];
     libroCompra: LibroCompra[];
+    carrito: Carrito;
 }

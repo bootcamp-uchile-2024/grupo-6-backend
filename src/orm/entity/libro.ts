@@ -6,6 +6,7 @@ import { Resena } from "./resena";
 import { LibroCompra } from "./libro_compra";
 import { Genero } from "./genero";
 import { Autor } from "./autor";
+import { Carrito } from "./carrito";
 
 @Entity({name: "libro"})
 export class Libro {
@@ -80,4 +81,8 @@ export class Libro {
 
     @OneToMany(() => LibroCompra, (libroCompra) => libroCompra.libro)
     libroCompra: LibroCompra[];
+
+    @ManyToOne(() => Carrito)
+    @JoinColumn({ name: "id" })
+    carrito: Carrito;
 }

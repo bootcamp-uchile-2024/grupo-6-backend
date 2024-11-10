@@ -9,21 +9,35 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateShoppingcartDto = void 0;
-const swagger_1 = require("@nestjs/swagger");
-class CreateShoppingcartDto {
-}
-exports.CreateShoppingcartDto = CreateShoppingcartDto;
+exports.Carrito = void 0;
+const typeorm_1 = require("typeorm");
+const libro_1 = require("./libro");
+const usuario_1 = require("./usuario");
+let Carrito = class Carrito {
+};
+exports.Carrito = Carrito;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '1', description: 'id del usuario' }),
+    (0, typeorm_1.PrimaryColumn)(),
     __metadata("design:type", Number)
-], CreateShoppingcartDto.prototype, "usuario_id", void 0);
+], Carrito.prototype, "usuario_id", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '1', description: 'id del libro' }),
+    (0, typeorm_1.PrimaryColumn)(),
     __metadata("design:type", Number)
-], CreateShoppingcartDto.prototype, "libro_id", void 0);
+], Carrito.prototype, "libro_id", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '1', description: 'cantidad de un mismo libro' }),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
-], CreateShoppingcartDto.prototype, "cantidad", void 0);
-//# sourceMappingURL=create-shoppingcart.dto.js.map
+], Carrito.prototype, "cantidad", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => usuario_1.Usuario),
+    (0, typeorm_1.JoinColumn)({ name: "usuario_id" }),
+    __metadata("design:type", usuario_1.Usuario)
+], Carrito.prototype, "usuario", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => libro_1.Libro, (libro) => libro.carrito),
+    __metadata("design:type", Array)
+], Carrito.prototype, "libros", void 0);
+exports.Carrito = Carrito = __decorate([
+    (0, typeorm_1.Entity)({ name: "carrito" })
+], Carrito);
+//# sourceMappingURL=carrito.js.map

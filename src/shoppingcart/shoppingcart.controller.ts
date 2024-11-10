@@ -7,20 +7,27 @@ import {
   Delete,
   NotFoundException,
   ParseIntPipe,
+  Put,
 } from '@nestjs/common';
 import { ShoppingcartService } from './shoppingcart.service';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
+import { ShoppingcartSalidaDto } from './dto/create-shoppingcart.salida.dto';
+import { CreateShoppingcartDto } from './dto/create-shoppingcart.dto';
+import { ShoppingcartUpdateDto } from './dto/shoppingcart.update.dto';
 
 @Controller('shoppingcart')
 export class ShoppingcartController {
+
+
   constructor(
     private readonly shoppingcartService: ShoppingcartService,
   ) {}
 
+
   @ApiTags('Shopping cart')
   @ApiBody({
-    type: CreateProductDto,
+    type: CreateShoppingcartDto,
     description: 'Datos del libro que se va a cargar al carrito de compras',
   })
   @ApiResponse({
@@ -28,11 +35,13 @@ export class ShoppingcartController {
     description: 'Producto agregado a carrito de compras',
   })
   @Post()
-  create(
-    @Body() createProductDto: CreateProductDto,
-  ) {
-    return this.shoppingcartService.create(createProductDto);
+  async create(
+    @Body() createShoppingcartDto: CreateShoppingcartDto,
+  ): Promise <ShoppingcartSalidaDto> {
+    return await this.shoppingcartService.create(createShoppingcartDto);
   }
+
+
   @ApiTags('Shopping cart')
   @ApiResponse({ status: 200, description: 'Obtención de carrito de compras' })
   @ApiResponse({
@@ -40,10 +49,23 @@ export class ShoppingcartController {
     description: 'No se puede obtener carrito de compras',
   })
   @Get()
-  obtenerProductos() {
-    const encontrado = this.shoppingcartService.obtenerProductos();
-    return encontrado;
-  }  
+  async obtenerCarrito(): Promise <ShoppingcartSalidaDto[]> {
+    return await this.shoppingcartService.obtenerCarrito();
+  }
+
+
+  @ApiTags('Shopping cart')
+  @ApiResponse({ status: 200, description: 'Obtención de carrito de compras' })
+  @ApiResponse({
+    status: 404,
+    description: 'No se puede obtener carrito de compras',
+  })
+  @Put()
+  async cantidadMasMenos(@Body() updateDto: ShoppingcartUpdateDto): Promise<void> {
+    return await this.shoppingcartService.cantidadMasMenos(updateDto);
+  }
+
+
   @ApiTags('Shopping cart')
   @ApiResponse({
     status: 200,
@@ -53,17 +75,17 @@ export class ShoppingcartController {
     status: 404,
     description: 'Producto no existe en el carrito de compra',
   })
-  @Delete(':item')
-  remove(
+  @Delete(':id')
+  async remove(
     @Param(
-      'item',
+      'id',
       new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
     )
-    item: number,
-  ) {
-    const encontrado = this.shoppingcartService.remove(item);
+    id: number,
+  ): Promise <ShoppingcartSalidaDto[]> {
+    const encontrado = await this.shoppingcartService.remove(id);
     if (encontrado) {
-      return 'Producto eliminado del carrito de compra';
+      return encontrado;
     } else {
       throw new NotFoundException();
     }

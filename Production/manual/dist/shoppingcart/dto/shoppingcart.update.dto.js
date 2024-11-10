@@ -9,21 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateShoppingcartDto = void 0;
+exports.ShoppingcartUpdateDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
-class CreateShoppingcartDto {
+class ShoppingcartUpdateDto {
 }
-exports.CreateShoppingcartDto = CreateShoppingcartDto;
+exports.ShoppingcartUpdateDto = ShoppingcartUpdateDto;
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '1', description: 'id del usuario' }),
     __metadata("design:type", Number)
-], CreateShoppingcartDto.prototype, "usuario_id", void 0);
+], ShoppingcartUpdateDto.prototype, "usuario_id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '1', description: 'id del libro' }),
     __metadata("design:type", Number)
-], CreateShoppingcartDto.prototype, "libro_id", void 0);
+], ShoppingcartUpdateDto.prototype, "libro_id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '1', description: 'cantidad de un mismo libro' }),
     __metadata("design:type", Number)
-], CreateShoppingcartDto.prototype, "cantidad", void 0);
-//# sourceMappingURL=create-shoppingcart.dto.js.map
+], ShoppingcartUpdateDto.prototype, "cantidad", void 0);
+//# sourceMappingURL=shoppingcart.update.dto.js.map

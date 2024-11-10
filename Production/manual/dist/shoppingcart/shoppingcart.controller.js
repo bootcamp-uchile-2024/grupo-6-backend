@@ -16,22 +16,25 @@ exports.ShoppingcartController = void 0;
 const common_1 = require("@nestjs/common");
 const shoppingcart_service_1 = require("./shoppingcart.service");
 const swagger_1 = require("@nestjs/swagger");
-const create_product_dto_1 = require("../products/dto/create-product.dto");
+const create_shoppingcart_dto_1 = require("./dto/create-shoppingcart.dto");
+const shoppingcart_update_dto_1 = require("./dto/shoppingcart.update.dto");
 let ShoppingcartController = class ShoppingcartController {
     constructor(shoppingcartService) {
         this.shoppingcartService = shoppingcartService;
     }
-    create(createProductDto) {
-        return this.shoppingcartService.create(createProductDto);
+    async create(createShoppingcartDto) {
+        return await this.shoppingcartService.create(createShoppingcartDto);
     }
-    obtenerProductos() {
-        const encontrado = this.shoppingcartService.obtenerProductos();
-        return encontrado;
+    async obtenerCarrito() {
+        return await this.shoppingcartService.obtenerCarrito();
     }
-    remove(item) {
-        const encontrado = this.shoppingcartService.remove(item);
+    async cantidadMasMenos(updateDto) {
+        return await this.shoppingcartService.cantidadMasMenos(updateDto);
+    }
+    async remove(id) {
+        const encontrado = await this.shoppingcartService.remove(id);
         if (encontrado) {
-            return 'Producto eliminado del carrito de compra';
+            return encontrado;
         }
         else {
             throw new common_1.NotFoundException();
@@ -42,7 +45,7 @@ exports.ShoppingcartController = ShoppingcartController;
 __decorate([
     (0, swagger_1.ApiTags)('Shopping cart'),
     (0, swagger_1.ApiBody)({
-        type: create_product_dto_1.CreateProductDto,
+        type: create_shoppingcart_dto_1.CreateShoppingcartDto,
         description: 'Datos del libro que se va a cargar al carrito de compras',
     }),
     (0, swagger_1.ApiResponse)({
@@ -52,8 +55,8 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_product_dto_1.CreateProductDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [create_shoppingcart_dto_1.CreateShoppingcartDto]),
+    __metadata("design:returntype", Promise)
 ], ShoppingcartController.prototype, "create", null);
 __decorate([
     (0, swagger_1.ApiTags)('Shopping cart'),
@@ -65,8 +68,15 @@ __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], ShoppingcartController.prototype, "obtenerProductos", null);
+    __metadata("design:returntype", Promise)
+], ShoppingcartController.prototype, "obtenerCarrito", null);
+__decorate([
+    (0, common_1.Put)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [shoppingcart_update_dto_1.ShoppingcartUpdateDto]),
+    __metadata("design:returntype", Promise)
+], ShoppingcartController.prototype, "cantidadMasMenos", null);
 __decorate([
     (0, swagger_1.ApiTags)('Shopping cart'),
     (0, swagger_1.ApiResponse)({
@@ -77,11 +87,11 @@ __decorate([
         status: 404,
         description: 'Producto no existe en el carrito de compra',
     }),
-    (0, common_1.Delete)(':item'),
-    __param(0, (0, common_1.Param)('item', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id', new common_1.ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ShoppingcartController.prototype, "remove", null);
 exports.ShoppingcartController = ShoppingcartController = __decorate([
     (0, common_1.Controller)('shoppingcart'),

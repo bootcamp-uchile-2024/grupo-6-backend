@@ -9,6 +9,7 @@ import { BooksMiddleware } from './books/books.middleware';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { OrmModule } from './orm/orm.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { OrmModule } from './orm/orm.module';
     ProductsModule,
     ShoppingcartModule,
     HomeModule,
+    ReviewsModule,
     UsersModule,
     OrmModule,
     ConfigModule.forRoot({

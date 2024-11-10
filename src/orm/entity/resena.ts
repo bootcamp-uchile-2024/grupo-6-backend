@@ -11,7 +11,7 @@ export class Resena {
     id_usuario: number;
 
     @Column()
-    id_libro: number;
+    isbn_libro: string;
 
     @Column()
     comentario: string;

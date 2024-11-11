@@ -1,5 +1,6 @@
 import { Resena } from "src/orm/entity/resena";
 import { CreateReviewDto } from "../dto/create-review.dto";
+import { GetReviewDto } from "../dto/get-review.dto";
 
 export class ResenaMapper{
 
@@ -13,4 +14,14 @@ export class ResenaMapper{
         entidad.fecha = new Date();
         return entidad;
     }
+
+    // static entityToGetDto(entidad: Resena): GetReviewDto{
+    //     const getReview = new GetReviewDto();
+    //     getReview.id = entidad.id;
+    //     getReview.nombreLibro = idLibro;
+    //     getReview.comentario = dto.comentario;
+    //     getReview.rating = dto.rating;
+    //     getReview.fecha = new Date();
+    //     return entidad;
+    // }
 }

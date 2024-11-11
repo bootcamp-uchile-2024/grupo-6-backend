@@ -1,12 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsNotEmpty, IsNumber, IsString, Max, MaxLength, Min } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Max, MaxLength, Min } from "class-validator";
 
 export class CreateReviewDto {
 @ApiProperty({
     example: 'Muy buen libro!',
     description:
         'Comentario que un usuario asigna a un libro especifico.',
+    required: false,
+    nullable: true
     })
+    @IsOptional()
     @IsString({ message: 'Introducir un formato de comentario tipo string correcto.' })
     @MaxLength(1000,{message: "El comentario ingresado necesita contener menos de 1000 caracteres."})
     public comentario?: string;

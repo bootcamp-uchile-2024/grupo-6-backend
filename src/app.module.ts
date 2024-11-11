@@ -1,13 +1,14 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EquipoModule } from './equipo/equipo.module';
-import { ProductsModule } from './products/products.module';
-import { ShoppingcartModule } from './shoppingcart/shoppingcart.module';
-import { HomeModule } from './home/home.module';
 import { BooksMiddleware } from './books/books.middleware';
+import { EquipoModule } from './equipo/equipo.module';
+import { HomeModule } from './home/home.module';
+import { ProductsModule } from './products/products.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { ShoppingcartModule } from './shoppingcart/shoppingcart.module';
 import { UsersModule } from './users/users.module';
-import { ConfigModule } from '@nestjs/config';
 import { OrmModule } from './orm/orm.module';
 
 @Module({
@@ -16,6 +17,7 @@ import { OrmModule } from './orm/orm.module';
     ProductsModule,
     ShoppingcartModule,
     HomeModule,
+    ReviewsModule,
     UsersModule,
     OrmModule,
     ConfigModule.forRoot({

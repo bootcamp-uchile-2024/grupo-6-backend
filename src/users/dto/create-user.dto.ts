@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Address } from '../entities/address.entity';
 import { IsEmail, IsString } from 'class-validator';
 
 export class CreateUserDto {

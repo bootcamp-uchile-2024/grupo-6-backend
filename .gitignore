@@ -5,6 +5,8 @@
 /dist
 /node_modules
 /build
+/sql
+/Production/manual/dist
 
 # Logs
 logs

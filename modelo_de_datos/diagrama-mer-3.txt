@@ -109,6 +109,7 @@ Table editorial {
 }
 
 
+
 Ref: direccion.id_usuario > usuario.id 
 Ref: direccion.id < direccion_tipoDireccion.id_direccion
 Ref: tipoDireccion.id < direccion_tipoDireccion.id_tipoDireccion

@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { Direccion } from "./direccion";
 import { Resena } from "./resena";
 import { HistorialCompra } from "./historial_compra";
+import { Carrito } from "./carrito";
 
 @Entity({name: "usuario"})
 export class Usuario {
@@ -34,4 +35,7 @@ export class Usuario {
 
     @OneToMany(() => HistorialCompra, (historialCompra) => historialCompra.usuario)
     historialCompra: HistorialCompra[];
+
+    @OneToMany(() => Carrito, (carrito) => carrito.usuario)
+    carritos: Carrito[];
 }

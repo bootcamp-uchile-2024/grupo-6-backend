@@ -18,6 +18,7 @@ const books_middleware_1 = require("./books/books.middleware");
 const users_module_1 = require("./users/users.module");
 const config_1 = require("@nestjs/config");
 const orm_module_1 = require("./orm/orm.module");
+const purchases_module_1 = require("./purchases/purchases.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
@@ -51,6 +52,7 @@ exports.AppModule = AppModule = __decorate([
                     };
                 },
             }),
+            purchases_module_1.PurchasesModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

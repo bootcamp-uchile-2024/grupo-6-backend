@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { ProductDTO } from "./product.dto";
+import { GetProductDto } from "./get-product.dto";
 
 export class GetFilteredProductsDto {
     @ApiProperty({description: 'Cantidad total de productos existentes', type: Number})
@@ -11,7 +11,7 @@ export class GetFilteredProductsDto {
     @ApiProperty({description: 'Número de página entregada', type: Number})
     nroPagina: number;
 
-    @ApiProperty({description: 'Lista de productos según paginación', type: [ProductDTO]})
-    productos: ProductDTO[];
+    @ApiProperty({description: 'Lista de productos según paginación', type: [GetProductDto]})
+    productos: GetProductDto[];
 
 }

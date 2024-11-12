@@ -3,6 +3,10 @@
 /node_modules
 /build
 
+# DB
+/sql
+/Production/manual/sql
+
 # Logs
 logs
 *.log

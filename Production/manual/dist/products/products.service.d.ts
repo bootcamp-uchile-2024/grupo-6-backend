@@ -1,7 +1,8 @@
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { Encuadernacion } from './entities/encuadernacion';
-import { ProductDTO } from './dto/product.dto';
+import { GetProductDto } from './dto/get-product.dto';
 import { DataSource, Repository } from 'typeorm';
 import { proConexDTO } from './dto/proConexDTO';
 import { Libro } from 'src/orm/entity/libro';
@@ -14,7 +15,7 @@ export declare class ProductsService {
     products: Product[];
     create(createProductDto: CreateProductDto): CreateProductDto;
     getConexion(): Promise<proConexDTO[]>;
-    findOne(isbn: string): Promise<ProductDTO>;
+    findOne(isbn: string): Promise<GetProductDto>;
     applyFilterProducts(filteredProducts: Product[], filters: {
         priceMin?: number;
         priceMax?: number;
@@ -67,6 +68,7 @@ export declare class ProductsService {
         encuadernacion?: Encuadernacion;
         agnoPublicacionMin?: number;
         agnoPublicacionMax?: number;
-    }): ProductDTO[];
+    }): GetProductDto[];
     getGenres(): string[];
+    update(libro: Libro, updateProductDto: UpdateProductDto): Promise<Libro>;
 }

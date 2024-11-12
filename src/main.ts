@@ -8,6 +8,9 @@ import { BooksFilter } from './books/books.filter';
 import { ConfigService } from '@nestjs/config';
 
 import { UsersModule } from './users/users.module';
+import { PurchasesModule } from './purchases/purchases.module';
+import * as dotenv from 'dotenv';
+dotenv.config(); 
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -64,6 +67,15 @@ async function bootstrap() {
     .addTag('Users')
     .build();
 
+    const configPurchase = new DocumentBuilder()
+    .setTitle(title)
+    .setDescription(description)
+    .setVersion(version)
+    .setContact(authorName, authorUrl, authorEmail)
+    .setLicense(licence, "")
+    .addTag('Purchases')
+    .build();
+
   const documentApp = SwaggerModule.createDocument(app, configApp);
   const documentProducts = SwaggerModule.createDocument(
     app, 
@@ -86,11 +98,19 @@ async function bootstrap() {
       include: [UsersModule],
     }
   );
+  const documentPurchases = SwaggerModule.createDocument(
+    app,
+    configPurchase,
+    {
+      include: [PurchasesModule],
+    }
+  );
 
   SwaggerModule.setup('api', app, documentApp);
   SwaggerModule.setup('api/products', app, documentProducts);
   SwaggerModule.setup('api/shoppingcart', app, documentShoppincart);
   SwaggerModule.setup('api/users', app, documentUsers);
+  SwaggerModule.setup('api/purchases', app, documentPurchases);
 
   await app.listen(configService.get('PORT'));
 }

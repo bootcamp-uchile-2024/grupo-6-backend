@@ -1,0 +1,26 @@
+import { GeneroEnum } from '../entities/generoEnum';
+import { Idioma } from '../entities/idioma';
+import { Review } from '../entities/review';
+import { Encuadernacion } from '../entities/encuadernacion';
+import { Product } from '../entities/product.entity';
+export declare class GetProductDto {
+    isbn: string;
+    nombre: string;
+    autor: string[];
+    stockLibro: number;
+    precio: number;
+    rating: number;
+    genero: GeneroEnum[];
+    editorial: string;
+    idioma: Idioma;
+    encuadernacion: Encuadernacion;
+    agnoPublicacion: Date;
+    numeroPaginas: number;
+    resenas: Review[];
+    descuento: number;
+    caratula: string;
+    dimensiones: string;
+    ean: string;
+    resumen: string;
+    constructor(product: Product);
+}

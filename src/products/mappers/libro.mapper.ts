@@ -1,5 +1,5 @@
 import { Libro } from "src/orm/entity/libro";
-import { ProductDTO } from "../dto/product.dto";
+import { GetProductDto } from "../dto/get-product.dto";
 import { Product } from "../entities/product.entity";
 import { GeneroEnum } from "../entities/generoEnum";
 import { Idioma } from "../entities/idioma";
@@ -8,7 +8,7 @@ import { GetFilteredProductsDto } from "../dto/get-filtered-products.dto";
 
 export class LibroMapper {
 
-    static entityToDto(entity: Libro): ProductDTO{
+    static entityToDto(entity: Libro): GetProductDto{
         const generoValues = Object.values(GeneroEnum);
         const generos: GeneroEnum[] = entity.generos.map((item) => {
             return generoValues.find(
@@ -39,15 +39,15 @@ export class LibroMapper {
             entity.resumen
         );
         
-        return new ProductDTO(product); // NOTE! Corregir esto en el futuro
+        return new GetProductDto(product); // NOTE! Corregir esto en el futuro
     }
 
-    static entityListToDtoList(entityList: Libro[]): ProductDTO[] {
+    static entityListToDtoList(entityList: Libro[]): GetProductDto[] {
         return entityList.map((e) => LibroMapper.entityToDto(e));
     }
 
     static entityToDtoPaginacion(
-        productos: ProductDTO[], 
+        productos: GetProductDto[], 
         totalProductos: number, 
         cantidad: number,
         pagina: number,

@@ -18,11 +18,14 @@ const swagger_1 = require("@nestjs/swagger");
 const parse_enum_genero_array_pipe_pipe_1 = require("../parse-enum-array-pipe/parse-enum-genero-array-pipe.pipe");
 const parse_enum_idioma_array_pipe_1 = require("../parse-enum-array-pipe/parse-enum-idioma-array-pipe");
 const create_product_dto_1 = require("./dto/create-product.dto");
-const product_dto_1 = require("./dto/product.dto");
+const get_product_dto_1 = require("./dto/get-product.dto");
 const encuadernacion_1 = require("./entities/encuadernacion");
 const generoEnum_1 = require("./entities/generoEnum");
 const idioma_1 = require("./entities/idioma");
 const products_service_1 = require("./products.service");
+const libro_1 = require("../orm/entity/libro");
+const update_product_dto_1 = require("./dto/update-product.dto");
+const validation_update_products_pipe_1 = require("./pipes/validation-update-products.pipe");
 let ProductsController = class ProductsController {
     constructor(productsService) {
         this.productsService = productsService;
@@ -99,6 +102,19 @@ let ProductsController = class ProductsController {
         const resolucion = await this.productsService.getConexion();
         return resolucion;
     }
+    async update(id, updatePurchaseDto) {
+        try {
+            return await this.productsService.update(id, updatePurchaseDto);
+        }
+        catch (error) {
+            if (error instanceof common_1.BadRequestException) {
+                throw error;
+            }
+            else {
+                throw new common_1.HttpException('Error al actualizar libro', 400);
+            }
+        }
+    }
 };
 exports.ProductsController = ProductsController;
 __decorate([
@@ -106,7 +122,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({
         status: 200,
         description: 'Creación de producto exitosa',
-        type: product_dto_1.ProductDTO
+        type: get_product_dto_1.GetProductDto
     }),
     (0, swagger_1.ApiResponse)({
         status: 404,
@@ -211,7 +227,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({
         status: 200,
         description: 'Solicitud generada correctamente',
-        type: product_dto_1.ProductDTO,
+        type: get_product_dto_1.GetProductDto,
         isArray: true
     }),
     (0, swagger_1.ApiResponse)({
@@ -322,7 +338,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({
         status: 200,
         description: 'Solicitud generada correctamente',
-        type: product_dto_1.ProductDTO,
+        type: get_product_dto_1.GetProductDto,
         isArray: true
     }),
     (0, swagger_1.ApiResponse)({
@@ -353,7 +369,7 @@ __decorate([
     (0, swagger_1.ApiResponse)({
         status: 200,
         description: 'Este codigo se debe a que se pudo enviar el libro en base al isbn ingresado.',
-        type: product_dto_1.ProductDTO,
+        type: get_product_dto_1.GetProductDto,
     }),
     (0, swagger_1.ApiResponse)({
         status: 404,
@@ -388,6 +404,20 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "getConexion", null);
+__decorate([
+    (0, swagger_1.ApiTags)('Products'),
+    (0, common_1.UsePipes)(validation_update_products_pipe_1.ValidationUpdateProductsPipe),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Se actualizó el libro correctamente' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Error al actualizar libro' }),
+    (0, swagger_1.ApiParam)({ name: 'id', required: true, type: 'number', description: 'ID del libro' }),
+    (0, common_1.Patch)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [libro_1.Libro,
+        update_product_dto_1.UpdateProductDto]),
+    __metadata("design:returntype", Promise)
+], ProductsController.prototype, "update", null);
 exports.ProductsController = ProductsController = __decorate([
     (0, common_1.Controller)('products'),
     __metadata("design:paramtypes", [products_service_1.ProductsService])

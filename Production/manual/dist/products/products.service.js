@@ -19,7 +19,7 @@ const generoEnum_1 = require("./entities/generoEnum");
 const idioma_1 = require("./entities/idioma");
 const encuadernacion_1 = require("./entities/encuadernacion");
 const errorStatus_1 = require("./errorStatus");
-const product_dto_1 = require("./dto/product.dto");
+const get_product_dto_1 = require("./dto/get-product.dto");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const proConexDTO_1 = require("./dto/proConexDTO");
@@ -216,10 +216,59 @@ let ProductsService = class ProductsService {
         if (filteredProducts.length == 0) {
             throw new errorStatus_1.ErrorStatus('No existen productos que cumplan la solicitud', 404);
         }
-        return filteredProducts.map(product => new product_dto_1.ProductDTO(product));
+        return filteredProducts.map(product => new get_product_dto_1.GetProductDto(product));
     }
     getGenres() {
         return Object.values(generoEnum_1.GeneroEnum);
+    }
+    async update(libro, updateProductDto) {
+        console.log(updateProductDto.autor);
+        let condiciones = {};
+        if (updateProductDto.nombre) {
+            condiciones.nombre = updateProductDto.nombre;
+        }
+        if (updateProductDto.stock_libro) {
+            condiciones.stock_libro = updateProductDto.stock_libro;
+        }
+        if (updateProductDto.precio) {
+            condiciones.precio = updateProductDto.precio;
+        }
+        if (updateProductDto.rating) {
+            condiciones.rating = updateProductDto.rating;
+        }
+        if (updateProductDto.id_editorial) {
+            condiciones.id_editorial = updateProductDto.id_editorial;
+        }
+        if (updateProductDto.id_idioma) {
+            condiciones.id_idioma = updateProductDto.id_idioma;
+        }
+        if (updateProductDto.id_encuadernacion) {
+            condiciones.id_encuadernacion = updateProductDto.id_encuadernacion;
+        }
+        if (updateProductDto.agno_publicacion) {
+            condiciones.agno_publicacion = updateProductDto.agno_publicacion;
+        }
+        if (updateProductDto.numero_paginas) {
+            condiciones.numero_paginas = updateProductDto.numero_paginas;
+        }
+        if (updateProductDto.descuento) {
+            condiciones.descuento = updateProductDto.descuento;
+        }
+        if (updateProductDto.caratula) {
+            condiciones.caratula = updateProductDto.caratula;
+        }
+        if (updateProductDto.dimensiones) {
+            condiciones.dimensiones = updateProductDto.dimensiones;
+        }
+        if (updateProductDto.codigo_barra) {
+            condiciones.codigo_barra = updateProductDto.codigo_barra;
+        }
+        if (updateProductDto.resumen) {
+            condiciones.resumen = updateProductDto.resumen;
+        }
+        console.log(condiciones);
+        await this.productRepository.update({ id: libro.id, }, condiciones);
+        return await this.productRepository.findOneBy({ id: libro.id });
     }
 };
 exports.ProductsService = ProductsService;

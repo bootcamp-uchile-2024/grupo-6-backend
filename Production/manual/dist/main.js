@@ -9,6 +9,9 @@ const books_interceptor_1 = require("./books/books.interceptor");
 const books_filter_1 = require("./books/books.filter");
 const config_1 = require("@nestjs/config");
 const users_module_1 = require("./users/users.module");
+const purchases_module_1 = require("./purchases/purchases.module");
+const dotenv = require("dotenv");
+dotenv.config();
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const configService = app.get(config_1.ConfigService);
@@ -55,6 +58,14 @@ async function bootstrap() {
         .setLicense(licence, "")
         .addTag('Users')
         .build();
+    const configPurchase = new swagger_1.DocumentBuilder()
+        .setTitle(title)
+        .setDescription(description)
+        .setVersion(version)
+        .setContact(authorName, authorUrl, authorEmail)
+        .setLicense(licence, "")
+        .addTag('Purchases')
+        .build();
     const documentApp = swagger_1.SwaggerModule.createDocument(app, configApp);
     const documentProducts = swagger_1.SwaggerModule.createDocument(app, configProducts, {
         include: [products_module_1.ProductsModule]
@@ -65,10 +76,14 @@ async function bootstrap() {
     const documentUsers = swagger_1.SwaggerModule.createDocument(app, configUser, {
         include: [users_module_1.UsersModule],
     });
+    const documentPurchases = swagger_1.SwaggerModule.createDocument(app, configPurchase, {
+        include: [purchases_module_1.PurchasesModule],
+    });
     swagger_1.SwaggerModule.setup('api', app, documentApp);
     swagger_1.SwaggerModule.setup('api/products', app, documentProducts);
     swagger_1.SwaggerModule.setup('api/shoppingcart', app, documentShoppincart);
     swagger_1.SwaggerModule.setup('api/users', app, documentUsers);
+    swagger_1.SwaggerModule.setup('api/purchases', app, documentPurchases);
     await app.listen(configService.get('PORT'));
 }
 bootstrap();

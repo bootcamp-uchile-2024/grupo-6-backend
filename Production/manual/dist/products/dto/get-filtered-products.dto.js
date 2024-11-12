@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetFilteredProductsDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
-const product_dto_1 = require("./product.dto");
+const get_product_dto_1 = require("./get-product.dto");
 class GetFilteredProductsDto {
 }
 exports.GetFilteredProductsDto = GetFilteredProductsDto;
@@ -28,7 +28,7 @@ __decorate([
     __metadata("design:type", Number)
 ], GetFilteredProductsDto.prototype, "nroPagina", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ description: 'Lista de productos según paginación', type: [product_dto_1.ProductDTO] }),
+    (0, swagger_1.ApiProperty)({ description: 'Lista de productos según paginación', type: [get_product_dto_1.GetProductDto] }),
     __metadata("design:type", Array)
 ], GetFilteredProductsDto.prototype, "productos", void 0);
 //# sourceMappingURL=get-filtered-products.dto.js.map

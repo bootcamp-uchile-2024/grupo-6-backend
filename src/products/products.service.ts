@@ -6,7 +6,7 @@ import { GeneroEnum } from './entities/generoEnum';
 import { Idioma } from './entities/idioma';
 import { Encuadernacion } from './entities/encuadernacion';
 import { ErrorStatus } from 'src/products/errorStatus';
-import { ProductDTO } from './dto/product.dto';
+import { GetProductDto } from './dto/get-product.dto';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { Any, Between, DataSource, In, LessThanOrEqual, Like, MoreThanOrEqual, Repository } from 'typeorm';
 import { proConexDTO } from './dto/proConexDTO';
@@ -19,8 +19,11 @@ export class ProductsService {
   // Libros de prueba
 
   constructor(
-    @InjectDataSource() private readonly dataSource: DataSource,
-    @InjectRepository(Libro) private readonly productRepository: Repository<Libro>
+    @InjectDataSource() 
+    private readonly dataSource: DataSource,
+
+    @InjectRepository(Libro) 
+    private readonly productRepository: Repository<Libro>
     ) {}
 
   
@@ -305,7 +308,7 @@ export class ProductsService {
   }
 
 
-  async findOne(isbn: string): Promise<ProductDTO> {
+  async findOne(isbn: string): Promise<GetProductDto> {
     const producto: Libro = await this.productRepository.findOne({
       where: {
         isbn: isbn
@@ -566,7 +569,7 @@ export class ProductsService {
         404,
       );
     }
-    const productsDto: ProductDTO[] = LibroMapper.entityListToDtoList(products)
+    const productsDto: GetProductDto[] = LibroMapper.entityListToDtoList(products)
 
     return LibroMapper.entityToDtoPaginacion(
       productsDto, totalProductos, filters.cantidad, filters.pagina
@@ -591,7 +594,7 @@ export class ProductsService {
       agnoPublicacionMin?: number;
       agnoPublicacionMax?: number;
     },
-  ): ProductDTO[] {
+  ): GetProductDto[] {
     let filteredProducts = this.products;
     // Filtro por solicitud
     filteredProducts = filteredProducts.filter(
@@ -619,11 +622,80 @@ export class ProductsService {
       );
     }
 
-    return filteredProducts.map( product => new ProductDTO(product) );
+    return filteredProducts.map( product => new GetProductDto(product) );
   }
 
   // Obtener generos de los libros
   getGenres(): string[] {
     return Object.values(GeneroEnum);
+  }
+
+  // // Eliminar un producto
+  // async remove(id: number): Promise<string>{
+  //   await this.productRepository.delete(id);
+
+  //   return `Fue eliminado el libro con ID #${id}`;
+  // }
+
+  // Actualizar datos de un libro
+  async update(libro: Libro, updateProductDto: UpdateProductDto){
+    console.log(updateProductDto.autor)
+    let condiciones: { [key: string]: any } = {};
+
+    if (updateProductDto.nombre){
+      condiciones.nombre = updateProductDto.nombre;
+    }
+    // if (updateProductDto.autor){
+    //   condiciones.autor = updateProductDto.autor;
+    // }
+    if (updateProductDto.stock_libro){
+      condiciones.stock_libro = updateProductDto.stock_libro;
+    }
+    if (updateProductDto.precio){
+      condiciones.precio = updateProductDto.precio;
+    }
+    if (updateProductDto.rating){
+      condiciones.rating = updateProductDto.rating;
+    }
+    if (updateProductDto.id_editorial){
+      condiciones.id_editorial = updateProductDto.id_editorial;
+    }
+    if (updateProductDto.id_idioma){
+      condiciones.id_idioma = updateProductDto.id_idioma;
+    }
+    if (updateProductDto.id_encuadernacion){
+      condiciones.id_encuadernacion = updateProductDto.id_encuadernacion;
+    }
+    if (updateProductDto.agno_publicacion){
+      condiciones.agno_publicacion = updateProductDto.agno_publicacion;
+    }
+    if (updateProductDto.numero_paginas){
+      condiciones.numero_paginas = updateProductDto.numero_paginas;
+    }
+    if (updateProductDto.descuento){
+      condiciones.descuento = updateProductDto.descuento;
+    }
+    if (updateProductDto.caratula){
+      condiciones.caratula = updateProductDto.caratula;
+    }
+    if (updateProductDto.dimensiones){
+      condiciones.dimensiones = updateProductDto.dimensiones;
+    }
+    if (updateProductDto.codigo_barra){
+      condiciones.codigo_barra = updateProductDto.codigo_barra;
+    }
+    if (updateProductDto.resumen){
+      condiciones.resumen = updateProductDto.resumen;
+    }
+    
+    console.log(condiciones)
+    await this.productRepository.update(
+      { id: libro.id, },
+      condiciones
+    );
+    
+    // Devolver libro actualizado
+    return await this.productRepository.findOneBy({ id: libro.id });
+
   }
 }

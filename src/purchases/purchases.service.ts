@@ -1,0 +1,138 @@
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { HistorialCompra } from 'src/orm/entity/historial_compra';
+import { Usuario } from 'src/orm/entity/usuario';
+import { Repository } from 'typeorm';
+import { CreatePurchaseDto } from './dto/create-purchase.dto';
+import { GetPurchaseDto } from './dto/get-purchase.dto';
+import { UpdatePurchaseDto } from './dto/update-purchase.dto';
+import { PurchasesMapper } from './mappers/purchases.mapper';
+import { Direccion } from 'src/orm/entity/direccion';
+
+@Injectable()
+export class PurchasesService {
+
+  constructor (
+    @InjectRepository(HistorialCompra) 
+    private readonly historialCompraRepository: Repository<HistorialCompra>,
+
+    @InjectRepository(Usuario)
+    private readonly usuarioRepository: Repository<Usuario>,
+
+    @InjectRepository(Direccion)
+    private readonly direccionRepository: Repository<Direccion>,
+  ){}
+
+  // Crear pedido
+  create(createPurchaseDto: CreatePurchaseDto) {
+    // Crear y guardar entidad en BD
+    const nuevoPedido = this.historialCompraRepository.create({
+      id: createPurchaseDto.id,
+      
+    })
+
+
+
+    return 'This action adds a new purchase';
+  }
+
+  // Obtener pedidos de usuario
+  async findAllClient(id_usuario: number): Promise<GetPurchaseDto[]> {
+    // Obtener usuario
+    const usuario: Usuario = await this.usuarioRepository.findOne({
+      where: { id: id_usuario }
+    });
+    
+    if (!usuario){
+        throw new NotFoundException(`No existe un usuario con ID: ${id_usuario}`)
+    }
+
+    // Obtener pedidos
+    const pedidos: HistorialCompra[] = await this.historialCompraRepository.find({
+      where: { 
+        id_usuario: id_usuario,
+      },
+      relations: {
+        direccion: true,
+        libroCompra: true,
+      }
+    });
+
+    return PurchasesMapper.entityListToDtoList(pedidos);
+  }
+
+  // Obtener 1 pedido
+  async findOne(id: number): Promise<GetPurchaseDto> {
+    const pedido: HistorialCompra = await this.historialCompraRepository.findOne({
+      where: {
+        id: id,
+      },
+      relations: {
+        direccion: true,
+        libroCompra: true,
+      }
+    });
+
+    return PurchasesMapper.entityToDto(pedido);
+  }
+
+  // Actualizar estado de pedido
+  async update(pedido: HistorialCompra, updatePurchaseDto: UpdatePurchaseDto): Promise<GetPurchaseDto> {
+    
+    let condiciones: { [key: string]: any } = {};
+
+    // Actualizar estatus
+    if (updatePurchaseDto.estatus_compra){
+      condiciones.estatus_compra = updatePurchaseDto.estatus_compra;
+    };
+
+    // Actualizar fecha entrega
+    if (updatePurchaseDto.fecha_entrega){
+
+      // Validar nueva fecha de entrega
+      if (updatePurchaseDto.fecha_entrega !== null) {
+          const nueva_fecha_entrega: Date = new Date(updatePurchaseDto.fecha_entrega);
+          const fecha_compra: Date = new Date(pedido.fecha_compra);
+          console.log((nueva_fecha_entrega < fecha_compra))
+          console.log(typeof nueva_fecha_entrega)
+          console.log(typeof fecha_compra)
+
+          if (nueva_fecha_entrega < fecha_compra){
+            throw new BadRequestException(
+              `La nueva fecha de entrega debe ser mayor que la fecha de realización del pedido: ${fecha_compra}`)
+          }
+          // Actualizar
+          condiciones.fecha_entrega = nueva_fecha_entrega;
+      };
+    };
+
+    // Actualizar dirección de entrega de compra
+    if (updatePurchaseDto.id_direccion_entrega){
+      // Validar que dirección este asociada al usuario del pedido
+      const nueva_direccion = await this.direccionRepository.findOneBy({ id: updatePurchaseDto.id_direccion_entrega});
+
+      if (nueva_direccion.id_usuario != pedido.id_usuario){
+        throw new BadRequestException(
+          `La nueva dirección debe estar asociada al usuario del pedido. ID usuario: ${pedido.id_usuario}`)
+      }
+
+      condiciones.id_direccion_entrega = updatePurchaseDto.id_direccion_entrega;
+    };
+
+    await this.historialCompraRepository.update(
+      { id: pedido.id, },
+      condiciones
+    );
+    
+    // Devolver pedido actualizado
+    return await this.findOne(pedido.id);
+  }
+
+  // Eliminar pedido 
+  async remove(id: number): Promise<string> {
+    await this.historialCompraRepository.delete(id);
+
+    return `Fue eliminado el pedido con ID #${id}`;
+  }
+
+}

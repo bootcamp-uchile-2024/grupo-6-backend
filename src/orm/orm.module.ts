@@ -22,11 +22,11 @@ import { LibroCompra } from "./entity/libro_compra";
     imports: [
         TypeOrmModule.forRoot({
             type: 'mysql',
-            host: 'mysql',
-            port: 3306,
+            host: 'localhost',
+            port: 3307,
             username: 'root',
             password: 'grupo-6',
-            database: 'paginas_selectas',
+            database: 'Paginas_Selectas',
             entities: [
                 Usuario,
                 Region,

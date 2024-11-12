@@ -120,6 +120,43 @@ INSERT INTO direccion (id_usuario, calle, numero_calle, numero_departamento, id_
 (19, 'El Litoral', '1700', '3A', 19, 'Frente al mar'),
 (20, 'Paseo de los Andes', '1800', NULL, 20, NULL);
 
+
+ALTER TABLE direccion DROP FOREIGN KEY FK_id_comuna;
+ALTER TABLE direccion DROP COLUMN id_comuna;
+DROP TABLE comuna;
+DROP TABLE ciudad;
+DROP TABLE region;
+
+ALTER TABLE direccion
+  ADD COLUMN nombre_comuna varchar(50) NOT NULL,
+  ADD COLUMN nombre_ciudad varchar(50) NOT NULL,
+  ADD COLUMN nombre_region varchar(50) NOT NULL;
+ 
+
+UPDATE direccion SET nombre_comuna = 'Las Condes', nombre_region = 'Metropolitana', nombre_ciudad = 'Santiago' WHERE id = 1;
+UPDATE direccion SET nombre_comuna = 'Providencia', nombre_region = 'Metropolitana', nombre_ciudad = 'Santiago' WHERE id = 2;
+UPDATE direccion SET nombre_comuna = 'Viña del Mar', nombre_region = 'Valparaíso', nombre_ciudad = 'Valparaíso' WHERE id = 3;
+UPDATE direccion SET nombre_comuna = 'La Serena', nombre_region = 'Coquimbo', nombre_ciudad = 'La Serena' WHERE id = 4;
+UPDATE direccion SET nombre_comuna = 'Antofagasta', nombre_region = 'Antofagasta', nombre_ciudad = 'Antofagasta' WHERE id = 5;
+UPDATE direccion SET nombre_comuna = 'Temuco', nombre_region = 'Araucanía', nombre_ciudad = 'Temuco' WHERE id = 6;
+UPDATE direccion SET nombre_comuna = 'Rancagua', nombre_region = 'O’Higgins', nombre_ciudad = 'Rancagua' WHERE id = 7;
+UPDATE direccion SET nombre_comuna = 'Puerto Montt', nombre_region = 'Los Lagos', nombre_ciudad = 'Puerto Montt' WHERE id = 8;
+UPDATE direccion SET nombre_comuna = 'Talca', nombre_region = 'Maule', nombre_ciudad = 'Talca' WHERE id = 9;
+UPDATE direccion SET nombre_comuna = 'Iquique', nombre_region = 'Tarapacá', nombre_ciudad = 'Iquique' WHERE id = 10;
+UPDATE direccion SET nombre_comuna = 'Valdivia', nombre_region = 'Los Ríos', nombre_ciudad = 'Valdivia' WHERE id = 11;
+UPDATE direccion SET nombre_comuna = 'Chillán', nombre_region = 'Ñuble', nombre_ciudad = 'Chillán' WHERE id = 12;
+UPDATE direccion SET nombre_comuna = 'Copiapó', nombre_region = 'Atacama', nombre_ciudad = 'Copiapó' WHERE id = 13;
+UPDATE direccion SET nombre_comuna = 'Punta Arenas', nombre_region = 'Magallanes', nombre_ciudad = 'Punta Arenas' WHERE id = 14;
+UPDATE direccion SET nombre_comuna = 'Quillota', nombre_region = 'Valparaíso', nombre_ciudad = 'Quillota' WHERE id = 15;
+UPDATE direccion SET nombre_comuna = 'Curicó', nombre_region = 'Maule', nombre_ciudad = 'Curicó' WHERE id = 16;
+UPDATE direccion SET nombre_comuna = 'Osorno', nombre_region = 'Los Lagos', nombre_ciudad = 'Osorno' WHERE id = 17;
+UPDATE direccion SET nombre_comuna = 'Coyhaique', nombre_region = 'Aysén', nombre_ciudad = 'Coyhaique' WHERE id = 18;
+UPDATE direccion SET nombre_comuna = 'Calama', nombre_region = 'Antofagasta', nombre_ciudad = 'Calama' WHERE id = 19;
+UPDATE direccion SET nombre_comuna = 'Concepción', nombre_region = 'Biobío', nombre_ciudad = 'Concepción' WHERE id = 20;
+
+
+
+
 -- 7. Insertar en la tabla `genero`
 INSERT INTO genero (descripcion) VALUES 
 ('Ciencia Ficción'),
@@ -362,3 +399,20 @@ INSERT INTO libro_compra (id_compra, id_libro, cantidad) VALUES
 (18, 18, 4),
 (19, 19, 2),
 (20, 20, 3);
+
+-- nuvos valores para carrito de compras
+
+INSERT INTO carrito (usuario_id, libro_id, cantidad) VALUE
+(2, 5, 1),
+(2, 19, 2),
+(2, 2, 6),
+(5, 7, 2),
+(8, 8, 8),
+(8, 13, 1),
+(8, 17, 1),
+(8, 20, 2),
+(12, 1, 1),
+(12, 6, 1),
+(12, 15, 1),
+(12, 12, 1),
+(19, 4, 1);

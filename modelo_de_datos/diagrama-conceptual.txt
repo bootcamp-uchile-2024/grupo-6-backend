@@ -20,3 +20,9 @@ erDiagram
     GENERO ||--|{ GENERO_LIBRO : tiene
     LIBRO ||--|{ AUTOR_LIBRO : tiene
     AUTOR ||--|{ AUTOR_LIBRO : tiene
+
+
+    CARRITO_COMPRAS ||--|{ LIBROS : tiene
+    HISTORIAL_COMPRA ||--|{ CARRITO_COMPRAS : tiene
+    USUARIO ||--|{ CARRITO_COMPRAS : tiene
+    CARRITO_COMPRAS |o--o|DIRECCION : tiene

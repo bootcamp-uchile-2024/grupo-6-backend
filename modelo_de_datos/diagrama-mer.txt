@@ -108,6 +108,14 @@ Table editorial {
   descripcion varchar(100) [not null]
 }
 
+Table carritoCompra{
+  compra_id integer [primary key, increment]
+  libro_id integer [primary key]
+  usuario_id integer
+  cantidad integer
+}
+
+
 
 Ref: direccion.id_usuario > usuario.id 
 Ref: direccion.id < direccion_tipoDireccion.id_direccion
@@ -125,3 +133,6 @@ Ref: historial_compra.id_usuario > usuario.id
 Ref: historial_compra.id_direccion_entrega > direccion.id
 Ref: libro_compra.id_compra > historial_compra.id
 Ref: libro_compra.id_libro > libro.isbn
+Ref: carritoCompra.compra_id - libro_compra.id_compra
+Ref: carritoCompra.libro_id < libro.id
+Ref: carritoCompra.usuario_id > usuario.id

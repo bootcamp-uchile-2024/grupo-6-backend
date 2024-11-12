@@ -1,38 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Encuadernacion } from 'src/products/entities/encuadernacion';
+import { IsInt } from 'class-validator';
 
 
 export class CreateShoppingcartDto {
-  public isbn: string;
-  public item: number;
-  // @ApiProperty({example: 'El señor de los Anillos: La comunidad del Anillo', description: 'Nombre del libro'})
-  public nombre: string;
-  // @ApiProperty({example: ['J.R.R TOLKIEN'], description: 'Autor del libro'})
-  public autor: string[];
-  // @ApiProperty({example: 10, description: 'Stock de libros disponibles'})
-  public stockLibro: number;
-  @ApiProperty({ example: 16000, description: 'Precio del libro' })
-  public precio: number;
-  @ApiProperty({
-    example: 'Salvat',
-    description: 'Editorial a la que pertenece este libro',
-  })
-  public editorial: string;
-  @ApiProperty({
-    example: 'Tapa Dura',
-    description: 'Estilo de tapa que tiene el libro',
-    enum: Encuadernacion,
-  })
-  public encuadernacion: Encuadernacion;
-  @ApiProperty({
-    example: 10,
-    description: '% de descuento en el precio del libro',
-  })
-  public descuento: number;
-  @ApiProperty({
-    example: 'src/products/images/9788445009598.webp',
-    description: 'Imagen de caratula del libro',
-  })
-  public caratula: string;
+
+  @IsInt()
+  @ApiProperty({example: '1', description: 'id del usuario'})
+  public usuario_id: number;
+
+  @IsInt()
+  @ApiProperty({example: '1', description: 'id del libro'})
+  public libro_id: number;
+
+  @IsInt()
+  @ApiProperty({example: '1', description: 'cantidad de un mismo libro'})
   public cantidad: number;
 }

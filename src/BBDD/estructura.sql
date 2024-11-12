@@ -1,4 +1,4 @@
--- DROP DATABASE IF EXISTS Paginas_Selectas;
+DROP DATABASE IF EXISTS Paginas_Selectas;
 
 -- Crear la base de datos
 CREATE DATABASE Paginas_Selectas;
@@ -45,7 +45,7 @@ CREATE TABLE direccion (
     id_comuna INT NOT NULL,
     informacion_adicional VARCHAR(500),
     FOREIGN KEY (id_usuario) REFERENCES usuario(id),
-    FOREIGN KEY (id_comuna) REFERENCES comuna(id)
+    CONSTRAINT FK_id_comuna FOREIGN KEY (id_comuna) REFERENCES comuna(id)
 );
 
 CREATE TABLE tipoDireccion (
@@ -89,7 +89,7 @@ CREATE TABLE editorial (
 
 CREATE TABLE libro (
 	id INT AUTO_INCREMENT PRIMARY KEY,
-    isbn VARCHAR(30) NOT NULL,
+    isbn VARCHAR(30),
     id_idioma INT,
     id_encuadernacion INT,
     nombre VARCHAR(150) NOT NULL,
@@ -156,4 +156,15 @@ CREATE TABLE libro_compra (
     PRIMARY KEY (id_compra, id_libro),
     FOREIGN KEY (id_compra) REFERENCES historial_compra(id),
     FOREIGN KEY (id_libro) REFERENCES libro(id)
+);
+
+--adición de tabla carrito de compras
+
+CREATE TABLE carrito (
+    usuario_id INT,
+    libro_id INT,
+    cantidad INT,
+    PRIMARY KEY (usuario_id, libro_id),
+    FOREIGN KEY (usuario_id) REFERENCES usuario (id),
+    FOREIGN KEY (libro_id) REFERENCES libro(id)
 );

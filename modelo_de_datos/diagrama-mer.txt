@@ -33,7 +33,7 @@ Table tipoDireccion {
 Table resena {
   id integer [primary key, increment]
   id_usuario integer [not null]
-  isbn_libro integer [not null]
+  id_libro integer [not null]
   comentario varchar(1000)
   rating integer [not null]
   fecha date [not null]
@@ -120,19 +120,19 @@ Table carritoCompra{
 Ref: direccion.id_usuario > usuario.id 
 Ref: direccion.id < direccion_tipoDireccion.id_direccion
 Ref: tipoDireccion.id < direccion_tipoDireccion.id_tipoDireccion
-Ref: libro.isbn < resena.isbn_libro
+Ref: libro.id < resena.id_libro
 Ref: libro.id_editorial > editorial.id
-Ref: autor_libro.id_libro > libro.isbn
+Ref: autor_libro.id_libro > libro.id
 Ref: autor_libro.id_autor > autor.id
 Ref: genero_libro.id_genero > genero.id
-Ref: genero_libro.id_libro > libro.isbn
+Ref: genero_libro.id_libro > libro.id
 Ref: usuario.id < resena.id_usuario
 Ref: idioma_libro.id < libro.id_idioma
 Ref: encuadernacion.id < libro.id_encuadernacion
 Ref: historial_compra.id_usuario > usuario.id
 Ref: historial_compra.id_direccion_entrega > direccion.id
 Ref: libro_compra.id_compra > historial_compra.id
-Ref: libro_compra.id_libro > libro.isbn
+Ref: libro_compra.id_libro > libro.id
 Ref: carritoCompra.compra_id - libro_compra.id_compra
 Ref: carritoCompra.libro_id < libro.id
 Ref: carritoCompra.usuario_id > usuario.id

@@ -360,18 +360,18 @@ export class ProductsController {
   }
 
   // Eliminar un producto
-  // @ApiTags('Products')
-  // @UsePipes(ValidationDeleteProductsPipe)
-  // @ApiResponse({ status: 200, description: 'Se eliminó el libro correctamente' })
-  // @ApiResponse({ status: 400, description: 'Error al eliminar el libro' })
-  // @Delete(':id')
-  // async remove(@Param('id') id: string): Promise<string> {
-  //   try {
-  //     return await this.productsService.remove(+id);
-  //   } catch (error) {
-  //     throw new HttpException('Error al eliminar el libro', 400);
-  //   }
-  // }
+  @ApiTags('Products')
+  @UsePipes(ValidationDeleteProductsPipe)
+  @ApiResponse({ status: 200, description: 'Se eliminó el libro correctamente' })
+  @ApiResponse({ status: 400, description: 'Error al eliminar el libro' })
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<string> {
+    try {
+      return await this.productsService.remove(+id);
+    } catch (error) {
+      throw new HttpException('Error al eliminar el libro', 400);
+    }
+  }
 
   // Actualizar un producto
   @ApiTags('Products')
@@ -390,7 +390,7 @@ export class ProductsController {
       if (error instanceof BadRequestException){
         throw error
       } else {
-        throw new HttpException('Error al actualizar libro', 400);
+        throw new HttpException(error, 400);
       }
     }
   }

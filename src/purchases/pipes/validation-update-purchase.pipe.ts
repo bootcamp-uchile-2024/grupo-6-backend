@@ -30,7 +30,7 @@ export class ValidationUpdatePurchasePipe implements PipeTransform {
             
             if (value.estatus_compra) {
                 // Validar nuevo estado
-                const listaEstadosValidos: string[] = ['Solicitud enviada', 'En preparación', 'Enviado', 'Entregado', 'Cancelado'];
+                const listaEstadosValidos: string[] = ['En espera de pago', 'En proceso', 'Completada', 'Cancelada'];
 
                 if (!(listaEstadosValidos.includes(value.estatus_compra))){
                     throw new BadRequestException(`Estado de pedido inválido. Debe ser: ${listaEstadosValidos}`)

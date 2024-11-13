@@ -19,7 +19,7 @@ export class Carrito {
     @JoinColumn({ name: "usuario_id" })
     usuario: Usuario;
 
-    @OneToMany(() => Libro, (libro) => libro.carrito)
+    @OneToMany(() => Libro, (libro) => libro.carrito, { onDelete: "CASCADE" })
     libros: Libro[];
 /*
     @ManyToMany(() => Usuario, (usuario) => usuario.carrito)

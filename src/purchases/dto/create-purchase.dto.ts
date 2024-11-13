@@ -10,7 +10,4 @@ export class CreatePurchaseDto {
     @ApiProperty({ description: 'ID dirección de entrega' })
     id_direccion_entrega: number;
 
-    @ApiProperty({ description: 'ID del carrito de compra' })
-    id_carrito: number;
-
 }

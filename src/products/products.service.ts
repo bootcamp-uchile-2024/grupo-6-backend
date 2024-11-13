@@ -13,6 +13,8 @@ import { proConexDTO } from './dto/proConexDTO';
 import { Libro } from 'src/orm/entity/libro';
 import { LibroMapper } from './mappers/libro.mapper';
 import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
+import { Autor } from 'src/orm/entity/autor';
+import { Genero } from 'src/orm/entity/genero';
 
 @Injectable()
 export class ProductsService {
@@ -23,7 +25,14 @@ export class ProductsService {
     private readonly dataSource: DataSource,
 
     @InjectRepository(Libro) 
-    private readonly productRepository: Repository<Libro>
+    private readonly productRepository: Repository<Libro>,
+
+    @InjectRepository(Autor) 
+    private readonly autorRepository: Repository<Autor>,
+
+    @InjectRepository(Genero) 
+    private readonly generoRepository: Repository<Genero>,
+
     ) {}
 
   
@@ -288,7 +297,6 @@ export class ProductsService {
 
     // Almacenar en lista de productos
     this.products.push(product);
-    console.log(this.products.map(p=> p.isbn))
 
     return createProductDto;
   }
@@ -630,24 +638,21 @@ export class ProductsService {
     return Object.values(GeneroEnum);
   }
 
-  // // Eliminar un producto
-  // async remove(id: number): Promise<string>{
-  //   await this.productRepository.delete(id);
+  // Eliminar un producto
+  async remove(id: number): Promise<string>{
 
-  //   return `Fue eliminado el libro con ID #${id}`;
-  // }
+    await this.productRepository.delete(id);
+
+    return `Fue eliminado el libro con ID #${id}`;
+  }
 
   // Actualizar datos de un libro
   async update(libro: Libro, updateProductDto: UpdateProductDto){
-    console.log(updateProductDto.autor)
     let condiciones: { [key: string]: any } = {};
 
     if (updateProductDto.nombre){
       condiciones.nombre = updateProductDto.nombre;
     }
-    // if (updateProductDto.autor){
-    //   condiciones.autor = updateProductDto.autor;
-    // }
     if (updateProductDto.stock_libro){
       condiciones.stock_libro = updateProductDto.stock_libro;
     }
@@ -688,11 +693,17 @@ export class ProductsService {
       condiciones.resumen = updateProductDto.resumen;
     }
     
-    console.log(condiciones)
     await this.productRepository.update(
       { id: libro.id, },
       condiciones
     );
+    // Actualización de autores NOTE POR DESARROLLAR!
+    // if (updateProductDto.idAutores){
+    //   const libroEntity = await this.productRepository.findOne({ where: { id: libro.id }, relations: ['autores'] });
+    //   libroEntity.autores = await this.autorRepository.findBy({id: In(updateProductDto.idAutores)});
+    //   await this.productRepository.save(libroEntity);
+    // }
+
     
     // Devolver libro actualizado
     return await this.productRepository.findOneBy({ id: libro.id });

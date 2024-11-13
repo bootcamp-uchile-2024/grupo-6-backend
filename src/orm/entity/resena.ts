@@ -22,7 +22,7 @@ export class Resena {
     @Column()
     fecha: Date;
 
-    @ManyToOne(() => Libro)
+    @ManyToOne(() => Libro, (libro) => libro.resena, { onDelete: "CASCADE" })
     @JoinColumn({ name: "id_libro" })
     libro: Libro;
 

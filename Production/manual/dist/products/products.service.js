@@ -25,10 +25,14 @@ const typeorm_2 = require("typeorm");
 const proConexDTO_1 = require("./dto/proConexDTO");
 const libro_1 = require("../orm/entity/libro");
 const libro_mapper_1 = require("./mappers/libro.mapper");
+const autor_1 = require("../orm/entity/autor");
+const genero_1 = require("../orm/entity/genero");
 let ProductsService = class ProductsService {
-    constructor(dataSource, productRepository) {
+    constructor(dataSource, productRepository, autorRepository, generoRepository) {
         this.dataSource = dataSource;
         this.productRepository = productRepository;
+        this.autorRepository = autorRepository;
+        this.generoRepository = generoRepository;
         this.proConex = [];
         this.products = [
             new product_entity_1.Product('9788420412146', 'Don Quijote de la Mancha', ['Miguel de Cervantes'], 50, 19000, [generoEnum_1.GeneroEnum.NOVELA, generoEnum_1.GeneroEnum.CLASICO], 'Lengua Viva', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_DURA, new Date(2015, 0), 1376, 0, '9788420412146.jpg', '15cm x 25cm', '978-8-42-041214-6', 'La obra maestra de Miguel de Cervantes narra las aventuras de Alonso Quijano, quien, tras leer muchos libros de caballerías, decide convertirse en un caballero andante, Don Quijote. Acompañado por su fiel escudero Sancho Panza, busca revivir la caballería en un mundo moderno. Es una sátira profunda sobre la realidad y la ficción, y un clásico de la literatura universal.'),
@@ -49,7 +53,6 @@ let ProductsService = class ProductsService {
     create(createProductDto) {
         let product = new product_entity_1.Product(createProductDto.isbn, createProductDto.nombre, createProductDto.autor, createProductDto.stockLibro, createProductDto.precio, createProductDto.genero, createProductDto.editorial, createProductDto.idioma, createProductDto.encuadernacion, createProductDto.agnoPublicacion, createProductDto.numeroPaginas, createProductDto.descuento, createProductDto.caratula, createProductDto.dimensiones, createProductDto.ean, createProductDto.resumen);
         this.products.push(product);
-        console.log(this.products.map(p => p.isbn));
         return createProductDto;
     }
     async getConexion() {
@@ -221,8 +224,11 @@ let ProductsService = class ProductsService {
     getGenres() {
         return Object.values(generoEnum_1.GeneroEnum);
     }
+    async remove(id) {
+        await this.productRepository.delete(id);
+        return `Fue eliminado el libro con ID #${id}`;
+    }
     async update(libro, updateProductDto) {
-        console.log(updateProductDto.autor);
         let condiciones = {};
         if (updateProductDto.nombre) {
             condiciones.nombre = updateProductDto.nombre;
@@ -266,7 +272,6 @@ let ProductsService = class ProductsService {
         if (updateProductDto.resumen) {
             condiciones.resumen = updateProductDto.resumen;
         }
-        console.log(condiciones);
         await this.productRepository.update({ id: libro.id, }, condiciones);
         return await this.productRepository.findOneBy({ id: libro.id });
     }
@@ -276,7 +281,11 @@ exports.ProductsService = ProductsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectDataSource)()),
     __param(1, (0, typeorm_1.InjectRepository)(libro_1.Libro)),
+    __param(2, (0, typeorm_1.InjectRepository)(autor_1.Autor)),
+    __param(3, (0, typeorm_1.InjectRepository)(genero_1.Genero)),
     __metadata("design:paramtypes", [typeorm_2.DataSource,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository])
 ], ProductsService);
 //# sourceMappingURL=products.service.js.map

@@ -8,15 +8,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
-const equipo_module_1 = require("./equipo/equipo.module");
-const products_module_1 = require("./products/products.module");
-const shoppingcart_module_1 = require("./shoppingcart/shoppingcart.module");
-const home_module_1 = require("./home/home.module");
 const books_middleware_1 = require("./books/books.middleware");
+const equipo_module_1 = require("./equipo/equipo.module");
+const home_module_1 = require("./home/home.module");
+const products_module_1 = require("./products/products.module");
+const reviews_module_1 = require("./reviews/reviews.module");
+const shoppingcart_module_1 = require("./shoppingcart/shoppingcart.module");
 const users_module_1 = require("./users/users.module");
-const config_1 = require("@nestjs/config");
 const orm_module_1 = require("./orm/orm.module");
 const purchases_module_1 = require("./purchases/purchases.module");
 let AppModule = class AppModule {
@@ -34,6 +35,7 @@ exports.AppModule = AppModule = __decorate([
             products_module_1.ProductsModule,
             shoppingcart_module_1.ShoppingcartModule,
             home_module_1.HomeModule,
+            reviews_module_1.ReviewsModule,
             users_module_1.UsersModule,
             orm_module_1.OrmModule,
             config_1.ConfigModule.forRoot({

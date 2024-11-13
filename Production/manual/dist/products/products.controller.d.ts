@@ -15,5 +15,6 @@ export declare class ProductsController {
     findOne(isbn: string): Promise<GetProductDto>;
     getGenres(): string[];
     getConexion(): Promise<proConexDTO[]>;
+    remove(id: string): Promise<string>;
     update(id: Libro, updatePurchaseDto: UpdateProductDto): Promise<Libro>;
 }

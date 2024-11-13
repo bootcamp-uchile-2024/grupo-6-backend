@@ -1,10 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { ArrayNotEmpty, Contains, IsArray, IsDate, IsEnum, IsInt, IsOptional, IsString, Max, MaxDate, Min } from 'class-validator';
-import { Encuadernacion } from '../entities/encuadernacion';
-import { GeneroEnum } from '../entities/generoEnum';
-import { Idioma } from '../entities/idioma';
+import { Contains, IsDate, IsInt, IsOptional, IsString, Max, MaxDate, Min } from 'class-validator';
 import { CreateProductDto } from './create-product.dto';
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
@@ -20,14 +17,13 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     public nombre?: string;
 
     // @ApiProperty({
-    //     description: 'Array con los nombres de los autores del libro',
-    //     type: [String],
-    //     example: ['Miguel de Cervantes'],
+    //     description: 'Array con los ID de nombres de los autores del libro',
+    //     type: [Number],
+    //     example: [1, 2],
     //     isArray: true,
     // })
-    // @IsArray()
     // @IsOptional()
-    // public autor?: string[];
+    // public idAutores?: number[];
 
     @ApiProperty({ 
         description: 'Número de libros en stock',

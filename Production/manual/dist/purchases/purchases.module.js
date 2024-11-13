@@ -8,12 +8,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PurchasesModule = void 0;
 const common_1 = require("@nestjs/common");
-const purchases_service_1 = require("./purchases.service");
-const purchases_controller_1 = require("./purchases.controller");
 const typeorm_1 = require("@nestjs/typeorm");
-const usuario_1 = require("../orm/entity/usuario");
-const historial_compra_1 = require("../orm/entity/historial_compra");
+const carrito_1 = require("../orm/entity/carrito");
 const direccion_1 = require("../orm/entity/direccion");
+const historial_compra_1 = require("../orm/entity/historial_compra");
+const libro_compra_1 = require("../orm/entity/libro_compra");
+const usuario_1 = require("../orm/entity/usuario");
+const purchases_controller_1 = require("./purchases.controller");
+const purchases_service_1 = require("./purchases.service");
 let PurchasesModule = class PurchasesModule {
 };
 exports.PurchasesModule = PurchasesModule;
@@ -23,7 +25,9 @@ exports.PurchasesModule = PurchasesModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([
                 usuario_1.Usuario,
                 historial_compra_1.HistorialCompra,
-                direccion_1.Direccion
+                direccion_1.Direccion,
+                carrito_1.Carrito,
+                libro_compra_1.LibroCompra
             ])
         ],
         controllers: [purchases_controller_1.PurchasesController],

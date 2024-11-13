@@ -12,9 +12,6 @@ export class Direccion {
     id_usuario: number;
 
     @Column()
-    id_tipo_direccion: number;
-
-    @Column()
     calle: string;
 
     @Column()

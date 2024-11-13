@@ -6,7 +6,7 @@ import { HistorialCompra } from 'src/orm/entity/historial_compra';
 export declare class PurchasesController {
     private readonly purchasesService;
     constructor(purchasesService: PurchasesService);
-    create(createPurchaseDto: CreatePurchaseDto): string;
+    create(createPurchaseDto: CreatePurchaseDto): Promise<GetPurchaseDto>;
     findAll(id_usuario: number): Promise<GetPurchaseDto[]>;
     findOne(id: string): Promise<GetPurchaseDto>;
     update(id: HistorialCompra, updatePurchaseDto: UpdatePurchaseDto): Promise<GetPurchaseDto>;

@@ -23,6 +23,7 @@ const encuadernacion_1 = require("./entities/encuadernacion");
 const generoEnum_1 = require("./entities/generoEnum");
 const idioma_1 = require("./entities/idioma");
 const products_service_1 = require("./products.service");
+const validation_delete_products_pipe_1 = require("./pipes/validation-delete-products.pipe");
 const libro_1 = require("../orm/entity/libro");
 const update_product_dto_1 = require("./dto/update-product.dto");
 const validation_update_products_pipe_1 = require("./pipes/validation-update-products.pipe");
@@ -102,6 +103,14 @@ let ProductsController = class ProductsController {
         const resolucion = await this.productsService.getConexion();
         return resolucion;
     }
+    async remove(id) {
+        try {
+            return await this.productsService.remove(+id);
+        }
+        catch (error) {
+            throw new common_1.HttpException('Error al eliminar el libro', 400);
+        }
+    }
     async update(id, updatePurchaseDto) {
         try {
             return await this.productsService.update(id, updatePurchaseDto);
@@ -111,7 +120,7 @@ let ProductsController = class ProductsController {
                 throw error;
             }
             else {
-                throw new common_1.HttpException('Error al actualizar libro', 400);
+                throw new common_1.HttpException(error, 400);
             }
         }
     }
@@ -404,6 +413,17 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ProductsController.prototype, "getConexion", null);
+__decorate([
+    (0, swagger_1.ApiTags)('Products'),
+    (0, common_1.UsePipes)(validation_delete_products_pipe_1.ValidationDeleteProductsPipe),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Se eliminó el libro correctamente' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Error al eliminar el libro' }),
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ProductsController.prototype, "remove", null);
 __decorate([
     (0, swagger_1.ApiTags)('Products'),
     (0, common_1.UsePipes)(validation_update_products_pipe_1.ValidationUpdateProductsPipe),

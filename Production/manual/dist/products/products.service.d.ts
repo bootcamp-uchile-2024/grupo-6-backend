@@ -7,10 +7,14 @@ import { DataSource, Repository } from 'typeorm';
 import { proConexDTO } from './dto/proConexDTO';
 import { Libro } from 'src/orm/entity/libro';
 import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
+import { Autor } from 'src/orm/entity/autor';
+import { Genero } from 'src/orm/entity/genero';
 export declare class ProductsService {
     private readonly dataSource;
     private readonly productRepository;
-    constructor(dataSource: DataSource, productRepository: Repository<Libro>);
+    private readonly autorRepository;
+    private readonly generoRepository;
+    constructor(dataSource: DataSource, productRepository: Repository<Libro>, autorRepository: Repository<Autor>, generoRepository: Repository<Genero>);
     proConex: proConexDTO[];
     products: Product[];
     create(createProductDto: CreateProductDto): CreateProductDto;
@@ -70,5 +74,6 @@ export declare class ProductsService {
         agnoPublicacionMax?: number;
     }): GetProductDto[];
     getGenres(): string[];
+    remove(id: number): Promise<string>;
     update(libro: Libro, updateProductDto: UpdateProductDto): Promise<Libro>;
 }

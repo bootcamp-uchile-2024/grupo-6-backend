@@ -27,9 +27,9 @@ let PurchasesController = class PurchasesController {
     constructor(purchasesService) {
         this.purchasesService = purchasesService;
     }
-    create(createPurchaseDto) {
+    async create(createPurchaseDto) {
         try {
-            return this.purchasesService.create(createPurchaseDto);
+            return await this.purchasesService.create(createPurchaseDto);
         }
         catch (error) {
             throw new common_1.HttpException('Error al crear el pedido', 400);
@@ -84,7 +84,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_purchase_dto_1.CreatePurchaseDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], PurchasesController.prototype, "create", null);
 __decorate([
     (0, swagger_1.ApiTags)('Purchases'),

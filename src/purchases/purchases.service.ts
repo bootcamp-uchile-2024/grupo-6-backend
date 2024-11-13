@@ -1,18 +1,23 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { HistorialCompra } from 'src/orm/entity/historial_compra';
 import { Usuario } from 'src/orm/entity/usuario';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { GetPurchaseDto } from './dto/get-purchase.dto';
 import { UpdatePurchaseDto } from './dto/update-purchase.dto';
 import { PurchasesMapper } from './mappers/purchases.mapper';
 import { Direccion } from 'src/orm/entity/direccion';
+import { Carrito } from 'src/orm/entity/carrito';
+import { LibroCompra } from 'src/orm/entity/libro_compra';
 
 @Injectable()
 export class PurchasesService {
 
   constructor (
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+
     @InjectRepository(HistorialCompra) 
     private readonly historialCompraRepository: Repository<HistorialCompra>,
 
@@ -21,19 +26,66 @@ export class PurchasesService {
 
     @InjectRepository(Direccion)
     private readonly direccionRepository: Repository<Direccion>,
+
+    @InjectRepository(Carrito)
+    private readonly carritoRepository: Repository<Carrito>,
+
+    @InjectRepository(LibroCompra)
+    private readonly libroCompraRepository: Repository<LibroCompra>,
   ){}
 
   // Crear pedido
-  create(createPurchaseDto: CreatePurchaseDto) {
+  async create(createPurchaseDto: CreatePurchaseDto): Promise<GetPurchaseDto> {
+
+    // Definición de fechas
+    const fecha_compra: Date = new Date();
+    const fecha_entrega: Date = new Date();
+    fecha_entrega.setDate(fecha_entrega.getDate() + 10); // Se asume que la entrega es 10 días después de la compra
+
+    // Obtener carrito según ID carrito
+    const carritoUsuario: Carrito[] = await this.carritoRepository.findBy({ 
+      usuario_id: createPurchaseDto.id_usuario 
+    });
+    
+    // Definir Libro_Compra 
+    const nuevoLibroCompra: LibroCompra[] = carritoUsuario.map(
+      item => this.libroCompraRepository.create({
+        id_compra: createPurchaseDto.id,
+        id_libro: item.libro_id,
+        cantidad: item.cantidad,
+      })
+    )
+
+    // Definir dirección
+    const direccion: Direccion = await this.direccionRepository.findOneBy({ 
+      id: createPurchaseDto.id_direccion_entrega 
+    });
+
+    // this.libroCompraRepository.save(nuevoLibroCompra);
+    
     // Crear y guardar entidad en BD
     const nuevoPedido = this.historialCompraRepository.create({
       id: createPurchaseDto.id,
-      
-    })
+      id_usuario: createPurchaseDto.id_usuario,
+      estatus_compra: 'En espera de pago',
+      fecha_compra: fecha_compra,
+      fecha_entrega: fecha_entrega,
+      id_direccion_entrega: createPurchaseDto.id_direccion_entrega,
+      libroCompra: nuevoLibroCompra,
+      direccion: direccion,
+    });
 
+    await this.dataSource.transaction( async (transactionalEntityManager) => {
+      // Guardar pedido
+      await transactionalEntityManager.save(nuevoPedido);
 
+      // Borrar carrito de compra
+      await transactionalEntityManager.delete(Carrito, {
+        usuario_id: createPurchaseDto.id_usuario
+      });
+    });
 
-    return 'This action adds a new purchase';
+    return PurchasesMapper.entityToDto(nuevoPedido);
   }
 
   // Obtener pedidos de usuario
@@ -93,9 +145,6 @@ export class PurchasesService {
       if (updatePurchaseDto.fecha_entrega !== null) {
           const nueva_fecha_entrega: Date = new Date(updatePurchaseDto.fecha_entrega);
           const fecha_compra: Date = new Date(pedido.fecha_compra);
-          console.log((nueva_fecha_entrega < fecha_compra))
-          console.log(typeof nueva_fecha_entrega)
-          console.log(typeof fecha_compra)
 
           if (nueva_fecha_entrega < fecha_compra){
             throw new BadRequestException(

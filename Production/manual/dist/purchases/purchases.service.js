@@ -20,17 +20,49 @@ const usuario_1 = require("../orm/entity/usuario");
 const typeorm_2 = require("typeorm");
 const purchases_mapper_1 = require("./mappers/purchases.mapper");
 const direccion_1 = require("../orm/entity/direccion");
+const carrito_1 = require("../orm/entity/carrito");
+const libro_compra_1 = require("../orm/entity/libro_compra");
 let PurchasesService = class PurchasesService {
-    constructor(historialCompraRepository, usuarioRepository, direccionRepository) {
+    constructor(dataSource, historialCompraRepository, usuarioRepository, direccionRepository, carritoRepository, libroCompraRepository) {
+        this.dataSource = dataSource;
         this.historialCompraRepository = historialCompraRepository;
         this.usuarioRepository = usuarioRepository;
         this.direccionRepository = direccionRepository;
+        this.carritoRepository = carritoRepository;
+        this.libroCompraRepository = libroCompraRepository;
     }
-    create(createPurchaseDto) {
+    async create(createPurchaseDto) {
+        const fecha_compra = new Date();
+        const fecha_entrega = new Date();
+        fecha_entrega.setDate(fecha_entrega.getDate() + 10);
+        const carritoUsuario = await this.carritoRepository.findBy({
+            usuario_id: createPurchaseDto.id_usuario
+        });
+        const nuevoLibroCompra = carritoUsuario.map(item => this.libroCompraRepository.create({
+            id_compra: createPurchaseDto.id,
+            id_libro: item.libro_id,
+            cantidad: item.cantidad,
+        }));
+        const direccion = await this.direccionRepository.findOneBy({
+            id: createPurchaseDto.id_direccion_entrega
+        });
         const nuevoPedido = this.historialCompraRepository.create({
             id: createPurchaseDto.id,
+            id_usuario: createPurchaseDto.id_usuario,
+            estatus_compra: 'En espera de pago',
+            fecha_compra: fecha_compra,
+            fecha_entrega: fecha_entrega,
+            id_direccion_entrega: createPurchaseDto.id_direccion_entrega,
+            libroCompra: nuevoLibroCompra,
+            direccion: direccion,
         });
-        return 'This action adds a new purchase';
+        await this.dataSource.transaction(async (transactionalEntityManager) => {
+            await transactionalEntityManager.save(nuevoPedido);
+            await transactionalEntityManager.delete(carrito_1.Carrito, {
+                usuario_id: createPurchaseDto.id_usuario
+            });
+        });
+        return purchases_mapper_1.PurchasesMapper.entityToDto(nuevoPedido);
     }
     async findAllClient(id_usuario) {
         const usuario = await this.usuarioRepository.findOne({
@@ -72,9 +104,6 @@ let PurchasesService = class PurchasesService {
             if (updatePurchaseDto.fecha_entrega !== null) {
                 const nueva_fecha_entrega = new Date(updatePurchaseDto.fecha_entrega);
                 const fecha_compra = new Date(pedido.fecha_compra);
-                console.log((nueva_fecha_entrega < fecha_compra));
-                console.log(typeof nueva_fecha_entrega);
-                console.log(typeof fecha_compra);
                 if (nueva_fecha_entrega < fecha_compra) {
                     throw new common_1.BadRequestException(`La nueva fecha de entrega debe ser mayor que la fecha de realización del pedido: ${fecha_compra}`);
                 }
@@ -102,10 +131,16 @@ let PurchasesService = class PurchasesService {
 exports.PurchasesService = PurchasesService;
 exports.PurchasesService = PurchasesService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(historial_compra_1.HistorialCompra)),
-    __param(1, (0, typeorm_1.InjectRepository)(usuario_1.Usuario)),
-    __param(2, (0, typeorm_1.InjectRepository)(direccion_1.Direccion)),
-    __metadata("design:paramtypes", [typeorm_2.Repository,
+    __param(0, (0, typeorm_1.InjectDataSource)()),
+    __param(1, (0, typeorm_1.InjectRepository)(historial_compra_1.HistorialCompra)),
+    __param(2, (0, typeorm_1.InjectRepository)(usuario_1.Usuario)),
+    __param(3, (0, typeorm_1.InjectRepository)(direccion_1.Direccion)),
+    __param(4, (0, typeorm_1.InjectRepository)(carrito_1.Carrito)),
+    __param(5, (0, typeorm_1.InjectRepository)(libro_compra_1.LibroCompra)),
+    __metadata("design:paramtypes", [typeorm_2.DataSource,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository])
 ], PurchasesService);

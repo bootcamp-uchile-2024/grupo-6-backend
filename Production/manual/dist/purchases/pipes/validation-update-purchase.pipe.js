@@ -33,7 +33,7 @@ let ValidationUpdatePurchasePipe = class ValidationUpdatePurchasePipe {
         }
         if (metadata.type === 'body') {
             if (value.estatus_compra) {
-                const listaEstadosValidos = ['Solicitud enviada', 'En preparación', 'Enviado', 'Entregado', 'Cancelado'];
+                const listaEstadosValidos = ['En espera de pago', 'En proceso', 'Completada', 'Cancelada'];
                 if (!(listaEstadosValidos.includes(value.estatus_compra))) {
                     throw new common_1.BadRequestException(`Estado de pedido inválido. Debe ser: ${listaEstadosValidos}`);
                 }

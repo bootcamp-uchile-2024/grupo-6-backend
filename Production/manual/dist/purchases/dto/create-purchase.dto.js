@@ -26,8 +26,4 @@ __decorate([
     (0, swagger_1.ApiProperty)({ description: 'ID dirección de entrega' }),
     __metadata("design:type", Number)
 ], CreatePurchaseDto.prototype, "id_direccion_entrega", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ description: 'ID del carrito de compra' }),
-    __metadata("design:type", Number)
-], CreatePurchaseDto.prototype, "id_carrito", void 0);
 //# sourceMappingURL=create-purchase.dto.js.map

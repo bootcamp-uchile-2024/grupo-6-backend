@@ -21,9 +21,9 @@ export class PurchasesController {
   @ApiResponse({ status: 400, description: 'Error al crear el pedido' })
   @ApiBody({type: CreatePurchaseDto, required: true})
   @Post()
-  create(@Body() createPurchaseDto: CreatePurchaseDto) {
+  async create(@Body() createPurchaseDto: CreatePurchaseDto): Promise<GetPurchaseDto> {
     try {
-      return this.purchasesService.create(createPurchaseDto);
+      return await this.purchasesService.create(createPurchaseDto);
     } catch (error) {
       throw new HttpException('Error al crear el pedido', 400);
     }

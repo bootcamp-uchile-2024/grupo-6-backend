@@ -20,8 +20,8 @@ import { Usuario } from "./entity/usuario";
     imports: [
         TypeOrmModule.forRoot({
             type: 'mysql',
-            host: 'mysql',
-            port: 3306,
+            host: 'localhost',
+            port: 3307,
             username: 'root',
             password: 'grupo-6',
             database: 'Paginas_Selectas',

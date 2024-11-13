@@ -70,19 +70,25 @@ export class Libro {
     @JoinColumn({ name: "id_encuadernacion" })
     encuadernacion: Encuadernacion;
 
-    @ManyToMany(() => Genero, (genero) => genero.libros)
+    @ManyToMany(() => Genero, (genero) => genero.libros, { 
+        onDelete: "CASCADE",
+        cascade: true
+    })
     generos: Genero[];
 
-    @ManyToMany(() => Autor, (autor) => autor.libros)
+    @ManyToMany(() => Autor, (autor) => autor.libros,{ 
+        onDelete: "CASCADE",
+        cascade: true
+    })
     autores: Autor[];
 
-    @OneToMany(() => Resena, (resena) => resena.libro)
+    @OneToMany(() => Resena, (resena) => resena.libro, { cascade: true })
     resena: Resena[];
 
-    @OneToMany(() => LibroCompra, (libroCompra) => libroCompra.libro)
+    @OneToMany(() => LibroCompra, (libroCompra) => libroCompra.libro, { cascade: true })
     libroCompra: LibroCompra[];
 
-    @ManyToOne(() => Carrito)
+    @ManyToOne(() => Carrito, (carrito) => carrito.libros, { cascade: true })
     @JoinColumn({ name: "id" })
     carrito: Carrito;
 }

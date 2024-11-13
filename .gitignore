@@ -9,6 +9,10 @@
 /Production/manual/dist
 /acceso1234.pem
 
+# DB
+/sql
+/Production/manual/sql
+
 # Logs
 logs
 *.log

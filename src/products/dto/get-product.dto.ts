@@ -8,7 +8,7 @@ import { Review } from '../entities/review';
 import { Encuadernacion } from '../entities/encuadernacion';
 import { Product } from '../entities/product.entity';
 
-export class ProductDTO {
+export class GetProductDto {
 
   @ApiProperty({
     description: 'ISBN 13 del libro',

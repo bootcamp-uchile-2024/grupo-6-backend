@@ -10,6 +10,7 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { ShoppingcartModule } from './shoppingcart/shoppingcart.module';
 import { UsersModule } from './users/users.module';
 import { OrmModule } from './orm/orm.module';
+import { PurchasesModule } from './purchases/purchases.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { OrmModule } from './orm/orm.module';
         };
       },
     }),
+    PurchasesModule,
     
   ],
   controllers: [AppController],

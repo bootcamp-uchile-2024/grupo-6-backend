@@ -400,7 +400,7 @@ INSERT INTO libro_compra (id_compra, id_libro, cantidad) VALUES
 (19, 19, 2),
 (20, 20, 3);
 
--- nuvos valores para carrito de compras
+-- nuevos valores para carrito de compras
 
 INSERT INTO carrito (usuario_id, libro_id, cantidad) VALUE
 (2, 5, 1),

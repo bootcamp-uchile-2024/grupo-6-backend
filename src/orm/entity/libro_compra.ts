@@ -17,7 +17,7 @@ export class LibroCompra {
     @JoinColumn({ name: "id_compra" })
     historialCompra: HistorialCompra;
 
-    @ManyToOne(() => Libro)
+    @ManyToOne(() => Libro, (libro) => libro.libroCompra, { onDelete: "CASCADE" })
     @JoinColumn({ name: "id_libro" })
     libro: Libro;
 }

@@ -1,15 +1,19 @@
-import { Body, Controller, Get, HttpException, Param, ParseArrayPipe, ParseEnumPipe, ParseIntPipe, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, ParseArrayPipe, ParseEnumPipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ParseEnumGeneroArrayPipe } from 'src/parse-enum-array-pipe/parse-enum-genero-array-pipe.pipe';
 import { ParseEnumIdiomaArrayPipe } from 'src/parse-enum-array-pipe/parse-enum-idioma-array-pipe';
 import { CreateProductDto } from './dto/create-product.dto';
 import { proConexDTO } from './dto/proConexDTO';
-import { ProductDTO } from './dto/product.dto';
+import { GetProductDto } from './dto/get-product.dto';
 import { Encuadernacion } from './entities/encuadernacion';
 import { GeneroEnum } from './entities/generoEnum';
 import { Idioma } from './entities/idioma';
 import { ProductsService } from './products.service';
 import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
+import { ValidationDeleteProductsPipe } from './pipes/validation-delete-products.pipe';
+import { Libro } from 'src/orm/entity/libro';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { ValidationUpdateProductsPipe } from './pipes/validation-update-products.pipe';
 
 @Controller('products')
 export class ProductsController {
@@ -19,7 +23,7 @@ export class ProductsController {
   @ApiResponse({ 
     status: 200, 
     description: 'Creación de producto exitosa', 
-    type: ProductDTO
+    type: GetProductDto
   })
   @ApiResponse({
     status: 404,
@@ -123,7 +127,7 @@ export class ProductsController {
   @ApiResponse({ 
     status: 200, 
     description: 'Solicitud generada correctamente', 
-    type: ProductDTO,
+    type: GetProductDto,
     isArray: true
   })
   @ApiResponse({
@@ -260,7 +264,7 @@ export class ProductsController {
   @ApiResponse({ 
     status: 200, 
     description: 'Solicitud generada correctamente',
-    type: ProductDTO,
+    type: GetProductDto,
     isArray: true
   })
   @ApiResponse({
@@ -283,7 +287,7 @@ export class ProductsController {
     @Query('encuadernacion', new ParseEnumPipe(Encuadernacion, { optional: true }), ) encuadernacion?: Encuadernacion, 
     @Query( 'agnoPublicacionMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMin?: number, 
     @Query( 'agnoPublicacionMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMax?: number,
-  ): ProductDTO[] {
+  ): GetProductDto[] {
     console.log(typeof idioma);
     const filters = {
       priceMin,
@@ -314,14 +318,14 @@ export class ProductsController {
   @ApiResponse({
     status: 200,
     description: 'Este codigo se debe a que se pudo enviar el libro en base al isbn ingresado.',
-    type: ProductDTO,
+    type: GetProductDto,
   })
   @ApiResponse({
     status: 404,
     description: 'Este codigo se debe a que no encuentra el isbn del libro.',
   })
   @Get('search/:isbn')
-  async findOne(@Param('isbn') isbn: string): Promise<ProductDTO> {
+  async findOne(@Param('isbn') isbn: string): Promise<GetProductDto> {
     try {
       return await this.productsService.findOne(isbn);
     } catch (error) {
@@ -354,4 +358,41 @@ export class ProductsController {
     const resolucion = await this.productsService.getConexion();
     return resolucion;
   }
+
+  // Eliminar un producto
+  @ApiTags('Products')
+  @UsePipes(ValidationDeleteProductsPipe)
+  @ApiResponse({ status: 200, description: 'Se eliminó el libro correctamente' })
+  @ApiResponse({ status: 400, description: 'Error al eliminar el libro' })
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<string> {
+    try {
+      return await this.productsService.remove(+id);
+    } catch (error) {
+      throw new HttpException('Error al eliminar el libro', 400);
+    }
+  }
+
+  // Actualizar un producto
+  @ApiTags('Products')
+  @UsePipes(ValidationUpdateProductsPipe)
+  @ApiResponse({ status: 200, description: 'Se actualizó el libro correctamente' })
+  @ApiResponse({ status: 400, description: 'Error al actualizar libro' })
+  @ApiParam({name: 'id', required: true, type: 'number', description: 'ID del libro'})
+  @Patch(':id')
+  async update(
+    @Param('id') id: Libro, 
+    @Body() updatePurchaseDto: UpdateProductDto 
+  ): Promise<Libro> {
+    try {
+      return await this.productsService.update(id, updatePurchaseDto);
+    } catch (error) {
+      if (error instanceof BadRequestException){
+        throw error
+      } else {
+        throw new HttpException(error, 400);
+      }
+    }
+  }
+
 }

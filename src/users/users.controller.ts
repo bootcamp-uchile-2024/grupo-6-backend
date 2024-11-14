@@ -1,24 +1,25 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
+  Controller,
   Delete,
-  Query,
-  Put,
+  Get,
   HttpException,
-  UsePipes,
-  ValidationPipe,
+  Param,
   ParseArrayPipe,
   ParseIntPipe,
+  Post,
+  Put,
+  Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from './entities/user.entity';
+import { Usuario } from 'src/orm/entity/usuario';
+import { CreateUserDto } from './dto/create-user.dto';
 import { Address } from './entities/address.entity';
 import { TipoDireccion } from './entities/tipoDireccion.entity';
+import { User } from './entities/user.entity';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
@@ -167,6 +168,26 @@ export class UsersController {
       throw new HttpException('No existe usuario con el id ingresado.', 404);
     }
   }
+
+
+
+  @ApiResponse({
+    status: 200,
+    description:
+      'Este codigo se debe a que se pudo encontrar los usuarios de manera exitosa.',
+  })
+  // @ApiResponse({
+  //   status: 404,
+  //   description:
+  //     'Este codigo se debe a que no existe un usuario con el id ingresado.',
+  // })
+  @ApiTags('Users')
+  @Get()
+  async findAllUsuarios(): Promise<Usuario[]> {
+    return this.usersService.findAllUsuarios();
+  }
+
+
 
   @ApiResponse({
     status: 200,

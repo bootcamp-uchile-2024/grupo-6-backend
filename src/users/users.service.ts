@@ -1,10 +1,13 @@
-import { HttpException, Injectable} from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './entities/user.entity';
-import { TipoDireccion } from './entities/tipoDireccion.entity';
-import { Address } from './entities/address.entity';
-import { error } from 'console';
+import { HttpException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { isArray } from 'class-validator';
+import { error } from 'console';
+import { Usuario } from 'src/orm/entity/usuario';
+import { Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
+import { Address } from './entities/address.entity';
+import { TipoDireccion } from './entities/tipoDireccion.entity';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -53,6 +56,12 @@ export class UsersService {
     ),
   ];
 
+  constructor(
+    @InjectRepository(Usuario) 
+    private readonly userRepository: Repository<Usuario>,
+
+    ) {}
+
   createSHA256Hash(inputString) {
     const crypto = require('crypto');
     const hash = crypto.createHash('sha256');
@@ -91,6 +100,13 @@ export class UsersService {
     }
     return usuario;
   }
+
+
+  async findAllUsuarios(): Promise<Usuario[]> {
+    const usuarios: Promise<Usuario[]> = this.userRepository.find({});
+    return usuarios;
+  }
+
 
   update(
     id: number,

@@ -61,8 +61,7 @@
  ```
 
 
-
- ## Configuracion
+ ## Configuración
  1. Se deben completar las siguientes variables de
  entorno:
 - ENVIRONMENT: Ambiente en donde se ejecuta la app y la BBDD.
@@ -74,6 +73,11 @@
 ENVIROMENT=DEVELOPMENT
 PORT=4000
 MYSQL_ROOT_PASSWORD=grupo-6
+MYSQL_DATABASE=Paginas_Selectas
+MYSQL_PASSWORD=grupo-6
+MYSQL_HOST=localhost
+MYSQL_USERNAME=root
+PORT_DB=3306
 ```
  3. En caso que se ejecute en ambiente productivo,
  se deben modificar ambas variables:
@@ -81,10 +85,8 @@ MYSQL_ROOT_PASSWORD=grupo-6
 ENVIROMENT=PRODUCTION
 PORT=5000
 MYSQL_ROOT_PASSWORD=grupo-6
-MYSQL_DATABASE="paginas_selectas"
-MYSQL_USER=root
-MYSQL_PASSWORD=grupo-6
-PORT_DB=3307
+MYSQL_DATABASE=Paginas_selectas
+PORT_DB=3306
 ```
  ## Configuracion del ORM
  Para poder conectar la API con la base de datos es necesario realizar lo siguiente:
@@ -155,7 +157,7 @@ export class OrmModule {
 
  ### Realizar Pull a imagen:
  ```bash
- docker pull ncarvajalg/grupo-6-backend:v3.0.0
+ docker pull ncarvajalg/grupo-6-backend:v4.0.1
  ```
 
  ### Correr contenedor:
@@ -273,11 +275,15 @@ El modelo conceptual y el modelo de entidad relacion aparecen en la carpeta `/mo
 - Ramas para modificar archivos:
  Prefijo: `change/nombre-archivo`
     - Ejemplo: `change/users.service.ts`
+
  ### Integración a Producción
  Una vez completados los cambios en tu rama, crea un Pull
  Request (PR) hacia la rama main para revisión. El PR debe
  contener una descripción clara de los cambios y cualquier
  instrucción necesaria para probarlos.
+
+ ### Link de Imagen Productiva
+ http://18.222.107.251:3000/api
 
 
 ## Contacto

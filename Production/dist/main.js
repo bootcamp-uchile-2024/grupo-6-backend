@@ -14,6 +14,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    app.enableCors();
     const configService = app.get(config_1.ConfigService);
     app.useGlobalInterceptors(new books_interceptor_1.BooksInterceptor());
     app.useGlobalFilters(new books_filter_1.BooksFilter());

@@ -1,6 +1,6 @@
 services:
   api:
-    image: ncarvajalg/grupo-6-backend:v4.0.0
+    image: ncarvajalg/grupo-6-backend:v4.0.1
     container_name: g6_backend
 
     environment:

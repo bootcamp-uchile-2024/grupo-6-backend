@@ -29,8 +29,8 @@ async function bootstrap() {
   const authorEmail = process.env.npm_package_author_email;
   const licence = process.env.npm_package_license;
 
-  console.log('AMBIENTE:', configService.get("ENVIROMENT"));
-  console.log('PUERTO:', configService.get("PORT"));
+  //console.log('AMBIENTE:', configService.get("ENVIROMENT"));
+  //console.log('PUERTO:', configService.get("PORT"));
 
   const configApp = new DocumentBuilder()
     .setTitle(title)
@@ -113,6 +113,6 @@ async function bootstrap() {
   SwaggerModule.setup('api/users', app, documentUsers);
   SwaggerModule.setup('api/purchases', app, documentPurchases);
 
-  await app.listen(configService.get('PORT'));
+  await app.listen(configService.get('PUERTO_NEST')); //process.env.PUERTO_NESTJS
 }
 bootstrap();

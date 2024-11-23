@@ -1,31 +1,36 @@
 services:
-  # api:
-  #   image: "node:22-alpine3.19"
-  #   command: "nest run start:dev"
-  #   user: node
-  #   working_dir: /home/node/nest
-  #   volumes:
-  #     - .:/home/node/nest
-  #   environment:
-  #     - NODE_ENV=development
-  #     - ARCHIVO_ENV=development
-  #   ports:
-  #     - "3000:4000"
-  
-  # mysql:
-  #   image: mysql:8.0.39-debian
-  #   ports:
-  #     - "3307:${PORT_DB}"
-  #   volumes:
-  #     - ./sql:/var/lib/mysql
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-
   mysql:
-    image: mysql:8.0.39-debian
+    image: mysql:${VERSION_DB}
     ports:
-      - "3307:3306"
+      - "3307:${PUERTO_DB}"
     volumes:
       - ./sql:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: grupo-6
+      MYSQL_ROOT_PASSWORD: ${CLAVE_ROOT_DB}
+
+  # api:
+  #   image: "node:${VERSION_NODE}"
+
+  #   command: "nest run start:dev"
+
+  #   user: node
+
+  #   working_dir: /home/node/nest
+
+  #   volumes:
+  #     - .:/home/node/nest
+
+  #   environment:
+  #     - PUERTO_NESTJS=${PUERTO_NEST}
+  #     - DB_HOST=${RUTA-DB}
+  #     - DB_PORT=${PUERTO_DB}
+  #     - DB_USER=${USUARIO_DB}
+  #     - DB_PASS=${CLAVE_ROOT_DB}
+  #     - DB_NAME=${NOMBRE_DB}
+
+  #   ports:
+  #     - "3000:${PUERTO_NEST}"
+  
+  
+
+  

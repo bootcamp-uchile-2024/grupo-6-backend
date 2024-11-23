@@ -25,14 +25,14 @@ import { PurchasesModule } from './purchases/purchases.module';
       envFilePath: process.env.ARCHIVO_ENV ? `.env.${process.env.ARCHIVO_ENV}` : '.env',
       isGlobal: true,
       validate: (config: Record<string, any>) => {
-        if (!config.PORT) {
-          throw new Error('PORT is required');
+        if (!config.PUERTO_NEST) {
+          throw new Error('Port Nest is required');
         }
         if (config.PORT == '6000') {
-          throw new Error('PORT must be diferent from 6000');
+          throw new Error('Port Nest must be diferent from 6000');
         }
         return {
-          PORT: parseInt(config.PORT),
+          PUERTO_NEST: parseInt(config.PUERTO_NEST),
           ENVIROMENT: config.ENVIROMENT,
         };
       },

@@ -1,11 +1,3 @@
-DROP DATABASE IF EXISTS Paginas_Selectas;
-
--- Crear la base de datos
-CREATE DATABASE Paginas_Selectas;
-
-USE Paginas_Selectas;
-
-
 CREATE TABLE usuario (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,

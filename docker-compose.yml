@@ -8,6 +8,12 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${CLAVE_ROOT_DB}
 
+  flyway:
+    image: flyway/flyway:${VERSION_FLYWAY}
+    volumes:
+      - ./src/BBDD/:/flyway/sql
+    command: -url=jdbc:mysql://${RUTA_DB}:${PUERTO_DB}/${NOMBRE_DB}?allowPublicKeyRetrieval=true -user=${USUARIO_DB} -password=${CLAVE_ROOT_DB} -connectRetries=60 migrate    
+
   # api:
   #   image: "node:${VERSION_NODE}"
 

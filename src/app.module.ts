@@ -11,6 +11,7 @@ import { ShoppingcartModule } from './shoppingcart/shoppingcart.module';
 import { UsersModule } from './users/users.module';
 import { OrmModule } from './orm/orm.module';
 import { PurchasesModule } from './purchases/purchases.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -38,7 +39,10 @@ import { PurchasesModule } from './purchases/purchases.module';
       },
     }),
     PurchasesModule,
-    
+    ServeStaticModule.forRoot({
+      rootPath: './estatics',
+      serveRoot: '/cover',
+      })
   ],
   controllers: [AppController],
   providers: [AppService],

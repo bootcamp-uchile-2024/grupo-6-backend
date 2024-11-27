@@ -6,11 +6,11 @@ import { IsInt } from "class-validator";
 export class ShoppingcartUpdateDto {
     @IsInt()
     @ApiProperty({example: '1', description: 'id del usuario'})
-    public usuario_id: number;
+    public idUsuario: number;
 
     @IsInt()
     @ApiProperty({example: '1', description: 'id del libro'})
-    public libro_id: number;
+    public isbn: number;
 
     @IsInt()
     @ApiProperty({example: '1', description: 'cantidad de un mismo libro'})

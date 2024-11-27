@@ -28,7 +28,7 @@ services:
 
     environment:
       MYSQL_ROOT_PASSWORD: grupo-6
-      MYSQL_DATABASE: Paginas_Selectas
+      MYSQL_DATABASE: paginas_selectas
       
     env_file:
       - .env

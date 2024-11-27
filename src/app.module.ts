@@ -23,8 +23,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     UsersModule,
     OrmModule,
     ConfigModule.forRoot({
-      envFilePath: process.env.ARCHIVO_ENV ? `.env.${process.env.ARCHIVO_ENV}` : '.env',
       isGlobal: true,
+      envFilePath: process.env.ARCHIVO_ENV ? `.env.${process.env.ARCHIVO_ENV}` : '.env',
       validate: (config: Record<string, any>) => {
         if (!config.PUERTO_NEST) {
           throw new Error('Port Nest is required');

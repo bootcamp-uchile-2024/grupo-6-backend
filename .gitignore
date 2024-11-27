@@ -1,12 +1,8 @@
-/sql
-/Production/manual/dist
 
 # compiled output
 /dist
 /node_modules
 /build
-/sql
-/Production/manual/dist
 /acceso1234.pem
 
 # DB

@@ -1,42 +1,33 @@
 services:
+  api:
+    image: "node:${VERSION_NODE}"
+    command: "npm run start:dev"
+    user: node
+    working_dir: /home/node/nest
+    volumes:
+      - .:/home/node/nest
+    ports:
+      - "${PUERTO_NEST}:3000"
+    depends_on:
+      - mysql
+
   mysql:
     image: mysql:${VERSION_DB}
-    ports:
-      - "3307:${PUERTO_DB}"
-    volumes:
-      - ./sql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${CLAVE_ROOT_DB}
+    volumes:
+      - ./sql:/var/lib/mysql
+    ports:
+      - "${PUERTO_DB}:3306"
 
   flyway:
     image: flyway/flyway:${VERSION_FLYWAY}
     volumes:
-      - ./src/BBDD/:/flyway/sql
-    command: -url=jdbc:mysql://${RUTA_DB}:${PUERTO_DB}/${NOMBRE_DB}?allowPublicKeyRetrieval=true -user=${USUARIO_DB} -password=${CLAVE_ROOT_DB} -connectRetries=60 migrate    
-
-  # api:
-  #   image: "node:${VERSION_NODE}"
-
-  #   command: "nest run start:dev"
-
-  #   user: node
-
-  #   working_dir: /home/node/nest
-
-  #   volumes:
-  #     - .:/home/node/nest
-
-  #   environment:
-  #     - PUERTO_NESTJS=${PUERTO_NEST}
-  #     - DB_HOST=${RUTA-DB}
-  #     - DB_PORT=${PUERTO_DB}
-  #     - DB_USER=${USUARIO_DB}
-  #     - DB_PASS=${CLAVE_ROOT_DB}
-  #     - DB_NAME=${NOMBRE_DB}
-
-  #   ports:
-  #     - "3000:${PUERTO_NEST}"
-  
-  
-
-  
+      - ./src/BBDD:/flyway/sql
+    environment:
+      FLYWAY_URL: jdbc:mysql://${RUTA_DB}:${PUERTO_DB}/${NOMBRE_DB}?allowPublicKeyRetrieval=true
+      FLYWAY_USER: ${USUARIO_DB}
+      FLYWAY_PASSWORD: ${CLAVE_ROOT_DB}
+    entrypoint: ["flyway", "-connectRetries=60", "migrate"]
+    depends_on: 
+      - mysql

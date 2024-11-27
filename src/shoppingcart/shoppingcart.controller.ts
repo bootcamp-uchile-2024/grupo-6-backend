@@ -107,7 +107,7 @@ export class ShoppingcartController {
   }
 
 
-  @ApiTags('Shopping cart')
+  /*@ApiTags('Shopping cart')
   @ApiResponse({
     status: 200,
     description: 'Carrito de compra eliminado',
@@ -131,5 +131,5 @@ export class ShoppingcartController {
     } else {
       throw new NotFoundException();
     }
-  }
+  }*/
 }

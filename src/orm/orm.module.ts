@@ -20,11 +20,11 @@ import { Usuario } from "./entity/usuario";
     imports: [
         TypeOrmModule.forRoot({
             type: 'mysql',
-            host: 'localhost', //process.env.DB_HOST,
-            port: 3307, //+process.env.DB_PORT,
+            host: 'mysql', //process.env.DB_HOST,
+            port: 3306, //+process.env.DB_PORT,
             username: 'root',  //process.env.DB_USER,
             password: 'grupo-6', //process.env.DB_PASS,
-            database: 'Paginas_Selectas',  //process.env.DB_NAME,
+            database: 'paginas_selectas',  //process.env.DB_NAME,
             entities: [
                 Usuario,
                 Direccion,

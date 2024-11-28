@@ -287,7 +287,7 @@ INSERT INTO libro (isbn, id_idioma, id_encuadernacion, nombre, stock_libro, prec
 ('9780316769488', 2, 2, 'The Catcher in the Rye', 130, 22000, 4, 7, 1951, 277, 5, 'catcherRye.jpg', '13x20 cm', '1234567890654', 'Novela de J.D. Salinger sobre el adolescente Holden Caulfield'),
 ('9780140449181', 2, 1, 'War and Peace', 50, 40000, 5, 5, 1869, 1225, 20, 'warPeace.jpg', '15x23 cm', '1234567890876', 'Obra maestra de León Tolstói'),
 ('9788497592319', 1, 3, 'El Silmarillion', 70, 28000, 4, 5, 1977, 480, 10, 'elSilmarillion.jpg', '12x18 cm', '1234567890120', 'Historia épica sobre la creación de la Tierra Media'),
-('9780544003415', 2, 2, 'The Lord of the Rings', 200, 60000, 5, 5, 1954, 1178, 15, 'lordOfTheRing.jpg', '15x23 cm', '1234567890321', 'Saga épica de J.R.R. Tolkien'),
+('9780544003415', 2, 2, 'The Lord of the Rings', 200, 60000, 5, 5, 1954, 1178, 15, 'lordOfTheRings.jpg', '15x23 cm', '1234567890321', 'Saga épica de J.R.R. Tolkien'),
 ('9781400079988', 2, 1, '1984', 150, 18000, 5, 9, 1949, 328, 5, '1984.jpg', '13x20 cm', '1234567890567', 'Distopía clásica de George Orwell'),
 ('9780143039433', 2, 2, 'Anna Karenina', 80, 26000, 4, 4, 1877, 964, 12, 'annaKarenina.jpg', '14x21 cm', '1234567890798', 'Novela trágica de León Tolstói'),
 ('9780143105985', 2, 1, 'Moby-Dick', 60, 22000, 4, 6, 1851, 635, 15, 'mobyDick.jpg', '14x21 cm', '1234567890910', 'Historia épica de Herman Melville'),

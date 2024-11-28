@@ -12,19 +12,25 @@ export class CarritoMapper {
         carritoDto.autor = libro.autores;
         carritoDto.caratula = libro.caratula;
         carritoDto.precio = libro.precio;
-        carritoDto.cantidad = carrito.cantidad
+        carritoDto.cantidad = carrito.cantidad;
+        carritoDto.idUsuario = carrito.usuario.id;
+        carritoDto.descuento = libro.descuento;
+        carritoDto.stockLibro = libro.stock_libro;
         return carritoDto;
     };
 
     static dtoToEntity(carritoDto: CreateShoppingcartDto ): Carrito {
         const carrito = new Carrito();
-        carrito.usuario_id = carritoDto.usuario_id;
-        carrito.libro_id = carritoDto.libro_id;
+        carrito.usuario_id = carritoDto.idUsuario;
+        carrito.libro_id = carritoDto.isbn;
         carrito.cantidad = carritoDto.cantidad;
         return carrito;
         }
 
-    /*static entityListToDtoList(clientes: Cliente[]): ClienteDto[] {
-        return clientes.map((cliente) => this.entityToDto(cliente));
-    };*/
+    static entityListToDtoList(carritos: Carrito[], libros: Libro[]): ShoppingcartSalidaDto[] {
+        const carritoDtos = carritos.map((carrito, index) => {
+            return this.entityToDto(carrito, libros[index]);
+        });
+        return carritoDtos;
+    };
 }

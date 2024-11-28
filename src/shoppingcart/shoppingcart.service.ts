@@ -22,12 +22,32 @@ export class ShoppingcartService {
   async create(createShoppingcartDto: CreateShoppingcartDto): Promise <ShoppingcartSalidaDto> {
     const libroEncontrado = await this.libroRepository.findOne({
       where:{
-        id: createShoppingcartDto.libro_id
+        id: createShoppingcartDto.isbn
       }
     }) 
     const carrito = this.carritoRepository.create(createShoppingcartDto);
     await this.carritoRepository.save(carrito);
     return CarritoMapper.entityToDto(carrito, libroEncontrado);
+  }
+
+
+  async createlibros(createShoppingcartDto: CreateShoppingcartDto[]): Promise <ShoppingcartSalidaDto[]> {
+    
+    const unicos: ShoppingcartSalidaDto[] = [];
+    
+    for (const unico of createShoppingcartDto){
+
+      const libroEncontrado = await this.libroRepository.findOne({
+        where:{
+          id: unico.isbn
+        }
+      }) 
+      const carrito = this.carritoRepository.create(unico);
+      await this.carritoRepository.save(carrito);
+      const item = CarritoMapper.entityToDto(carrito, libroEncontrado);
+      unicos.push(item);
+    }
+    return unicos;
   }
 
 
@@ -52,8 +72,8 @@ export class ShoppingcartService {
     if ( updateDto.cantidad > 0){
       const productoEncontrado = await this.carritoRepository.findOne({
         where:{
-          usuario_id: updateDto.usuario_id,
-          libro_id: updateDto.libro_id
+          usuario_id: updateDto.idUsuario,
+          libro_id: updateDto.isbn
         }   
       })
       productoEncontrado.cantidad = updateDto.cantidad;
@@ -62,8 +82,8 @@ export class ShoppingcartService {
     if (updateDto.cantidad === 0){
       const productoEncontrado = await this.carritoRepository.findOne({
         where:{
-          usuario_id: updateDto.usuario_id,
-          libro_id: updateDto.libro_id
+          usuario_id: updateDto.idUsuario,
+          libro_id: updateDto.isbn
         }   
       })
       await this.carritoRepository.remove(productoEncontrado);
@@ -71,7 +91,7 @@ export class ShoppingcartService {
   }
 
 
-  async remove(id: number): Promise <ShoppingcartSalidaDto[]> {
+  async removecarrito(id: number): Promise <ShoppingcartSalidaDto[]> {
     const carritos = await this.carritoRepository.find({
       where:{
         usuario_id: id
@@ -90,4 +110,25 @@ export class ShoppingcartService {
     }
     return items;
   }
+
+
+  /*async removelibro(id: number, isbn:number): Promise <ShoppingcartSalidaDto[]> {
+    const carritos = await this.carritoRepository.find({
+      where:{
+        usuario_id: id
+      }
+    });
+    const items: ShoppingcartSalidaDto[] = [];
+    for (const carrito of carritos){
+      const libroEncontrado = await this.libroRepository.findOne({
+        where:{
+          id: carrito.libro_id
+        }
+      })
+      const item = CarritoMapper.entityToDto(carrito, libroEncontrado);
+      items.push(item);
+      await this.carritoRepository.remove(carrito);
+    }
+    return items;
+  }*/
 }

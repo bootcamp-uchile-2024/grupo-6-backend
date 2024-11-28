@@ -8,6 +8,8 @@ COPY ../package.json home/node/app/package.json
 
 COPY ../.env home/node/app/.env
 
+COPY ../estatics home/node/app/estatics
+
 WORKDIR /home/node/app
 
 RUN npm install --production

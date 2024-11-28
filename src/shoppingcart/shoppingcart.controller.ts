@@ -43,6 +43,21 @@ export class ShoppingcartController {
 
 
   @ApiTags('Shopping cart')
+  @ApiBody({
+    type: CreateShoppingcartDto,
+    description: 'Datos del libros que se va a cargar al carrito de compras',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Productos agregado a carrito de compras',
+  })
+  @Post()
+  async createlibros(@Body() createShoppingcartDto: CreateShoppingcartDto[]): Promise <ShoppingcartSalidaDto[]> {
+    return await this.shoppingcartService.createlibros(createShoppingcartDto);
+  }
+
+
+  @ApiTags('Shopping cart')
   @ApiResponse({ status: 200, description: 'Obtención de carrito de compras' })
   @ApiResponse({
     status: 404,
@@ -69,25 +84,52 @@ export class ShoppingcartController {
   @ApiTags('Shopping cart')
   @ApiResponse({
     status: 200,
-    description: 'Producto eliminado del carrito de compra',
+    description: 'Carrito de compra eliminado',
   })
   @ApiResponse({
     status: 404,
-    description: 'Producto no existe en el carrito de compra',
+    description: 'Carrito de compra no existe',
   })
   @Delete(':id')
-  async remove(
+  async removecarrito(
     @Param(
       'id',
       new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
     )
     id: number,
   ): Promise <ShoppingcartSalidaDto[]> {
-    const encontrado = await this.shoppingcartService.remove(id);
+    const encontrado = await this.shoppingcartService.removecarrito(id);
     if (encontrado) {
       return encontrado;
     } else {
       throw new NotFoundException();
     }
   }
+
+
+  /*@ApiTags('Shopping cart')
+  @ApiResponse({
+    status: 200,
+    description: 'Carrito de compra eliminado',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Carrito de compra no existe',
+  })
+  @Delete(':id/libro/isbn')
+  async removelibro(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
+    )
+    id: number,
+      @Param('isbn') isbn: number
+  ): Promise <ShoppingcartSalidaDto[]> {
+    const encontrado = await this.shoppingcartService.removelibro(id, isbn);
+    if (encontrado) {
+      return encontrado;
+    } else {
+      throw new NotFoundException();
+    }
+  }*/
 }

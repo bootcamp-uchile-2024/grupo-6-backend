@@ -1,15 +1,14 @@
 
 # compiled output
-/dist
-/node_modules
+/node_modules/
 /build
 /acceso1234.pem
-/Production/dist
-/Production/node_modules
+/Production/dist/
+/Production/node_modules/
 
 # DB
-/sql
-/Production/sql
+/sql/
+/Production/sql/
 
 # Logs
 logs

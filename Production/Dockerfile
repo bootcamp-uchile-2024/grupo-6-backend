@@ -10,6 +10,8 @@ COPY ../.env home/node/app/.env
 
 COPY ../estatics home/node/app/estatics
 
+COPY ../BBDD home/node/app/BBDD
+
 WORKDIR /home/node/app
 
 RUN npm install --production

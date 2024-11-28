@@ -14,46 +14,123 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductsService = void 0;
 const common_1 = require("@nestjs/common");
-const product_entity_1 = require("./entities/product.entity");
+const typeorm_1 = require("@nestjs/typeorm");
+const fs_1 = require("fs");
+const autor_1 = require("../orm/entity/autor");
+const autor_libro_1 = require("../orm/entity/autor_libro");
+const editorial_1 = require("../orm/entity/editorial");
+const encuadernacion_1 = require("../orm/entity/encuadernacion");
+const genero_1 = require("../orm/entity/genero");
+const genero_libro_1 = require("../orm/entity/genero_libro");
+const idioma_libro_1 = require("../orm/entity/idioma_libro");
+const libro_1 = require("../orm/entity/libro");
+const errorStatus_1 = require("./errorStatus");
+const typeorm_2 = require("typeorm");
+const get_product_dto_1 = require("./dto/get-product.dto");
+const proConexDTO_1 = require("./dto/proConexDTO");
+const encuadernacionEnum_1 = require("./entities/encuadernacionEnum");
 const generoEnum_1 = require("./entities/generoEnum");
 const idioma_1 = require("./entities/idioma");
-const encuadernacion_1 = require("./entities/encuadernacion");
-const errorStatus_1 = require("./errorStatus");
-const get_product_dto_1 = require("./dto/get-product.dto");
-const typeorm_1 = require("@nestjs/typeorm");
-const typeorm_2 = require("typeorm");
-const proConexDTO_1 = require("./dto/proConexDTO");
-const libro_1 = require("../orm/entity/libro");
+const product_entity_1 = require("./entities/product.entity");
 const libro_mapper_1 = require("./mappers/libro.mapper");
-const autor_1 = require("../orm/entity/autor");
-const genero_1 = require("../orm/entity/genero");
 let ProductsService = class ProductsService {
-    constructor(dataSource, productRepository, autorRepository, generoRepository) {
+    constructor(dataSource, productRepository, autorRepository, generoRepository, editorialRepository, autorLibroRepository, generoLibroRepository, idiomaRepository, encuadernacionRepository) {
         this.dataSource = dataSource;
         this.productRepository = productRepository;
         this.autorRepository = autorRepository;
         this.generoRepository = generoRepository;
+        this.editorialRepository = editorialRepository;
+        this.autorLibroRepository = autorLibroRepository;
+        this.generoLibroRepository = generoLibroRepository;
+        this.idiomaRepository = idiomaRepository;
+        this.encuadernacionRepository = encuadernacionRepository;
         this.proConex = [];
         this.products = [
-            new product_entity_1.Product('9788420412146', 'Don Quijote de la Mancha', ['Miguel de Cervantes'], 50, 19000, [generoEnum_1.GeneroEnum.NOVELA, generoEnum_1.GeneroEnum.CLASICO], 'Lengua Viva', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_DURA, new Date(2015, 0), 1376, 0, '9788420412146.jpg', '15cm x 25cm', '978-8-42-041214-6', 'La obra maestra de Miguel de Cervantes narra las aventuras de Alonso Quijano, quien, tras leer muchos libros de caballerías, decide convertirse en un caballero andante, Don Quijote. Acompañado por su fiel escudero Sancho Panza, busca revivir la caballería en un mundo moderno. Es una sátira profunda sobre la realidad y la ficción, y un clásico de la literatura universal.'),
-            new product_entity_1.Product('9789585581616', 'Cien Años de Soledad', ['Gabriel García Márquez'], 70, 20500, [generoEnum_1.GeneroEnum.NOVELA, generoEnum_1.GeneroEnum.CLASICO], 'Literatura Random House', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_DURA, new Date(2021, 0), 400, 20, '9789585581616.jpeg', '13cm x 25cm', '978-9-58-558161-6', 'Gabriel García Márquez cuenta la historia de la familia Buendía en el mítico pueblo de Macondo. Con un estilo de realismo mágico, explora temas como el destino, la soledad y los ciclos de la vida. La novela es un referente del boom latinoamericano y una de las más importantes del siglo XX.'),
-            new product_entity_1.Product('9781847498571', '1984', ['George Orwell'], 20, 12000, [generoEnum_1.GeneroEnum.DISTOPIA, generoEnum_1.GeneroEnum.CIENCIA_FICCION], 'Alma classic', idioma_1.Idioma.INGLES, encuadernacion_1.Encuadernacion.TAPA_BLANDA, new Date(2021, 0), 400, 0, '9781847498571.jpeg', '15cm x 20cm', '978-1-84-749857-1', 'George Orwell presenta una sociedad distópica controlada por el Estado totalitario liderado por el Gran Hermano. Winston Smith, el protagonista, lucha por su libertad y por descubrir la verdad en un mundo de vigilancia y manipulación constante. Es un alegato contra el autoritarismo y la pérdida de libertad individual.'),
-            new product_entity_1.Product('9788484284888', 'Orgullo y Prejucio', ['Jane Austen'], 30, 30000, [generoEnum_1.GeneroEnum.ROMANCE, generoEnum_1.GeneroEnum.CLASICO], 'Alba Editorial', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_DURA, new Date(2009, 0), 424, 10, '9788484284888.jpeg', '14cm x 21cm', '978-8-48-428488-8', 'En este clásico de Jane Austen, Elizabeth Bennet navega las presiones sociales y familiares para encontrar el amor verdadero. Su historia con el orgulloso Sr. Darcy revela las complejidades de las primeras impresiones y las dinámicas sociales en la Inglaterra del siglo XIX. Es una de las novelas románticas más influyentes de la historia.'),
-            new product_entity_1.Product('9788445009598', 'El Señor de los Anillos - La Comunidad del Anillo', ['R. R. Tolkien'], 100, 17200, [generoEnum_1.GeneroEnum.FANTASIA, generoEnum_1.GeneroEnum.AVENTURA], 'Minotauro', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_BLANDA, new Date(2022, 0), 488, 0, '9788445009598.webp', '14cm x 25cm', '978-8-44-500959-8', 'La primera parte de la trilogía de J.R.R. Tolkien sigue a Frodo Bolsón, quien debe destruir el Anillo Único para evitar que Sauron, el Señor Oscuro, lo use para dominar la Tierra Media. Frodo es acompañado por una comunidad de héroes. Es una de las obras fundacionales del género de fantasía épica.'),
-            new product_entity_1.Product('9788413417943', 'Nieve, Cristal, Manzanas', ['Neil Gaiman', 'Collen Duran'], 25, 17500, [generoEnum_1.GeneroEnum.FANTASIA, generoEnum_1.GeneroEnum.TERROR], 'Planeta Comic', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_DURA, new Date(2021, 0), 72, 0, '9788413417943.jpeg', '15cm x 22cm', '978-8-41-341794-3', 'Neil Gaiman y Colleen Duran ofrecen una reinterpretación oscura del cuento de Blancanieves desde la perspectiva de la madrastra. La historia explora temas de belleza, envejecimiento y traición. Este relato gráfico es una combinación única de fantasía y horror.'),
-            new product_entity_1.Product('9788423352838', 'Mitos Nórdicos', ['Neil Gaiman'], 12, 21500, [generoEnum_1.GeneroEnum.FANTASIA, generoEnum_1.GeneroEnum.HISTORIA], 'Destino', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_BLANDA, new Date(2017, 0), 272, 15, '9788423352838.jpeg', '15cm x 22cm', '978-8-42-335283-8', 'Neil Gaiman recrea los mitos nórdicos, desde la creación del mundo hasta el Ragnarok, el fin de los tiempos. Presenta a dioses como Odin, Thor y Loki con un estilo accesible y moderno. Es una obra que invita a conocer más sobre la mitología escandinava.'),
-            new product_entity_1.Product('9789873752131', 'De Animales a Dioses', ['Yuval Noah Harari'], 120, 14000, [generoEnum_1.GeneroEnum.HISTORIA], 'Debate', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_BLANDA, new Date(2014, 0), 496, 0, '9789873752131.jpeg', '15cm x 22cm', '978-9-87-375213-1', 'Yuval Noah Harari analiza la evolución de la humanidad desde los primeros homínidos hasta el presente. Explora cómo los humanos han dominado el mundo a través de la cultura, la religión y la ciencia. Es un libro de historia que mezcla ciencia, filosofía y reflexiones sobre el futuro.'),
-            new product_entity_1.Product('9780156013987', 'Le Petit Prince', ['Antoine De Saint-Exupéry'], 96, 17050, [generoEnum_1.GeneroEnum.INFANTIL, generoEnum_1.GeneroEnum.FILOSOFIA], 'Mariner Books', idioma_1.Idioma.FRANCES, encuadernacion_1.Encuadernacion.TAPA_BLANDA, new Date(2001, 0), 96, 10, '9780156013987.jpeg', '12cm x 20cm', '978-0-15-601398-7', 'Antoine de Saint-Exupéry relata las aventuras de un joven príncipe que viaja entre planetas, aprendiendo sobre la vida, el amor y la soledad. Aunque es un cuento infantil, tiene profundas reflexiones filosóficas. Es uno de los libros más traducidos y leídos en el mundo.'),
-            new product_entity_1.Product('9789585404267', 'Una Educacion', ['Tara Westover'], 8, 22300, [generoEnum_1.GeneroEnum.BIOGRAFIAS], 'Lumen', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_BLANDA, new Date(2018, 0), 470, 0, '9789585404267.jpeg', '13.5cm x 21cm', '978-9-58-540426-7', 'Tara Westover narra sus memorias sobre crecer en una familia mormona radical en Idaho, sin educación formal hasta los 17 años. A pesar de los obstáculos, logra acceder a la universidad y transformar su vida. Es una historia de superación, educación y la búsqueda de la identidad.'),
-            new product_entity_1.Product('9789566058885', 'Elogio de la naturaleza', ['Gabriela Mistral'], 25, 11900, [generoEnum_1.GeneroEnum.POESIA], 'Lumen', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_BLANDA, new Date(2024, 0), 232, 0, '9789566058885.jpeg', '14cm x 24cm', '978-9-56-605888-5', 'Gabriela Mistral recopila en esta obra sus poemas dedicados a la naturaleza y la conexión espiritual con el mundo natural. A través de sus versos, celebra la belleza y las fuerzas elementales de la vida. Es una obra que muestra su sensibilidad y amor por el paisaje y lo simple.'),
-            new product_entity_1.Product('9789569993060', 'Breves Respuestas a las Grandes Preguntas', ['Stephen Hawking'], 23, 12550, [generoEnum_1.GeneroEnum.CIENCIA_MATEMATICA], 'Crítica', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_BLANDA, new Date(2017, 0), 288, 15, '9789569993060.jpeg', '14cm x 23cm', '978-9-56-999306-0', 'Stephen Hawking explora algunas de las grandes incógnitas de la humanidad, como el origen del universo, la posibilidad de vida extraterrestre y el futuro de la inteligencia artificial. Expone estas ideas complejas de manera accesible. Es un libro que invita a la reflexión científica y filosófica.'),
-            new product_entity_1.Product('9789569635601', 'Meditaciones', ['Marco Aurelio'], 30, 11500, [generoEnum_1.GeneroEnum.FILOSOFIA, generoEnum_1.GeneroEnum.CLASICO], 'Taurus', idioma_1.Idioma.ESPANOL, encuadernacion_1.Encuadernacion.TAPA_BLANDA, new Date(2021, 0), 176, 0, '9789569635601.jpeg', '15cm x 21cm', '978-9-56-963560-1', 'En esta obra, Marco Aurelio, emperador romano y filósofo estoico, reflexiona sobre la vida, el destino y la virtud. Es un texto introspectivo que ofrece lecciones sobre cómo vivir en armonía con el mundo y con uno mismo. Su filosofía estoica ha influido en generaciones de lectores.'),
+            new product_entity_1.Product('9788420412146', 'Don Quijote de la Mancha', ['Miguel de Cervantes'], 50, 19000, [generoEnum_1.GeneroEnum.DRAMA, generoEnum_1.GeneroEnum.COMEDIA], 'Lengua Viva', idioma_1.Idioma.ESPANOL, encuadernacionEnum_1.EncuadernacionEnum.TAPA_DURA, 2015, 1376, 0, '9788420412146.jpg', '15cm x 25cm', '978-8-42-041214-6', 'La obra maestra de Miguel de Cervantes narra las aventuras de Alonso Quijano, quien, tras leer muchos libros de caballerías, decide convertirse en un caballero andante, Don Quijote. Acompañado por su fiel escudero Sancho Panza, busca revivir la caballería en un mundo moderno. Es una sátira profunda sobre la realidad y la ficción, y un clásico de la literatura universal.'),
+            new product_entity_1.Product('9789585581616', 'Cien Años de Soledad', ['Gabriel García Márquez'], 70, 20500, [generoEnum_1.GeneroEnum.DRAMA, generoEnum_1.GeneroEnum.COMEDIA], 'Literatura Random House', idioma_1.Idioma.ESPANOL, encuadernacionEnum_1.EncuadernacionEnum.TAPA_DURA, 2015, 400, 20, '9789585581616.jpeg', '13cm x 25cm', '978-9-58-558161-6', 'Gabriel García Márquez cuenta la historia de la familia Buendía en el mítico pueblo de Macondo. Con un estilo de realismo mágico, explora temas como el destino, la soledad y los ciclos de la vida. La novela es un referente del boom latinoamericano y una de las más importantes del siglo XX.'),
+            new product_entity_1.Product('9781847498571', '1984', ['George Orwell'], 20, 12000, [generoEnum_1.GeneroEnum.DRAMA, generoEnum_1.GeneroEnum.COMEDIA], 'Alma classic', idioma_1.Idioma.INGLES, encuadernacionEnum_1.EncuadernacionEnum.TAPA_BLANDA, 2015, 400, 0, '9781847498571.jpeg', '15cm x 20cm', '978-1-84-749857-1', 'George Orwell presenta una sociedad distópica controlada por el Estado totalitario liderado por el Gran Hermano. Winston Smith, el protagonista, lucha por su libertad y por descubrir la verdad en un mundo de vigilancia y manipulación constante. Es un alegato contra el autoritarismo y la pérdida de libertad individual.'),
+            new product_entity_1.Product('9788484284888', 'Orgullo y Prejucio', ['Jane Austen'], 30, 30000, [generoEnum_1.GeneroEnum.DRAMA, generoEnum_1.GeneroEnum.COMEDIA], 'Alba Editorial', idioma_1.Idioma.ESPANOL, encuadernacionEnum_1.EncuadernacionEnum.TAPA_DURA, 2015, 424, 10, '9788484284888.jpeg', '14cm x 21cm', '978-8-48-428488-8', 'En este clásico de Jane Austen, Elizabeth Bennet navega las presiones sociales y familiares para encontrar el amor verdadero. Su historia con el orgulloso Sr. Darcy revela las complejidades de las primeras impresiones y las dinámicas sociales en la Inglaterra del siglo XIX. Es una de las novelas románticas más influyentes de la historia.'),
+            new product_entity_1.Product('9788445009598', 'El Señor de los Anillos - La Comunidad del Anillo', ['R. R. Tolkien'], 100, 17200, [generoEnum_1.GeneroEnum.FANTASIA, generoEnum_1.GeneroEnum.AVENTURA], 'Minotauro', idioma_1.Idioma.ESPANOL, encuadernacionEnum_1.EncuadernacionEnum.TAPA_BLANDA, 2015, 488, 0, '9788445009598.webp', '14cm x 25cm', '978-8-44-500959-8', 'La primera parte de la trilogía de J.R.R. Tolkien sigue a Frodo Bolsón, quien debe destruir el Anillo Único para evitar que Sauron, el Señor Oscuro, lo use para dominar la Tierra Media. Frodo es acompañado por una comunidad de héroes. Es una de las obras fundacionales del género de fantasía épica.'),
+            new product_entity_1.Product('9788413417943', 'Nieve, Cristal, Manzanas', ['Neil Gaiman', 'Collen Duran'], 25, 17500, [generoEnum_1.GeneroEnum.FANTASIA, generoEnum_1.GeneroEnum.TERROR], 'Planeta Comic', idioma_1.Idioma.ESPANOL, encuadernacionEnum_1.EncuadernacionEnum.TAPA_DURA, 2020, 72, 0, '9788413417943.jpeg', '15cm x 22cm', '978-8-41-341794-3', 'Neil Gaiman y Colleen Duran ofrecen una reinterpretación oscura del cuento de Blancanieves desde la perspectiva de la madrastra. La historia explora temas de belleza, envejecimiento y traición. Este relato gráfico es una combinación única de fantasía y horror.'),
+            new product_entity_1.Product('9788423352838', 'Mitos Nórdicos', ['Neil Gaiman'], 12, 21500, [generoEnum_1.GeneroEnum.DRAMA, generoEnum_1.GeneroEnum.COMEDIA], 'Destino', idioma_1.Idioma.ESPANOL, encuadernacionEnum_1.EncuadernacionEnum.TAPA_BLANDA, 2020, 272, 15, '9788423352838.jpeg', '15cm x 22cm', '978-8-42-335283-8', 'Neil Gaiman recrea los mitos nórdicos, desde la creación del mundo hasta el Ragnarok, el fin de los tiempos. Presenta a dioses como Odin, Thor y Loki con un estilo accesible y moderno. Es una obra que invita a conocer más sobre la mitología escandinava.'),
+            new product_entity_1.Product('9789873752131', 'De Animales a Dioses', ['Yuval Noah Harari'], 120, 14000, [generoEnum_1.GeneroEnum.EDUCATIVO], 'Debate', idioma_1.Idioma.ESPANOL, encuadernacionEnum_1.EncuadernacionEnum.TAPA_BLANDA, 2020, 496, 0, '9789873752131.jpeg', '15cm x 22cm', '978-9-87-375213-1', 'Yuval Noah Harari analiza la evolución de la humanidad desde los primeros homínidos hasta el presente. Explora cómo los humanos han dominado el mundo a través de la cultura, la religión y la ciencia. Es un libro de historia que mezcla ciencia, filosofía y reflexiones sobre el futuro.'),
+            new product_entity_1.Product('9780156013987', 'Le Petit Prince', ['Antoine De Saint-Exupéry'], 96, 17050, [generoEnum_1.GeneroEnum.INFANTIL, generoEnum_1.GeneroEnum.FILOSOFIA], 'Mariner Books', idioma_1.Idioma.FRANCES, encuadernacionEnum_1.EncuadernacionEnum.TAPA_BLANDA, 2020, 96, 10, '9780156013987.jpeg', '12cm x 20cm', '978-0-15-601398-7', 'Antoine de Saint-Exupéry relata las aventuras de un joven príncipe que viaja entre planetas, aprendiendo sobre la vida, el amor y la soledad. Aunque es un cuento infantil, tiene profundas reflexiones filosóficas. Es uno de los libros más traducidos y leídos en el mundo.'),
+            new product_entity_1.Product('9789585404267', 'Una Educacion', ['Tara Westover'], 8, 22300, [generoEnum_1.GeneroEnum.BIOGRAFIA], 'Lumen', idioma_1.Idioma.ESPANOL, encuadernacionEnum_1.EncuadernacionEnum.TAPA_BLANDA, 2020, 470, 0, '9789585404267.jpeg', '13.5cm x 21cm', '978-9-58-540426-7', 'Tara Westover narra sus memorias sobre crecer en una familia mormona radical en Idaho, sin educación formal hasta los 17 años. A pesar de los obstáculos, logra acceder a la universidad y transformar su vida. Es una historia de superación, educación y la búsqueda de la identidad.'),
+            new product_entity_1.Product('9789566058885', 'Elogio de la naturaleza', ['Gabriela Mistral'], 25, 11900, [generoEnum_1.GeneroEnum.DRAMA], 'Lumen', idioma_1.Idioma.ESPANOL, encuadernacionEnum_1.EncuadernacionEnum.TAPA_BLANDA, 2013, 232, 0, '9789566058885.jpeg', '14cm x 24cm', '978-9-56-605888-5', 'Gabriela Mistral recopila en esta obra sus poemas dedicados a la naturaleza y la conexión espiritual con el mundo natural. A través de sus versos, celebra la belleza y las fuerzas elementales de la vida. Es una obra que muestra su sensibilidad y amor por el paisaje y lo simple.'),
+            new product_entity_1.Product('9789569993060', 'Breves Respuestas a las Grandes Preguntas', ['Stephen Hawking'], 23, 12550, [generoEnum_1.GeneroEnum.EDUCATIVO], 'Crítica', idioma_1.Idioma.ESPANOL, encuadernacionEnum_1.EncuadernacionEnum.TAPA_BLANDA, 2013, 288, 15, '9789569993060.jpeg', '14cm x 23cm', '978-9-56-999306-0', 'Stephen Hawking explora algunas de las grandes incógnitas de la humanidad, como el origen del universo, la posibilidad de vida extraterrestre y el futuro de la inteligencia artificial. Expone estas ideas complejas de manera accesible. Es un libro que invita a la reflexión científica y filosófica.'),
+            new product_entity_1.Product('9789569635601', 'Meditaciones', ['Marco Aurelio'], 30, 11500, [generoEnum_1.GeneroEnum.FILOSOFIA], 'Taurus', idioma_1.Idioma.ESPANOL, encuadernacionEnum_1.EncuadernacionEnum.TAPA_BLANDA, 2013, 176, 0, '9789569635601.jpeg', '15cm x 21cm', '978-9-56-963560-1', 'En esta obra, Marco Aurelio, emperador romano y filósofo estoico, reflexiona sobre la vida, el destino y la virtud. Es un texto introspectivo que ofrece lecciones sobre cómo vivir en armonía con el mundo y con uno mismo. Su filosofía estoica ha influido en generaciones de lectores.'),
         ];
     }
-    create(createProductDto) {
-        let product = new product_entity_1.Product(createProductDto.isbn, createProductDto.nombre, createProductDto.autor, createProductDto.stockLibro, createProductDto.precio, createProductDto.genero, createProductDto.editorial, createProductDto.idioma, createProductDto.encuadernacion, createProductDto.agnoPublicacion, createProductDto.numeroPaginas, createProductDto.descuento, createProductDto.caratula, createProductDto.dimensiones, createProductDto.ean, createProductDto.resumen);
-        this.products.push(product);
-        return createProductDto;
+    async create(createProductDto, caratula) {
+        const ruta_archivos_local = './estatics';
+        if (!createProductDto.id_editorial) {
+            const editorial = new editorial_1.Editorial();
+            editorial.descripcion = createProductDto.editorial;
+            createProductDto.id_editorial = editorial.id;
+            try {
+                await this.editorialRepository.save(editorial);
+            }
+            catch (error) {
+                throw new common_1.HttpException('Error al guardar editorial', 400);
+            }
+        }
+        for (let i = 0; i < createProductDto.id_autores.length; i++) {
+            if (!createProductDto.id_autores[i]) {
+                const autor = new autor_1.Autor();
+                autor.nombre = createProductDto.autor[i];
+                createProductDto.id_autores[i] = autor.id;
+                try {
+                    await this.autorRepository.save(autor);
+                }
+                catch (error) {
+                    throw new common_1.HttpException('Error al guardar autor', 400);
+                }
+            }
+        }
+        try {
+            createProductDto.caratula = caratula.originalname;
+            const ruta_archivo = `${ruta_archivos_local}/${caratula.originalname}`;
+            await fs_1.promises.writeFile(ruta_archivo, caratula.buffer);
+        }
+        catch (error) {
+            throw new common_1.HttpException(error, 400);
+        }
+        const libroEntity = libro_mapper_1.LibroMapper.dtoToEntity(createProductDto);
+        await this.productRepository.save(libroEntity);
+        const libro = await this.productRepository.findOne({
+            where: { isbn: createProductDto.isbn },
+            relations: {
+                editorial: true,
+                idiomaLibro: true,
+                encuadernacion: true,
+                generos: true,
+                autores: true,
+            }
+        });
+        for (const id_autor of createProductDto.id_autores) {
+            const autor_libro = new autor_libro_1.AutorLibro();
+            autor_libro.id_autor = id_autor;
+            autor_libro.id_libro = libro.id;
+            await this.autorLibroRepository.save(autor_libro);
+        }
+        for (const id_genero of createProductDto.id_generos) {
+            const genero_libro = new genero_libro_1.GeneroLibro();
+            genero_libro.id_genero = id_genero;
+            genero_libro.id_libro = libro.id;
+            await this.generoLibroRepository.save(genero_libro);
+        }
+        const libroCreado = await this.productRepository.findOne({
+            where: { isbn: createProductDto.isbn },
+            relations: {
+                editorial: true,
+                idiomaLibro: true,
+                encuadernacion: true,
+                generos: true,
+                autores: true,
+            }
+        });
+        console.log(libroCreado);
+        return libro_mapper_1.LibroMapper.entityToDto(libroCreado);
     }
     async getConexion() {
         const conexionBD = "SELECT isbn, nombre, precio FROM libro;";
@@ -81,56 +158,6 @@ let ProductsService = class ProductsService {
             }
         });
         return libro_mapper_1.LibroMapper.entityToDto(producto);
-    }
-    applyFilterProducts(filteredProducts, filters) {
-        if (filters.autor) {
-            filteredProducts = filteredProducts.filter((book) => book.autor.some((autor) => autor.toLowerCase().includes(filters.autor.toLowerCase())));
-        }
-        if (filters.nombre) {
-            filteredProducts = filteredProducts.filter((book) => book.nombre.toLowerCase().includes(filters.nombre.toLowerCase()));
-        }
-        if (filters.priceMin !== undefined) {
-            filteredProducts = filteredProducts.filter((book) => book.precio >= filters.priceMin);
-        }
-        if (filters.priceMax !== undefined) {
-            filteredProducts = filteredProducts.filter((book) => book.precio <= filters.priceMax);
-        }
-        if (filters.rating !== undefined) {
-            filteredProducts = filteredProducts.filter((book) => book.rating >= filters.rating);
-        }
-        if (filters.genero !== undefined) {
-            filteredProducts = filteredProducts.filter((book) => book.genero.some((gen) => filters.genero.includes(gen)));
-        }
-        if (filters.editorial) {
-            filteredProducts = filteredProducts.filter((book) => filters.editorial.includes(book.editorial));
-        }
-        if (filters.idioma) {
-            filteredProducts = filteredProducts.filter((book) => filters.idioma.includes(book.idioma));
-        }
-        if (filters.isbn) {
-            filteredProducts = filteredProducts.filter((book) => book.isbn === filters.isbn);
-        }
-        if (filters.encuadernacion) {
-            filteredProducts = filteredProducts.filter((book) => book.encuadernacion === filters.encuadernacion);
-        }
-        if (filters.agnoPublicacionMin !== undefined) {
-            filteredProducts = filteredProducts.filter((book) => book.agnoPublicacion >= new Date(filters.agnoPublicacionMin, 0));
-        }
-        if (filters.agnoPublicacionMax !== undefined) {
-            filteredProducts = filteredProducts.filter((book) => book.agnoPublicacion <= new Date(filters.agnoPublicacionMax, 0));
-        }
-        return filteredProducts;
-    }
-    sortProducts(filteredProducts, filters) {
-        if (filters.sortBy) {
-            filteredProducts = filteredProducts.sort((a, b) => a[filters.sortBy] > b[filters.sortBy] ? 1 : -1);
-        }
-        return filteredProducts;
-    }
-    paginationProducts(filteredProducts, filters) {
-        const offset = filters.offset || 0;
-        const limit = filters.limit || filteredProducts.length;
-        return filteredProducts.slice(offset, offset + limit);
     }
     async getFilteredProducts(filters) {
         let condiciones = {};
@@ -221,15 +248,25 @@ let ProductsService = class ProductsService {
         }
         return filteredProducts.map(product => new get_product_dto_1.GetProductDto(product));
     }
-    getGenres() {
-        return Object.values(generoEnum_1.GeneroEnum);
+    async getGenres() {
+        const generosEntity = await this.generoRepository.find({
+            select: ['descripcion']
+        });
+        return generosEntity.map(genero => genero.descripcion);
     }
     async remove(id) {
+        const ruta_archivos_local = './estatics';
+        const libro = await this.productRepository.findOneBy({
+            id: id
+        });
         await this.productRepository.delete(id);
+        const ruta_archivo = `${ruta_archivos_local}/${libro.caratula}`;
+        await fs_1.promises.unlink(ruta_archivo);
         return `Fue eliminado el libro con ID #${id}`;
     }
-    async update(libro, updateProductDto) {
+    async update(libro, updateProductDto, caratula) {
         let condiciones = {};
+        const ruta_archivos_local = './estatics';
         if (updateProductDto.nombre) {
             condiciones.nombre = updateProductDto.nombre;
         }
@@ -242,14 +279,32 @@ let ProductsService = class ProductsService {
         if (updateProductDto.rating) {
             condiciones.rating = updateProductDto.rating;
         }
-        if (updateProductDto.id_editorial) {
-            condiciones.id_editorial = updateProductDto.id_editorial;
+        if (updateProductDto.editorial) {
+            var editorial = await this.editorialRepository.findOneBy({
+                descripcion: updateProductDto.editorial
+            });
+            if (!editorial) {
+                const editorialNueva = this.editorialRepository.create();
+                editorialNueva.descripcion = updateProductDto.editorial;
+                await this.editorialRepository.save(editorialNueva);
+                editorial = await this.editorialRepository.findOneBy({
+                    descripcion: updateProductDto.editorial
+                });
+            }
+            ;
+            condiciones.id_editorial = editorial.id;
         }
-        if (updateProductDto.id_idioma) {
-            condiciones.id_idioma = updateProductDto.id_idioma;
+        if (updateProductDto.idioma) {
+            const idioma = await this.idiomaRepository.findOneBy({
+                descripcion: updateProductDto.idioma
+            });
+            condiciones.id_idioma = idioma.id;
         }
-        if (updateProductDto.id_encuadernacion) {
-            condiciones.id_encuadernacion = updateProductDto.id_encuadernacion;
+        if (updateProductDto.encuadernacion) {
+            const encuadernacion = await this.encuadernacionRepository.findOneBy({
+                descripcion: updateProductDto.encuadernacion
+            });
+            condiciones.id_encuadernacion = encuadernacion.id;
         }
         if (updateProductDto.agno_publicacion) {
             condiciones.agno_publicacion = updateProductDto.agno_publicacion;
@@ -260,8 +315,11 @@ let ProductsService = class ProductsService {
         if (updateProductDto.descuento) {
             condiciones.descuento = updateProductDto.descuento;
         }
-        if (updateProductDto.caratula) {
-            condiciones.caratula = updateProductDto.caratula;
+        if (typeof caratula !== 'undefined') {
+            condiciones.caratula = caratula.originalname;
+            await fs_1.promises.unlink(`${ruta_archivos_local}/${libro.caratula}`);
+            const ruta_archivo = `${ruta_archivos_local}/${caratula.originalname}`;
+            await fs_1.promises.writeFile(ruta_archivo, caratula.buffer);
         }
         if (updateProductDto.dimensiones) {
             condiciones.dimensiones = updateProductDto.dimensiones;
@@ -272,8 +330,101 @@ let ProductsService = class ProductsService {
         if (updateProductDto.resumen) {
             condiciones.resumen = updateProductDto.resumen;
         }
-        await this.productRepository.update({ id: libro.id, }, condiciones);
-        return await this.productRepository.findOneBy({ id: libro.id });
+        if (Object.keys(condiciones).length !== 0) {
+            await this.productRepository.update({ id: libro.id, }, condiciones);
+        }
+        if (updateProductDto.genero) {
+            await this.generoLibroRepository.delete({
+                id_libro: libro.id
+            });
+            for (const genero of updateProductDto.genero) {
+                const generoEntity = await this.generoRepository.findOneBy({
+                    descripcion: genero,
+                });
+                const generoLibro = this.generoLibroRepository.create();
+                generoLibro.id_genero = generoEntity.id;
+                generoLibro.id_libro = libro.id;
+                await this.generoLibroRepository.save(generoLibro);
+            }
+        }
+        if (updateProductDto.autor) {
+            await this.autorLibroRepository.delete({
+                id_libro: libro.id
+            });
+            for (const autor of updateProductDto.autor) {
+                const autorNuevo = this.autorRepository.create();
+                autorNuevo.nombre = autor;
+                await this.autorRepository.save(autorNuevo);
+                const autorEntity = await this.autorRepository.findOneBy({
+                    nombre: autor,
+                });
+                const autorLibro = this.autorLibroRepository.create();
+                autorLibro.id_autor = autorEntity.id;
+                autorLibro.id_libro = libro.id;
+                await this.autorLibroRepository.save(autorLibro);
+            }
+        }
+        const libroActualizado = await this.productRepository.findOne({
+            where: { id: libro.id },
+            relations: {
+                idiomaLibro: true,
+                generos: true,
+                encuadernacion: true,
+                autores: true,
+                editorial: true
+            }
+        });
+        return libro_mapper_1.LibroMapper.entityToDto(libroActualizado);
+    }
+    applyFilterProducts(filteredProducts, filters) {
+        if (filters.autor) {
+            filteredProducts = filteredProducts.filter((book) => book.autor.some((autor) => autor.toLowerCase().includes(filters.autor.toLowerCase())));
+        }
+        if (filters.nombre) {
+            filteredProducts = filteredProducts.filter((book) => book.nombre.toLowerCase().includes(filters.nombre.toLowerCase()));
+        }
+        if (filters.priceMin !== undefined) {
+            filteredProducts = filteredProducts.filter((book) => book.precio >= filters.priceMin);
+        }
+        if (filters.priceMax !== undefined) {
+            filteredProducts = filteredProducts.filter((book) => book.precio <= filters.priceMax);
+        }
+        if (filters.rating !== undefined) {
+            filteredProducts = filteredProducts.filter((book) => book.rating >= filters.rating);
+        }
+        if (filters.genero !== undefined) {
+            filteredProducts = filteredProducts.filter((book) => book.genero.some((gen) => filters.genero.includes(gen)));
+        }
+        if (filters.editorial) {
+            filteredProducts = filteredProducts.filter((book) => filters.editorial.includes(book.editorial));
+        }
+        if (filters.idioma) {
+            filteredProducts = filteredProducts.filter((book) => filters.idioma.includes(book.idioma));
+        }
+        if (filters.isbn) {
+            filteredProducts = filteredProducts.filter((book) => book.isbn === filters.isbn);
+        }
+        if (filters.encuadernacion) {
+            filteredProducts = filteredProducts.filter((book) => book.encuadernacion === filters.encuadernacion);
+        }
+        if (filters.agnoPublicacionMin !== undefined) {
+            filteredProducts = filteredProducts.filter((book) => book.agnoPublicacion >= filters.agnoPublicacionMin);
+        }
+        if (filters.agnoPublicacionMax !== undefined) {
+            filteredProducts = filteredProducts.filter((book) => book.agnoPublicacion <= filters.agnoPublicacionMax);
+        }
+        return filteredProducts;
+    }
+    sortProducts(filteredProducts, filters) {
+        if (filters.sortBy) {
+            filteredProducts = filteredProducts.sort((a, b) => a[filters.sortBy] > b[filters.sortBy] ? 1 : -1);
+        }
+        return filteredProducts;
+    }
+    paginationProducts(filteredProducts, filters) {
+        const offset = filters.offset || 0;
+        const limit = filters.limit || filteredProducts.length;
+        return filteredProducts.slice(offset, offset + limit);
     }
 };
 exports.ProductsService = ProductsService;
@@ -283,7 +434,17 @@ exports.ProductsService = ProductsService = __decorate([
     __param(1, (0, typeorm_1.InjectRepository)(libro_1.Libro)),
     __param(2, (0, typeorm_1.InjectRepository)(autor_1.Autor)),
     __param(3, (0, typeorm_1.InjectRepository)(genero_1.Genero)),
+    __param(4, (0, typeorm_1.InjectRepository)(editorial_1.Editorial)),
+    __param(5, (0, typeorm_1.InjectRepository)(autor_libro_1.AutorLibro)),
+    __param(6, (0, typeorm_1.InjectRepository)(genero_libro_1.GeneroLibro)),
+    __param(7, (0, typeorm_1.InjectRepository)(idioma_libro_1.IdiomaLibro)),
+    __param(8, (0, typeorm_1.InjectRepository)(encuadernacion_1.Encuadernacion)),
     __metadata("design:paramtypes", [typeorm_2.DataSource,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository])

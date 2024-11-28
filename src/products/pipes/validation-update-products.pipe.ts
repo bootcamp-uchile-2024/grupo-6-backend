@@ -20,7 +20,12 @@ export class ValidationUpdateProductsPipe implements PipeTransform {
                 throw new NotFoundException(`No existe un libro con ID: ${value}`)
             }
             return libro;
-        }
+
+        } 
+        // else if (metadata.type === 'body'){
+        //     // Validar que existe editorial
+
+        // }
 
         return value;
     }

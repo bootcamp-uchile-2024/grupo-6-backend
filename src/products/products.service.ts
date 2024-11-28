@@ -1,20 +1,26 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
+import { HttpException, Injectable } from '@nestjs/common';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { promises as FS } from 'fs';
+import { Autor } from 'src/orm/entity/autor';
+import { AutorLibro } from 'src/orm/entity/autor_libro';
+import { Editorial } from 'src/orm/entity/editorial';
+import { Encuadernacion } from 'src/orm/entity/encuadernacion';
+import { Genero } from 'src/orm/entity/genero';
+import { GeneroLibro } from 'src/orm/entity/genero_libro';
+import { IdiomaLibro } from 'src/orm/entity/idioma_libro';
+import { Libro } from 'src/orm/entity/libro';
+import { ErrorStatus } from 'src/products/errorStatus';
+import { Between, DataSource, Like, MoreThanOrEqual, Repository } from 'typeorm';
+import { CreateValidatedProductDto } from './dto/create-validated-product.dto';
+import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
+import { GetProductDto } from './dto/get-product.dto';
+import { proConexDTO } from './dto/proConexDTO';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './entities/product.entity';
+import { EncuadernacionEnum } from './entities/encuadernacionEnum';
 import { GeneroEnum } from './entities/generoEnum';
 import { Idioma } from './entities/idioma';
-import { Encuadernacion } from './entities/encuadernacion';
-import { ErrorStatus } from 'src/products/errorStatus';
-import { GetProductDto } from './dto/get-product.dto';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import { Any, Between, DataSource, In, LessThanOrEqual, Like, MoreThanOrEqual, Repository } from 'typeorm';
-import { proConexDTO } from './dto/proConexDTO';
-import { Libro } from 'src/orm/entity/libro';
+import { Product } from './entities/product.entity';
 import { LibroMapper } from './mappers/libro.mapper';
-import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
-import { Autor } from 'src/orm/entity/autor';
-import { Genero } from 'src/orm/entity/genero';
 
 @Injectable()
 export class ProductsService {
@@ -33,6 +39,20 @@ export class ProductsService {
     @InjectRepository(Genero) 
     private readonly generoRepository: Repository<Genero>,
 
+    @InjectRepository(Editorial)
+    private readonly editorialRepository: Repository<Editorial>,
+
+    @InjectRepository(AutorLibro)
+    private readonly autorLibroRepository: Repository<AutorLibro>,
+
+    @InjectRepository(GeneroLibro)
+    private readonly generoLibroRepository: Repository<GeneroLibro>,
+  
+    @InjectRepository(IdiomaLibro)
+    private readonly idiomaRepository: Repository<IdiomaLibro>,
+
+    @InjectRepository(Encuadernacion)
+    private readonly encuadernacionRepository: Repository<Encuadernacion>,
     ) {}
 
   
@@ -45,11 +65,11 @@ export class ProductsService {
       ['Miguel de Cervantes'],
       50,
       19000,
-      [GeneroEnum.NOVELA, GeneroEnum.CLASICO],
+      [GeneroEnum.DRAMA, GeneroEnum.COMEDIA],
       'Lengua Viva',
       Idioma.ESPANOL,
-      Encuadernacion.TAPA_DURA,
-      new Date(2015, 0),
+      EncuadernacionEnum.TAPA_DURA,
+      2015,
       1376,
       0,
       '9788420412146.jpg',
@@ -63,11 +83,11 @@ export class ProductsService {
       ['Gabriel García Márquez'],
       70,
       20500,
-      [GeneroEnum.NOVELA, GeneroEnum.CLASICO],
+      [GeneroEnum.DRAMA, GeneroEnum.COMEDIA],
       'Literatura Random House',
       Idioma.ESPANOL,
-      Encuadernacion.TAPA_DURA,
-      new Date(2021, 0),
+      EncuadernacionEnum.TAPA_DURA,
+      2015,
       400,
       20,
       '9789585581616.jpeg',
@@ -81,11 +101,11 @@ export class ProductsService {
       ['George Orwell'],
       20,
       12000,
-      [GeneroEnum.DISTOPIA, GeneroEnum.CIENCIA_FICCION],
+      [GeneroEnum.DRAMA, GeneroEnum.COMEDIA],
       'Alma classic',
       Idioma.INGLES,
-      Encuadernacion.TAPA_BLANDA,
-      new Date(2021, 0),
+      EncuadernacionEnum.TAPA_BLANDA,
+      2015,
       400,
       0,
       '9781847498571.jpeg',
@@ -99,11 +119,11 @@ export class ProductsService {
       ['Jane Austen'],
       30,
       30000,
-      [GeneroEnum.ROMANCE, GeneroEnum.CLASICO],
+      [GeneroEnum.DRAMA, GeneroEnum.COMEDIA],
       'Alba Editorial',
       Idioma.ESPANOL,
-      Encuadernacion.TAPA_DURA,
-      new Date(2009, 0),
+      EncuadernacionEnum.TAPA_DURA,
+      2015,
       424,
       10,
       '9788484284888.jpeg',
@@ -120,8 +140,8 @@ export class ProductsService {
       [GeneroEnum.FANTASIA, GeneroEnum.AVENTURA],
       'Minotauro',
       Idioma.ESPANOL,
-      Encuadernacion.TAPA_BLANDA,
-      new Date(2022, 0),
+      EncuadernacionEnum.TAPA_BLANDA,
+      2015,
       488,
       0,
       '9788445009598.webp',
@@ -138,8 +158,8 @@ export class ProductsService {
       [GeneroEnum.FANTASIA, GeneroEnum.TERROR],
       'Planeta Comic',
       Idioma.ESPANOL,
-      Encuadernacion.TAPA_DURA,
-      new Date(2021, 0),
+      EncuadernacionEnum.TAPA_DURA,
+      2020,
       72,
       0,
       '9788413417943.jpeg',
@@ -153,11 +173,11 @@ export class ProductsService {
       ['Neil Gaiman'],
       12,
       21500,
-      [GeneroEnum.FANTASIA, GeneroEnum.HISTORIA],
+      [GeneroEnum.DRAMA, GeneroEnum.COMEDIA],
       'Destino',
       Idioma.ESPANOL,
-      Encuadernacion.TAPA_BLANDA,
-      new Date(2017, 0),
+      EncuadernacionEnum.TAPA_BLANDA,
+      2020,
       272,
       15,
       '9788423352838.jpeg',
@@ -171,11 +191,11 @@ export class ProductsService {
       ['Yuval Noah Harari'],
       120,
       14000,
-      [GeneroEnum.HISTORIA],
+      [GeneroEnum.EDUCATIVO],
       'Debate',
       Idioma.ESPANOL,
-      Encuadernacion.TAPA_BLANDA,
-      new Date(2014, 0),
+      EncuadernacionEnum.TAPA_BLANDA,
+      2020,
       496,
       0,
       '9789873752131.jpeg',
@@ -192,8 +212,8 @@ export class ProductsService {
       [GeneroEnum.INFANTIL, GeneroEnum.FILOSOFIA],
       'Mariner Books',
       Idioma.FRANCES,
-      Encuadernacion.TAPA_BLANDA,
-      new Date(2001, 0),
+      EncuadernacionEnum.TAPA_BLANDA,
+      2020,
       96,
       10,
       '9780156013987.jpeg',
@@ -207,11 +227,11 @@ export class ProductsService {
       ['Tara Westover'],
       8,
       22300,
-      [GeneroEnum.BIOGRAFIAS],
+      [GeneroEnum.BIOGRAFIA],
       'Lumen',
       Idioma.ESPANOL,
-      Encuadernacion.TAPA_BLANDA,
-      new Date(2018, 0),
+      EncuadernacionEnum.TAPA_BLANDA,
+      2020,
       470,
       0,
       '9789585404267.jpeg',
@@ -225,11 +245,11 @@ export class ProductsService {
       ['Gabriela Mistral'],
       25,
       11900,
-      [GeneroEnum.POESIA],
+      [GeneroEnum.DRAMA],
       'Lumen',
       Idioma.ESPANOL,
-      Encuadernacion.TAPA_BLANDA,
-      new Date(2024, 0),
+      EncuadernacionEnum.TAPA_BLANDA,
+      2013,
       232,
       0,
       '9789566058885.jpeg',
@@ -243,11 +263,11 @@ export class ProductsService {
       ['Stephen Hawking'],
       23,
       12550,
-      [GeneroEnum.CIENCIA_MATEMATICA],
+      [GeneroEnum.EDUCATIVO],
       'Crítica',
       Idioma.ESPANOL,
-      Encuadernacion.TAPA_BLANDA,
-      new Date(2017, 0),
+      EncuadernacionEnum.TAPA_BLANDA,
+      2013,
       288,
       15,
       '9789569993060.jpeg',
@@ -261,11 +281,11 @@ export class ProductsService {
       ['Marco Aurelio'],
       30,
       11500,
-      [GeneroEnum.FILOSOFIA, GeneroEnum.CLASICO],
+      [GeneroEnum.FILOSOFIA],
       'Taurus',
       Idioma.ESPANOL,
-      Encuadernacion.TAPA_BLANDA,
-      new Date(2021, 0),
+      EncuadernacionEnum.TAPA_BLANDA,
+      2013,
       176,
       0,
       '9789569635601.jpeg',
@@ -275,32 +295,100 @@ export class ProductsService {
     ),
   ];
 
-  create(createProductDto: CreateProductDto): CreateProductDto {
-    let product = new Product(
-      createProductDto.isbn,
-      createProductDto.nombre,
-      createProductDto.autor,
-      createProductDto.stockLibro,
-      createProductDto.precio,
-      createProductDto.genero,
-      createProductDto.editorial,
-      createProductDto.idioma,
-      createProductDto.encuadernacion,
-      createProductDto.agnoPublicacion,
-      createProductDto.numeroPaginas,
-      createProductDto.descuento,
-      createProductDto.caratula,
-      createProductDto.dimensiones,
-      createProductDto.ean,
-      createProductDto.resumen,
-    )
+  // Crear producto --------------------------------------------------------
+  async create(
+    createProductDto: CreateValidatedProductDto,
+    caratula
+  ): Promise<any> {
+    const ruta_archivos_local: string = './estatics'
 
-    // Almacenar en lista de productos
-    this.products.push(product);
+    // Crear editorial si no existe
+    if (!createProductDto.id_editorial){
+      const editorial = new Editorial();
+      editorial.descripcion = createProductDto.editorial;
 
-    return createProductDto;
+      createProductDto.id_editorial = editorial.id;
+
+      try {
+        await this.editorialRepository.save(editorial)
+      } catch(error) {
+        throw new HttpException('Error al guardar editorial', 400)
+      }
+    }
+      
+    // Crear autores si no existen
+    for (let i=0; i < createProductDto.id_autores.length; i++){
+      if (!createProductDto.id_autores[i]){
+        const autor = new Autor();
+        autor.nombre = createProductDto.autor[i];
+
+        createProductDto.id_autores[i] = autor.id;
+
+        try {
+          await this.autorRepository.save(autor);
+        } catch(error) {
+          throw new HttpException('Error al guardar autor', 400)
+        }
+      }
+    }
+    
+    // Guardar Caratula
+    try {
+      createProductDto.caratula = caratula.originalname;
+      const ruta_archivo: string = `${ruta_archivos_local}/${caratula.originalname}`
+      await FS.writeFile(ruta_archivo, caratula.buffer);
+    } catch (error){
+      throw new HttpException(error, 400)
+    }
+    
+    // Guardar libro en BD
+    const libroEntity: Libro = LibroMapper.dtoToEntity(createProductDto);
+    await this.productRepository.save(libroEntity);
+    const libro = await this.productRepository.findOne({
+      where: { isbn: createProductDto.isbn },
+      relations: {
+        editorial: true,
+        idiomaLibro: true,
+        encuadernacion: true,
+        generos: true,
+        autores: true,
+      }
+    })
+
+    // Crear asignación de autores
+    for (const id_autor of createProductDto.id_autores){
+      const autor_libro = new AutorLibro();
+      autor_libro.id_autor = id_autor;
+      autor_libro.id_libro = libro.id;
+
+      await this.autorLibroRepository.save(autor_libro);
+    }
+
+    // Crear asignación de generos
+    for (const id_genero of createProductDto.id_generos){
+      const genero_libro = new GeneroLibro();
+      genero_libro.id_genero = id_genero;
+      genero_libro.id_libro = libro.id;
+
+      await this.generoLibroRepository.save(genero_libro);
+    }
+
+    const libroCreado = await this.productRepository.findOne({
+      where: { isbn: createProductDto.isbn },
+      relations: {
+        editorial: true,
+        idiomaLibro: true,
+        encuadernacion: true,
+        generos: true,
+        autores: true,
+      }
+    })
+    console.log(libroCreado)
+    return LibroMapper.entityToDto(libroCreado);
+
   }
 
+  // Probar conexión -------------------------------------------------------
   async getConexion():Promise<proConexDTO[]> {
     const conexionBD = "SELECT isbn, nombre, precio FROM libro;";
     const result = await this.dataSource.query(conexionBD);
@@ -315,7 +403,7 @@ export class ProductsService {
     return this.proConex;
   }
 
-
+  // Encontrar un producto -------------------------------------------------
   async findOne(isbn: string): Promise<GetProductDto> {
     const producto: Libro = await this.productRepository.findOne({
       where: {
@@ -333,131 +421,7 @@ export class ProductsService {
     return LibroMapper.entityToDto(producto);
   }
 
-  applyFilterProducts(
-    filteredProducts: Product[],
-    filters: {
-      priceMin?: number;
-      priceMax?: number;
-      autor?: string;
-      nombre?: string;
-      rating?: number;
-      genero?;
-      editorial?;
-      idioma?;
-      isbn?: string;
-      encuadernacion?: Encuadernacion;
-      agnoPublicacionMin?: number;
-      agnoPublicacionMax?: number;
-    },
-  ): Product[] {
-    // Filtro autor
-    if (filters.autor) {
-      filteredProducts = filteredProducts.filter((book) =>
-        book.autor.some((autor) =>
-          autor.toLowerCase().includes(filters.autor.toLowerCase()),
-        ),
-      );
-    }
-    // Filtro nombre
-    if (filters.nombre) {
-      filteredProducts = filteredProducts.filter((book) =>
-        book.nombre.toLowerCase().includes(filters.nombre.toLowerCase()),
-      );
-    }
-    // Filtro precio mínimo
-    if (filters.priceMin !== undefined) {
-      filteredProducts = filteredProducts.filter(
-        (book) => book.precio >= filters.priceMin,
-      );
-    }
-    // Filtro precio máximo
-    if (filters.priceMax !== undefined) {
-      filteredProducts = filteredProducts.filter(
-        (book) => book.precio <= filters.priceMax,
-      );
-    }
-    // Filtro rating
-    if (filters.rating !== undefined) {
-      filteredProducts = filteredProducts.filter(
-        (book) => book.rating >= filters.rating,
-      );
-    }
-    // Filtro genero
-    if (filters.genero !== undefined) {
-      filteredProducts = filteredProducts.filter((book) =>
-        book.genero.some((gen) => filters.genero.includes(gen)),
-      );
-    }
-    // Filtro editorial
-    if (filters.editorial) {
-      filteredProducts = filteredProducts.filter((book) =>
-        filters.editorial.includes(book.editorial),
-      );
-    }
-    // Filtro idioma
-    if (filters.idioma) {
-      filteredProducts = filteredProducts.filter((book) =>
-        filters.idioma.includes(book.idioma),
-      );
-    }
-    // Filtro isbn
-    if (filters.isbn) {
-      filteredProducts = filteredProducts.filter(
-        (book) => book.isbn === filters.isbn,
-      );
-    }
-    // Filtro encuadernación
-    if (filters.encuadernacion) {
-      filteredProducts = filteredProducts.filter(
-        (book) => book.encuadernacion === filters.encuadernacion,
-      );
-    }
-    // Filtro año publicación mínimo
-    if (filters.agnoPublicacionMin !== undefined) {
-      filteredProducts = filteredProducts.filter(
-        (book) =>
-          book.agnoPublicacion >= new Date(filters.agnoPublicacionMin, 0),
-      );
-    }
-    // Filtro año publicación máximo
-    if (filters.agnoPublicacionMax !== undefined) {
-      filteredProducts = filteredProducts.filter(
-        (book) =>
-          book.agnoPublicacion <= new Date(filters.agnoPublicacionMax, 0),
-      );
-    }
-
-    return filteredProducts;
-  }
-
-  sortProducts(
-    filteredProducts: Product[],
-    filters: {
-      sortBy?: string;
-    },
-  ): Product[] {
-    if (filters.sortBy) {
-      filteredProducts = filteredProducts.sort((a, b) =>
-        a[filters.sortBy] > b[filters.sortBy] ? 1 : -1,
-      );
-    }
-    return filteredProducts;
-  }
-
-  paginationProducts(
-    filteredProducts: Product[],
-    filters: {
-      limit?: number;
-      offset?: number;
-    },
-  ): Product[] {
-    const offset = filters.offset || 0;
-    const limit = filters.limit || filteredProducts.length;
-
-    return filteredProducts.slice(offset, offset + limit);
-  }
-
-  // HU Catálogo de productos
+  // HU Catálogo de productos ----------------------------------------------
   async getFilteredProducts(filters: {
     priceMin?: number;
     priceMax?: number;
@@ -471,7 +435,7 @@ export class ProductsService {
     editorial?: string[];
     idioma?;
     isbn?: string;
-    encuadernacion?: Encuadernacion;
+    encuadernacion?: EncuadernacionEnum;
     agnoPublicacionMin?: number;
     agnoPublicacionMax?: number;
   }): Promise<GetFilteredProductsDto> {
@@ -584,7 +548,7 @@ export class ProductsService {
     );
   }
 
-
+  // Buscador de productos -------------------------------------------------
   getSearchedProductos(
     query: string,
     filters: {
@@ -598,7 +562,7 @@ export class ProductsService {
       genero?;
       editorial?;
       idioma?;
-      encuadernacion?: Encuadernacion;
+      encuadernacion?: EncuadernacionEnum;
       agnoPublicacionMin?: number;
       agnoPublicacionMax?: number;
     },
@@ -633,22 +597,40 @@ export class ProductsService {
     return filteredProducts.map( product => new GetProductDto(product) );
   }
 
-  // Obtener generos de los libros
-  getGenres(): string[] {
-    return Object.values(GeneroEnum);
+  // Obtener generos de los libros -----------------------------------------
+  async getGenres(): Promise<string[]> {
+    const generosEntity: Genero[] = await this.generoRepository.find({
+      select: ['descripcion']
+    });
+    return generosEntity.map( genero => genero.descripcion)
   }
 
-  // Eliminar un producto
+  // Eliminar un producto --------------------------------------------------
   async remove(id: number): Promise<string>{
+    const ruta_archivos_local: string = './estatics';
 
+    // Buscar producto
+    const libro: Libro = await this.productRepository.findOneBy({
+      id: id
+    })
+    // Eliminar libro de BD
     await this.productRepository.delete(id);
+
+    // Eliminar caratula
+    const ruta_archivo: string = `${ruta_archivos_local}/${libro.caratula}`
+    await FS.unlink(ruta_archivo);
 
     return `Fue eliminado el libro con ID #${id}`;
   }
 
-  // Actualizar datos de un libro
-  async update(libro: Libro, updateProductDto: UpdateProductDto){
+  // Actualizar datos de un libro ------------------------------------------
+  async update(
+    libro: Libro, 
+    updateProductDto: UpdateProductDto,
+    caratula?
+  ){
     let condiciones: { [key: string]: any } = {};
+    const ruta_archivos_local: string = './estatics'
 
     if (updateProductDto.nombre){
       condiciones.nombre = updateProductDto.nombre;
@@ -662,14 +644,38 @@ export class ProductsService {
     if (updateProductDto.rating){
       condiciones.rating = updateProductDto.rating;
     }
-    if (updateProductDto.id_editorial){
-      condiciones.id_editorial = updateProductDto.id_editorial;
+
+    if (updateProductDto.editorial){
+      var editorial = await this.editorialRepository.findOneBy({
+        descripcion: updateProductDto.editorial
+      })
+
+      // En caso de no encontrar la editorial se crea una nueva
+      if (!editorial){
+        // Añadir nueva editorial
+        const editorialNueva = this.editorialRepository.create();
+        editorialNueva.descripcion = updateProductDto.editorial;
+        await this.editorialRepository.save(editorialNueva);
+
+        editorial = await this.editorialRepository.findOneBy({
+          descripcion: updateProductDto.editorial
+        });
+      };
+      
+      condiciones.id_editorial = editorial.id;
     }
-    if (updateProductDto.id_idioma){
-      condiciones.id_idioma = updateProductDto.id_idioma;
+    
+    if (updateProductDto.idioma){
+      const idioma = await this.idiomaRepository.findOneBy({
+        descripcion: updateProductDto.idioma
+      });
+      condiciones.id_idioma = idioma.id;
     }
-    if (updateProductDto.id_encuadernacion){
-      condiciones.id_encuadernacion = updateProductDto.id_encuadernacion;
+    if (updateProductDto.encuadernacion){
+      const encuadernacion = await this.encuadernacionRepository.findOneBy({
+        descripcion: updateProductDto.encuadernacion
+      })
+      condiciones.id_encuadernacion = encuadernacion.id;
     }
     if (updateProductDto.agno_publicacion){
       condiciones.agno_publicacion = updateProductDto.agno_publicacion;
@@ -680,8 +686,15 @@ export class ProductsService {
     if (updateProductDto.descuento){
       condiciones.descuento = updateProductDto.descuento;
     }
-    if (updateProductDto.caratula){
-      condiciones.caratula = updateProductDto.caratula;
+    if (typeof caratula !== 'undefined'){
+      condiciones.caratula = caratula.originalname;
+      
+      // Eliminar archivo antiguo
+      await FS.unlink(`${ruta_archivos_local}/${libro.caratula}`);
+
+      // Guardar nuevo archivo
+      const ruta_archivo: string = `${ruta_archivos_local}/${caratula.originalname}`
+      await FS.writeFile(ruta_archivo, caratula.buffer);
     }
     if (updateProductDto.dimensiones){
       condiciones.dimensiones = updateProductDto.dimensiones;
@@ -693,20 +706,195 @@ export class ProductsService {
       condiciones.resumen = updateProductDto.resumen;
     }
     
-    await this.productRepository.update(
-      { id: libro.id, },
-      condiciones
-    );
-    // Actualización de autores NOTE POR DESARROLLAR!
-    // if (updateProductDto.idAutores){
-    //   const libroEntity = await this.productRepository.findOne({ where: { id: libro.id }, relations: ['autores'] });
-    //   libroEntity.autores = await this.autorRepository.findBy({id: In(updateProductDto.idAutores)});
-    //   await this.productRepository.save(libroEntity);
-    // }
+    if (Object.keys(condiciones).length !== 0){
+      await this.productRepository.update(
+        { id: libro.id, },
+        condiciones
+      );
+    }
 
-    
+    // Generos
+    if (updateProductDto.genero){
+      // Eliminar generos antiguos
+      await this.generoLibroRepository.delete({
+        id_libro: libro.id
+      })
+      // Añadir generos nuevos
+      for (const genero of updateProductDto.genero){
+        const generoEntity = await this.generoRepository.findOneBy({
+          descripcion: genero,
+        })
+        const generoLibro = this.generoLibroRepository.create();
+        generoLibro.id_genero = generoEntity.id;
+        generoLibro.id_libro = libro.id;
+
+        await this.generoLibroRepository.save(generoLibro);
+      }
+    }
+    // Autores
+    if (updateProductDto.autor){
+      // Eliminar autores antiguos
+      await this.autorLibroRepository.delete({
+        id_libro: libro.id
+      })
+      // Añadir autores nuevos
+      for (const autor of updateProductDto.autor){
+        // Añadir nuevo autor
+        const autorNuevo = this.autorRepository.create();
+        autorNuevo.nombre = autor;
+        await this.autorRepository.save(autorNuevo);
+
+        // Añadir registros en tabla autor_libro
+        const autorEntity: Autor = await this.autorRepository.findOneBy({
+          nombre: autor,
+        })
+        const autorLibro = this.autorLibroRepository.create();
+        autorLibro.id_autor = autorEntity.id;
+        autorLibro.id_libro = libro.id;
+
+        await this.autorLibroRepository.save(autorLibro);
+      }
+    }
     // Devolver libro actualizado
-    return await this.productRepository.findOneBy({ id: libro.id });
+    const libroActualizado = await this.productRepository.findOne({
+      where: { id: libro.id },
+      relations: {
+        idiomaLibro: true,
+        generos: true,
+        encuadernacion: true,
+        autores: true,
+        editorial: true
+      }
+    });
 
+    return LibroMapper.entityToDto(libroActualizado)
   }
+
+
+  // Funciones complementarias ---------------------------------------------
+  applyFilterProducts(
+    filteredProducts: Product[],
+    filters: {
+      priceMin?: number;
+      priceMax?: number;
+      autor?: string;
+      nombre?: string;
+      rating?: number;
+      genero?;
+      editorial?;
+      idioma?;
+      isbn?: string;
+      encuadernacion?: EncuadernacionEnum;
+      agnoPublicacionMin?: number;
+      agnoPublicacionMax?: number;
+    },
+  ): Product[] {
+    // Filtro autor
+    if (filters.autor) {
+      filteredProducts = filteredProducts.filter((book) =>
+        book.autor.some((autor) =>
+          autor.toLowerCase().includes(filters.autor.toLowerCase()),
+        ),
+      );
+    }
+    // Filtro nombre
+    if (filters.nombre) {
+      filteredProducts = filteredProducts.filter((book) =>
+        book.nombre.toLowerCase().includes(filters.nombre.toLowerCase()),
+      );
+    }
+    // Filtro precio mínimo
+    if (filters.priceMin !== undefined) {
+      filteredProducts = filteredProducts.filter(
+        (book) => book.precio >= filters.priceMin,
+      );
+    }
+    // Filtro precio máximo
+    if (filters.priceMax !== undefined) {
+      filteredProducts = filteredProducts.filter(
+        (book) => book.precio <= filters.priceMax,
+      );
+    }
+    // Filtro rating
+    if (filters.rating !== undefined) {
+      filteredProducts = filteredProducts.filter(
+        (book) => book.rating >= filters.rating,
+      );
+    }
+    // Filtro genero
+    if (filters.genero !== undefined) {
+      filteredProducts = filteredProducts.filter((book) =>
+        book.genero.some((gen) => filters.genero.includes(gen)),
+      );
+    }
+    // Filtro editorial
+    if (filters.editorial) {
+      filteredProducts = filteredProducts.filter((book) =>
+        filters.editorial.includes(book.editorial),
+      );
+    }
+    // Filtro idioma
+    if (filters.idioma) {
+      filteredProducts = filteredProducts.filter((book) =>
+        filters.idioma.includes(book.idioma),
+      );
+    }
+    // Filtro isbn
+    if (filters.isbn) {
+      filteredProducts = filteredProducts.filter(
+        (book) => book.isbn === filters.isbn,
+      );
+    }
+    // Filtro encuadernación
+    if (filters.encuadernacion) {
+      filteredProducts = filteredProducts.filter(
+        (book) => book.encuadernacion === filters.encuadernacion,
+      );
+    }
+    // Filtro año publicación mínimo
+    if (filters.agnoPublicacionMin !== undefined) {
+      filteredProducts = filteredProducts.filter(
+        (book) =>
+          book.agnoPublicacion >= filters.agnoPublicacionMin,
+      );
+    }
+    // Filtro año publicación máximo
+    if (filters.agnoPublicacionMax !== undefined) {
+      filteredProducts = filteredProducts.filter(
+        (book) =>
+          book.agnoPublicacion <= filters.agnoPublicacionMax,
+      );
+    }
+
+    return filteredProducts;
+  }
+
+  sortProducts(
+    filteredProducts: Product[],
+    filters: {
+      sortBy?: string;
+    },
+  ): Product[] {
+    if (filters.sortBy) {
+      filteredProducts = filteredProducts.sort((a, b) =>
+        a[filters.sortBy] > b[filters.sortBy] ? 1 : -1,
+      );
+    }
+    return filteredProducts;
+  }
+
+  paginationProducts(
+    filteredProducts: Product[],
+    filters: {
+      limit?: number;
+      offset?: number;
+    },
+  ): Product[] {
+    const offset = filters.offset || 0;
+    const limit = filters.limit || filteredProducts.length;
+
+    return filteredProducts.slice(offset, offset + limit);
+  }
+
 }
+  

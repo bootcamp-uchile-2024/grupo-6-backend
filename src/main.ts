@@ -1,14 +1,9 @@
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ShoppingcartModule } from './shoppingcart/shoppingcart.module';
-import { ProductsModule } from './products/products.module';
-import { BooksInterceptor } from './books/books.interceptor';
 import { BooksFilter } from './books/books.filter';
-import { ConfigService } from '@nestjs/config';
+import { BooksInterceptor } from './books/books.interceptor';
 
-import { UsersModule } from './users/users.module';
-import { PurchasesModule } from './purchases/purchases.module';
 import * as dotenv from 'dotenv';
 import { configSwagger } from './config/swagger/swagger.config';
 dotenv.config(); 

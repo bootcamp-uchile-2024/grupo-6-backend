@@ -20,6 +20,7 @@ const shoppingcart_module_1 = require("./shoppingcart/shoppingcart.module");
 const users_module_1 = require("./users/users.module");
 const orm_module_1 = require("./orm/orm.module");
 const purchases_module_1 = require("./purchases/purchases.module");
+const serve_static_1 = require("@nestjs/serve-static");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
@@ -39,22 +40,26 @@ exports.AppModule = AppModule = __decorate([
             users_module_1.UsersModule,
             orm_module_1.OrmModule,
             config_1.ConfigModule.forRoot({
-                envFilePath: process.env.ARCHIVO_ENV ? `.env.${process.env.ARCHIVO_ENV}` : '.env',
                 isGlobal: true,
+                envFilePath: process.env.ARCHIVO_ENV ? `.env.${process.env.ARCHIVO_ENV}` : '.env',
                 validate: (config) => {
-                    if (!config.PORT) {
-                        throw new Error('PORT is required');
+                    if (!config.PUERTO_NEST) {
+                        throw new Error('Port Nest is required');
                     }
                     if (config.PORT == '6000') {
-                        throw new Error('PORT must be diferent from 6000');
+                        throw new Error('Port Nest must be diferent from 6000');
                     }
                     return {
-                        PORT: parseInt(config.PORT),
+                        PUERTO_NEST: parseInt(config.PUERTO_NEST),
                         ENVIROMENT: config.ENVIROMENT,
                     };
                 },
             }),
             purchases_module_1.PurchasesModule,
+            serve_static_1.ServeStaticModule.forRoot({
+                rootPath: './estatics',
+                serveRoot: '/cover',
+            })
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

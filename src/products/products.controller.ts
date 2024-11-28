@@ -1,85 +1,62 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, ParseArrayPipe, ParseEnumPipe, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, ParseArrayPipe, ParseEnumPipe, ParseIntPipe, Patch, Post, Query, UploadedFile, UploadedFiles, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Libro } from 'src/orm/entity/libro';
 import { ParseEnumGeneroArrayPipe } from 'src/parse-enum-array-pipe/parse-enum-genero-array-pipe.pipe';
 import { ParseEnumIdiomaArrayPipe } from 'src/parse-enum-array-pipe/parse-enum-idioma-array-pipe';
 import { CreateProductDto } from './dto/create-product.dto';
-import { proConexDTO } from './dto/proConexDTO';
+import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
 import { GetProductDto } from './dto/get-product.dto';
-import { Encuadernacion } from './entities/encuadernacion';
+import { proConexDTO } from './dto/proConexDTO';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { EncuadernacionEnum } from './entities/encuadernacionEnum';
 import { GeneroEnum } from './entities/generoEnum';
 import { Idioma } from './entities/idioma';
-import { ProductsService } from './products.service';
-import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
 import { ValidationDeleteProductsPipe } from './pipes/validation-delete-products.pipe';
-import { Libro } from 'src/orm/entity/libro';
-import { UpdateProductDto } from './dto/update-product.dto';
 import { ValidationUpdateProductsPipe } from './pipes/validation-update-products.pipe';
+import { ProductsService } from './products.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ValidationCreateProductsPipe } from './pipes/validation-create-products.pipe';
+import { Genero } from 'src/orm/entity/genero';
+import { ValidationGetProductsPipe } from './pipes/validation-get-product.pipe';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  // Crear producto --------------------------------------------------------
   @ApiTags('Products')
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Creación de producto exitosa', 
-    type: GetProductDto
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Error al crear producto. Revisar datos ingresados',
-  })
+  @UseInterceptors(FileInterceptor('caratula'))
+  @UsePipes(ValidationCreateProductsPipe)
+  @ApiResponse({  status: 200,  description: 'Creación de producto exitosa',  type: GetProductDto })
+  @ApiResponse({ status: 404, description: 'Error al crear producto. Revisar datos ingresados', })
   @UsePipes( new ValidationPipe())
   @Post()
-  create(@Body() createProductDto: CreateProductDto): CreateProductDto {
-    return this.productsService.create(createProductDto);
+  async create(
+    @Body() createProductDto,
+    @UploadedFile() caratula
+  ): Promise<any> {
+
+    try {
+      return await this.productsService.create(createProductDto, caratula);
+    } catch (error) {
+      throw new BadRequestException(error);//'Error al crear producto. Revisar datos ingresados')
+    }
   }
 
-  // HU Filtro de productos
+  // HU Filtro de productos ------------------------------------------------
   @ApiTags('Products')
-  @ApiQuery({
-    name: 'priceMin',
-    description: 'Filtro con precio mínimo',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'priceMax',
-    description: 'Filtro con precio máximo',
-    required: false,
-  })
+  @ApiQuery({ name: 'priceMin', description: 'Filtro con precio mínimo', required: false, })
+  @ApiQuery({ name: 'priceMax', description: 'Filtro con precio máximo', required: false, })
   @ApiQuery({
     name: 'pagina',
     description: 'Número de la página a mostrar, empezando desde 1. Valor por defecto = 1',
     required: false,
   })
-  @ApiQuery({
-    name: 'cantidad',
-    description: 'Cantidad de productos a devolver. Valor por defecto = 12',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'sortBy',
-    description: 'Nombre de la propiedad sobre la cual filtrar',
-    required: false,
-    example: 'precio',
-  })
-  @ApiQuery({
-    name: 'autor',
-    description: 'Nombre del autor del libro',
-    required: false,
-    example: 'Gabriel Garcia Marquez',
-  })
-  @ApiQuery({
-    name: 'nombre',
-    description: 'Título del libro',
-    required: false,
-    example: 'Cien años de soledad',
-  })
-  @ApiQuery({
-    name: 'rating',
-    description: 'Rating del libro. Valor entre 0 y 5',
-    required: false,
-  })
+  @ApiQuery({ name: 'cantidad', description: 'Cantidad de productos a devolver. Valor por defecto = 12', required: false,})
+  @ApiQuery({ name: 'sortBy', description: 'Nombre de la propiedad sobre la cual filtrar', required: false, example: 'precio', })
+  @ApiQuery({ name: 'autor', description: 'Nombre del autor del libro', required: false, example: 'Gabriel Garcia Marquez', })
+  @ApiQuery({ name: 'nombre', description: 'Título del libro', required: false, example: 'Cien años de soledad', })
+  @ApiQuery({ name: 'rating', description: 'Rating del libro. Valor entre 0 y 5', required: false, })
   @ApiQuery({
     name: 'genero',
     description: 'Genero del libro. Puede filtrarse con más de uno',
@@ -100,40 +77,12 @@ export class ProductsController {
     enum: Idioma,
     isArray: true,
   })
-  @ApiQuery({
-    name: 'isbn',
-    description: 'Código ISBN del libro',
-    required: false,
-    example: '9789585581616',
-  })
-  @ApiQuery({
-    name: 'encuadernacion',
-    description: 'Encuadernación del libro',
-    required: false,
-    enum: Encuadernacion,
-  })
-  @ApiQuery({
-    name: 'agnoPublicacionMin',
-    description: 'Año mínimo de publicación del libro',
-    required: false,
-    example: 2010,
-  })
-  @ApiQuery({
-    name: 'agnoPublicacionMax',
-    description: 'Año máximo de publicación del libro',
-    required: false,
-    example: 2024,
-  })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Solicitud generada correctamente', 
-    type: GetProductDto,
-    isArray: true
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'No existen productos que cumplan la solicitud',
-  })
+  @ApiQuery({ name: 'isbn', description: 'Código ISBN del libro', required: false, example: '9789585581616', })
+  @ApiQuery({ name: 'encuadernacion', description: 'Encuadernación del libro', required: false, enum: EncuadernacionEnum, })
+  @ApiQuery({ name: 'agnoPublicacionMin', description: 'Año mínimo de publicación del libro', required: false, example: 2010, })
+  @ApiQuery({ name: 'agnoPublicacionMax', description: 'Año máximo de publicación del libro', required: false, example: 2024, })
+  @ApiResponse({ status: 200, description: 'Solicitud generada correctamente',  type: GetProductDto, isArray: true })
+  @ApiResponse({ status: 404, description: 'No existen productos que cumplan la solicitud', })
   @Get('catalog')
   async getFilteredProducts(
     @Query('priceMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMin?: number,
@@ -148,7 +97,7 @@ export class ProductsController {
     @Query('editorial', new ParseArrayPipe({ items: String, separator: ',', optional: true, errorHttpStatusCode: 400, }), ) editorial?: string | string[],
     @Query('idioma', new ParseEnumIdiomaArrayPipe(Idioma)) idioma?: string | string[],
     @Query('isbn') isbn?: string,
-    @Query('encuadernacion', new ParseEnumPipe(Encuadernacion, { optional: true }), ) encuadernacion?: Encuadernacion,
+    @Query('encuadernacion', new ParseEnumPipe(EncuadernacionEnum, { optional: true }), ) encuadernacion?: EncuadernacionEnum,
     @Query('agnoPublicacionMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMin?: number,
     @Query( 'agnoPublicacionMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMax?: number,
   ): Promise<GetFilteredProductsDto> {
@@ -176,52 +125,20 @@ export class ProductsController {
     }
   }
 
-
-  // HU Buscador de producto
+  // HU Buscador de producto -----------------------------------------------
   @ApiTags('Products')
-  @ApiQuery({
-    name: 'query',
-    description: 'Nombre, autor o ISBN de libro buscado',
-  })
-  @ApiQuery({
-    name: 'priceMin',
-    description: 'Filtro con precio mínimo',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'priceMax',
-    description: 'Filtro con precio máximo',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'limit',
-    description:
-      'Número máximo de productos a entregar. Valor por defecto = 10',
-    required: false,
-  })
+  @ApiQuery({ name: 'query', description: 'Nombre, autor o ISBN de libro buscado', })
+  @ApiQuery({ name: 'priceMin', description: 'Filtro con precio mínimo', required: false, })
+  @ApiQuery({ name: 'priceMax', description: 'Filtro con precio máximo', required: false, })
+  @ApiQuery({ name: 'limit', description: 'Número máximo de productos a entregar. Valor por defecto = 10', required: false,  })
   @ApiQuery({
     name: 'offset',
-    description:
-      'Desde qué posición empezar a devolver productos. Valor por defecto = 0',
+    description: 'Desde qué posición empezar a devolver productos. Valor por defecto = 0',
     required: false,
   })
-  @ApiQuery({
-    name: 'sortBy',
-    description: 'Nombre de la propiedad sobre la cual filtrar',
-    required: false,
-    example: 'precio',
-  })
-  @ApiQuery({
-    name: 'autor',
-    description: 'Nombre del autor del libro',
-    required: false,
-    example: 'Gabriel Garcia Marquez',
-  })
-  @ApiQuery({
-    name: 'rating',
-    description: 'Rating del libro. Valor entre 0 y 5',
-    required: false,
-  })
+  @ApiQuery({ name: 'sortBy', description: 'Nombre de la propiedad sobre la cual filtrar', required: false, example: 'precio', })
+  @ApiQuery({ name: 'autor', description: 'Nombre del autor del libro', required: false, example: 'Gabriel Garcia Marquez', })
+  @ApiQuery({ name: 'rating', description: 'Rating del libro. Valor entre 0 y 5', required: false, })
   @ApiQuery({
     name: 'genero',
     description: 'Genero del libro. Puede filtrarse con más de uno',
@@ -231,8 +148,7 @@ export class ProductsController {
   })
   @ApiQuery({
     name: 'editorial',
-    description:
-      'Editorial del libro. Puede filtrarse con más de uno. Indicarlos separados con coma',
+    description: 'Editorial del libro. Puede filtrarse con más de uno. Indicarlos separados con coma',
     required: false,
     example: 'Lumen,Taurus',
   })
@@ -243,34 +159,11 @@ export class ProductsController {
     enum: Idioma,
     isArray: true,
   })
-  @ApiQuery({
-    name: 'encuadernacion',
-    description: 'Encuadernación del libro',
-    required: false,
-    enum: Encuadernacion,
-  })
-  @ApiQuery({
-    name: 'agnoPublicacionMin',
-    description: 'Año mínimo de publicación del libro',
-    required: false,
-    example: 2010,
-  })
-  @ApiQuery({
-    name: 'agnoPublicacionMax',
-    description: 'Año máximo de publicación del libro',
-    required: false,
-    example: 2024,
-  })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Solicitud generada correctamente',
-    type: GetProductDto,
-    isArray: true
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'No existen productos que cumplan la solicitud',
-  })
+  @ApiQuery({ name: 'encuadernacion', description: 'Encuadernación del libro', required: false, enum: EncuadernacionEnum, })
+  @ApiQuery({ name: 'agnoPublicacionMin', description: 'Año mínimo de publicación del libro', required: false, example: 2010, })
+  @ApiQuery({ name: 'agnoPublicacionMax', description: 'Año máximo de publicación del libro', required: false, example: 2024, })
+  @ApiResponse({ status: 200,  description: 'Solicitud generada correctamente', type: GetProductDto, isArray: true })
+  @ApiResponse({ status: 404, description: 'No existen productos que cumplan la solicitud', })
   @Get('search')
   getSearchedProducts(
     @Query('query') query: string,
@@ -284,7 +177,7 @@ export class ProductsController {
     @Query('genero', new ParseEnumGeneroArrayPipe(GeneroEnum)) genero?: string | string[],
     @Query('editorial', new ParseArrayPipe({ items: String, separator: ',', optional: true, errorHttpStatusCode: 400, }), ) editorial?: string | string[],
     @Query('idioma', new ParseEnumIdiomaArrayPipe(Idioma)) idioma?: string | string[],
-    @Query('encuadernacion', new ParseEnumPipe(Encuadernacion, { optional: true }), ) encuadernacion?: Encuadernacion, 
+    @Query('encuadernacion', new ParseEnumPipe(EncuadernacionEnum, { optional: true }), ) encuadernacion?: EncuadernacionEnum, 
     @Query( 'agnoPublicacionMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMin?: number, 
     @Query( 'agnoPublicacionMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMax?: number,
   ): GetProductDto[] {
@@ -314,16 +207,11 @@ export class ProductsController {
     }
   }
 
+  // Buscar 1 producto -----------------------------------------------------
   @ApiTags('Products')
-  @ApiResponse({
-    status: 200,
-    description: 'Este codigo se debe a que se pudo enviar el libro en base al isbn ingresado.',
-    type: GetProductDto,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Este codigo se debe a que no encuentra el isbn del libro.',
-  })
+  @UsePipes(ValidationGetProductsPipe)
+  @ApiResponse({ status: 200, description: 'Este codigo se debe a que se pudo enviar el libro en base al isbn ingresado.', type: GetProductDto, })
+  @ApiResponse({ status: 404, description: 'Este codigo se debe a que no encuentra el isbn del libro.', })
   @Get('search/:isbn')
   async findOne(@Param('isbn') isbn: string): Promise<GetProductDto> {
     try {
@@ -333,33 +221,27 @@ export class ProductsController {
     }
   }
 
+  // Obtener generos -------------------------------------------------------
   @ApiTags('Products')
-  @ApiResponse({
-    status: 200,
-    description: 'Se obtuvo la lista de generos de forma satisfactoria.',
-    type: String,
-    isArray: true
-    })
-  @ApiResponse({
-    status: 400,
-    description: 'Hubo un error al obtener la lista de generos.',
-  })
+  @ApiResponse({ status: 200, description: 'Se obtuvo la lista de generos de forma satisfactoria.', type: String, isArray: true })
+  @ApiResponse({ status: 400, description: 'Hubo un error al obtener la lista de generos.', })
   @Get('genres')
-  getGenres(): string[] {
+  async getGenres(): Promise<string[]> {
     try {
-      return this.productsService.getGenres();
+      return await this.productsService.getGenres();
     } catch (error) {
       throw new HttpException('Error al obtener los géneros de libros', 400);
     }
   }
 
+  // Probar conexión -------------------------------------------------------
   @Get('conexion')
   async getConexion(): Promise<proConexDTO[]> {
     const resolucion = await this.productsService.getConexion();
     return resolucion;
   }
 
-  // Eliminar un producto
+  // Eliminar un producto --------------------------------------------------
   @ApiTags('Products')
   @UsePipes(ValidationDeleteProductsPipe)
   @ApiResponse({ status: 200, description: 'Se eliminó el libro correctamente' })
@@ -373,19 +255,22 @@ export class ProductsController {
     }
   }
 
-  // Actualizar un producto
+  // Actualizar un producto ------------------------------------------------
   @ApiTags('Products')
   @UsePipes(ValidationUpdateProductsPipe)
+  @UseInterceptors(FileInterceptor('caratula'))
   @ApiResponse({ status: 200, description: 'Se actualizó el libro correctamente' })
   @ApiResponse({ status: 400, description: 'Error al actualizar libro' })
   @ApiParam({name: 'id', required: true, type: 'number', description: 'ID del libro'})
   @Patch(':id')
   async update(
     @Param('id') id: Libro, 
-    @Body() updatePurchaseDto: UpdateProductDto 
-  ): Promise<Libro> {
+    @Body() updatePurchaseDto: UpdateProductDto ,
+    @UploadedFile() caratula?
+  ): Promise<GetProductDto> {
     try {
-      return await this.productsService.update(id, updatePurchaseDto);
+      console.log(id, updatePurchaseDto, caratula)
+      return await this.productsService.update(id, updatePurchaseDto, caratula);
     } catch (error) {
       if (error instanceof BadRequestException){
         throw error

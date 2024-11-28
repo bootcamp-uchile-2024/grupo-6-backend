@@ -1,4 +1,4 @@
-USE paginas_selectas;
+USE Paginas_Selectas;
 
 -- 1. Insertar en la tabla `usuario`
 INSERT INTO usuario (nombre, segundo_nombre, apellido_paterno, apellido_materno, correo_electronico, contrasena) VALUES 
@@ -278,8 +278,8 @@ INSERT INTO libro (isbn, id_idioma, id_encuadernacion, nombre, stock_libro, prec
 ('9788408145703', 1, 1, 'Cien Años de Soledad', 100, 20000, 5, 1, 1967, 417, 10, 'cienAnosDeSoledad.jpg', '15x23 cm', '1234567890123', 'Obra maestra de Gabriel García Márquez'),
 ('9780439064873', 2, 2, 'Harry Potter and the Chamber of Secrets', 150, 30000, 5, 3, 1998, 341, 15, 'hpChamber.jpg', '14x21 cm', '1234567890456', 'Segunda entrega de la famosa saga de J.K. Rowling'),
 ('9788497592203', 1, 3, 'El Hobbit', 80, 18000, 5, 5, 1937, 310, 20, 'elHobbit.jpg', '12x18 cm', '1234567890789', 'La historia de Bilbo Bolsón y su aventura en la Tierra Media'),
-('9780590353427', 2, 2, 'Harry Potter and the Sorcerer\'s Stone', 200, 25000, 5, 3, 1997, 309, 12, 'hpSorceres.jpg', '14x21 cm', '1234567890102', 'Primera entrega de la famosa saga de J.K. Rowling'),
-('9786073120572', 1, 1, 'Don Quijote de la Mancha', 90, 22000, 4, 4, 1605, 945, 18, 'donQuijote.jpg', '16x24 cm', '1234567890345', 'Obra maestra de Miguel de Cervantes'),
+('9780590353427', 2, 2, 'Harry Potter and the Sorcerer\'s Stone', 200, 25000, 5, 3, 1997, 309, 12, 'hpSorcerer.jpg', '14x21 cm', '1234567890102', 'Primera entrega de la famosa saga de J.K. Rowling'),
+('9786073120572', 1, 1, 'Don Quijote de la Mancha', 0, 22000, 4, 4, 1605, 945, 18, 'donQuijote.jpg', '16x24 cm', '1234567890345', 'Obra maestra de Miguel de Cervantes'),
 ('9788437604947', 1, 4, 'Crimen y Castigo', 75, 19000, 5, 5, 1866, 671, 10, 'crimenCastigo.jpg', '13x20 cm', '1234567890678', 'Obra maestra de Fiódor Dostoyevski'),
 ('9788437604893', 1, 1, 'El Principito', 200, 15000, 5, 6, 1943, 96, 0, 'elPrincipito.jpg', '15x23 cm', '1234567890987', 'Clásico de Antoine de Saint-Exupéry'),
 ('9780141439600', 2, 2, 'Pride and Prejudice', 120, 18000, 5, 2, 1813, 432, 5, 'prideAndPrejudice.jpg', '13x21 cm', '1234567890212', 'Clásico de Jane Austen'),
@@ -294,7 +294,7 @@ INSERT INTO libro (isbn, id_idioma, id_encuadernacion, nombre, stock_libro, prec
 ('9781400031702', 2, 1, 'Crime and Punishment', 70, 19000, 5, 5, 1866, 671, 10, 'crimeAndPunishment.jpg', '13x20 cm', '1234567890980', 'Obra de Fiódor Dostoyevski sobre la culpa y el castigo'),
 ('9780553296983', 2, 2, 'Dune', 80, 25000, 5, 5, 1965, 412, 10, 'dune.jpg', '15x23 cm', '1234567890111', 'Ópera espacial de Frank Herbert'),
 ('9780451524935', 2, 2, 'Animal Farm', 150, 12000, 4, 9, 1945, 112, 0, 'animalFarm.jpg', '13x20 cm', '1234567890232', 'Sátira política de George Orwell'),
-('9780307387899', 2, 1, 'The Road', 90, 22000, 5, 7, 2006, 287, 0, 'theRoad.jpg', '13x20 cm', '1234567890343', 'Novela post-apocalíptica de Cormac McCarthy');
+('9780307387899', 2, 1, 'The Road', 90, 22000, 5, 7, 2006, 287, 0, 'TheRoad.jpg', '13x20 cm', '1234567890343', 'Novela post-apocalíptica de Cormac McCarthy');
 
 -- 13. Insertar en la tabla `genero_libro`
 INSERT INTO genero_libro (id_genero, id_libro) VALUES 

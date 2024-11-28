@@ -1,11 +1,12 @@
 import { CreateProductDto } from './create-product.dto';
+import { GeneroEnum } from '../entities/generoEnum';
 declare const UpdateProductDto_base: import("@nestjs/mapped-types").MappedType<Partial<CreateProductDto>>;
 export declare class UpdateProductDto extends UpdateProductDto_base {
     nombre?: string;
     stock_libro?: number;
     precio?: number;
     rating?: number;
-    id_editorial?: number;
+    editorial?: string;
     id_idioma?: number;
     id_encuadernacion?: number;
     agno_publicacion?: Date;
@@ -15,5 +16,6 @@ export declare class UpdateProductDto extends UpdateProductDto_base {
     dimensiones?: string;
     codigo_barra?: string;
     resumen?: string;
+    genero: GeneroEnum[];
 }
 export {};

@@ -1,1 +1,1 @@
-{"version":3,"file":"equipo.entity.js","sourceRoot":"","sources":["../../../../../src/equipo/entities/equipo.entity.ts"],"names":[],"mappings":";;;AAEA,MAAa,MAAM;IACjB,YACS,MAAc,EACd,KAAa;QADb,WAAM,GAAN,MAAM,CAAQ;QACd,UAAK,GAAL,KAAK,CAAQ;IACnB,CAAC;CACL;AALD,wBAKC"}
+{"version":3,"file":"equipo.entity.js","sourceRoot":"","sources":["../../../../src/equipo/entities/equipo.entity.ts"],"names":[],"mappings":";;;AAEA,MAAa,MAAM;IACjB,YACS,MAAc,EACd,KAAa;QADb,WAAM,GAAN,MAAM,CAAQ;QACd,UAAK,GAAL,KAAK,CAAQ;IACnB,CAAC;CACL;AALD,wBAKC"}

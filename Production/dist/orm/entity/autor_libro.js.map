@@ -1,0 +1,1 @@
+{"version":3,"file":"autor_libro.js","sourceRoot":"","sources":["../../../../src/orm/entity/autor_libro.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qCAAgD;AAGzC,IAAM,UAAU,GAAhB,MAAM,UAAU;CAMtB,CAAA;AANY,gCAAU;AAEnB;IADC,IAAA,uBAAa,GAAE;;4CACC;AAGjB;IADC,IAAA,uBAAa,GAAE;;4CACC;qBALR,UAAU;IADtB,IAAA,gBAAM,EAAC,EAAC,IAAI,EAAE,aAAa,EAAC,CAAC;GACjB,UAAU,CAMtB"}

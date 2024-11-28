@@ -1,4 +1,4 @@
-import { Encuadernacion } from 'src/products/entities/encuadernacion';
+import { EncuadernacionEnum } from 'src/products/entities/encuadernacionEnum';
 import { GeneroEnum } from 'src/products/entities/generoEnum';
 
 export class Shoppingcart {
@@ -10,7 +10,7 @@ export class Shoppingcart {
   public precio: number;
   public genero: GeneroEnum[];
   public editorial: string;
-  public encuadernacion: Encuadernacion;
+  public encuadernacion: EncuadernacionEnum;
   public descuento: number;
   public caratula: string;
   public cantidad: number;

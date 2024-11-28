@@ -16,7 +16,7 @@ export declare class Libro {
     precio: number;
     rating: number;
     id_editorial: number;
-    agno_publicacion: Date;
+    agno_publicacion: number;
     numero_paginas: number;
     descuento: number;
     caratula: string;

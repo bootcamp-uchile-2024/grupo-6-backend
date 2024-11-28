@@ -17,7 +17,7 @@ export class Libro {
     isbn: string;
 
     @Column()
-    id_idioma:number;
+    id_idioma: number;
 
     @Column()
     id_encuadernacion: number;
@@ -38,7 +38,7 @@ export class Libro {
     id_editorial:number;
 
     @Column()
-    agno_publicacion: Date;
+    agno_publicacion: number;
 
     @Column()
     numero_paginas: number;

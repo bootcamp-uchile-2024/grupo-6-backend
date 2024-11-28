@@ -4,10 +4,12 @@
 /node_modules
 /build
 /acceso1234.pem
+/Production/dist
 
 # DB
 /sql
-/Production/manual/sql
+/Production/sql
+
 
 # Logs
 logs

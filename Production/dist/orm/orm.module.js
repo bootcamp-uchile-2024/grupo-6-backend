@@ -10,6 +10,7 @@ exports.OrmModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const autor_1 = require("./entity/autor");
+const carrito_1 = require("./entity/carrito");
 const direccion_1 = require("./entity/direccion");
 const editorial_1 = require("./entity/editorial");
 const encuadernacion_1 = require("./entity/encuadernacion");
@@ -18,10 +19,11 @@ const historial_compra_1 = require("./entity/historial_compra");
 const idioma_libro_1 = require("./entity/idioma_libro");
 const libro_1 = require("./entity/libro");
 const libro_compra_1 = require("./entity/libro_compra");
-const carrito_1 = require("./entity/carrito");
 const resena_1 = require("./entity/resena");
 const tipoDireccion_1 = require("./entity/tipoDireccion");
 const usuario_1 = require("./entity/usuario");
+const autor_libro_1 = require("./entity/autor_libro");
+const genero_libro_1 = require("./entity/genero_libro");
 let OrmModule = class OrmModule {
 };
 exports.OrmModule = OrmModule;
@@ -30,7 +32,7 @@ exports.OrmModule = OrmModule = __decorate([
         imports: [
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'mysql',
-                host: 'mysql',
+                host: 'localhost',
                 port: 3306,
                 username: 'root',
                 password: 'grupo-6',
@@ -48,7 +50,9 @@ exports.OrmModule = OrmModule = __decorate([
                     resena_1.Resena,
                     historial_compra_1.HistorialCompra,
                     libro_compra_1.LibroCompra,
-                    carrito_1.Carrito
+                    carrito_1.Carrito,
+                    autor_libro_1.AutorLibro,
+                    genero_libro_1.GeneroLibro,
                 ]
             }),
             OrmModule,

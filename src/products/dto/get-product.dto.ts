@@ -1,14 +1,27 @@
+import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayNotEmpty, Contains, IsArray, IsDate, IsEnum, IsInt, IsString, Max, MaxDate, 
-    Min, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+  ArrayNotEmpty, Contains, IsArray,
+  IsEnum, IsInt, IsNumber, IsString, Max,
+  Min, ValidateNested
+} from 'class-validator';
+import { EncuadernacionEnum } from '../entities/encuadernacionEnum';
 import { GeneroEnum } from '../entities/generoEnum';
 import { Idioma } from '../entities/idioma';
 import { Review } from '../entities/review';
-import { Encuadernacion } from '../entities/encuadernacion';
-import { Product } from '../entities/product.entity';
+import { CreateProductDto } from './create-product.dto';
+import { Resena } from 'src/orm/entity/resena';
 
-export class GetProductDto {
+export class GetProductDto extends PartialType(CreateProductDto){
+
+  @ApiProperty({
+    description: 'ID del libro',
+    type: Number,
+    example: 1,
+  })
+  @IsNumber()
+  public id: number;
 
   @ApiProperty({
     description: 'ISBN 13 del libro',
@@ -66,13 +79,29 @@ export class GetProductDto {
   @ApiProperty({
     description: 'Lista con el o los géneros del libro',
     enum: [
-      'Suspenso', 'Histórico', 'Romance', 'Ciencia Ficción', 'Distópia', 'Aventura', 'Fantasía', 'Contemporáneo', 'Terror', 
-      'Paranormal', 'Poesía', 'Juvenil', 'Infantil', 'Novela', 'Clásico', 'Policiaco', 'Drama', 'Comedia',  'Autoayuda',
-      'Salud y deporte', 'Técnicos y especializados', 'Biografía', 'Cocina', 'Viajes', 'Arte', 'Ciencia y matemáticas', 
-      'Computación', 'Derecho y política', 'Economía y finanzas', 'Historia', 'Religión', 'Filosofía', 'Educativo', 'Ensayo',   
+      'Ciencia Ficción',
+      'Romance',
+      'Fantasía',
+      'Histórico',
+      'Aventura',
+      'Suspenso',
+      'Terror',
+      'Policiaco',
+      'Drama',
+      'Comedia',
+      'Autoayuda',
+      'Biografía',
+      'Ensayo',
+      'Educativo',
+      'Infantil',
+      'Juvenil',
+      'Paranormal',
+      'Religión',
+      'Política',
+      'Filosofía',
     ],
     isArray: true,
-    example: [GeneroEnum.NOVELA, GeneroEnum.CLASICO],
+    example: [GeneroEnum.ROMANCE, GeneroEnum.EDUCATIVO],
   })
   @ArrayNotEmpty()
   public genero: GeneroEnum[];
@@ -94,6 +123,20 @@ export class GetProductDto {
       'Alemán',
       'Portugués',
       'Italiano',
+      'Japonés',
+      'Chino',
+      'Ruso',
+      'Coreano',
+      'Árabe',
+      'Hebreo',
+      'Griego',
+      'Latín',
+      'Hindi',
+      'Bengalí',
+      'Vietnamita',
+      'Polaco',
+      'Turco',
+      'Sueco',
     ],
     example: Idioma.ESPANOL,
   })
@@ -103,26 +146,39 @@ export class GetProductDto {
   @ApiProperty({
     description: 'Tipo de encuadernación del libro',
     enum: [
-      'Tapa dura',
-      'Tapa blanda',
-      'Encuadernación en espiral',
+      'Tapa Dura',
+      'Tapa Blanda',
+      'Edición de Bolsillo',
+      'Edición de Lujo',
+      'Digital',
+      'Audiolibro',
+      'Impresión Bajo Demanda',
+      'Coleccionista',
+      'Edición Limitada',
+      'Rústica',
+      'Libreta de Apuntes',
+      'Manual',
+      'Guía de Viaje',
+      'Cómic',
+      'Manga',
+      'Folleto',
+      'Calendario',
+      'Póster',
+      'Plegable',
+      'Tarjeta',
     ],
-    example: Encuadernacion.TAPA_DURA,
+    example: EncuadernacionEnum.TAPA_DURA,
   })
-  @IsEnum({entity: Encuadernacion})
-  public encuadernacion: Encuadernacion;
+  @IsEnum({entity: EncuadernacionEnum})
+  public encuadernacion: EncuadernacionEnum;
 
   @ApiProperty({
     description: 'Año de publicación del libro',
-    type: Date,
-    example: new Date(2015, 0),
+    type: 'number',
+    example: 2015,
   })
-  @IsDate()
-  @MaxDate( () => new Date(), {
-    message: () =>
-      `No se puede ingresar una fecha mayor al día de hoy: ${new Date().toDateString()})`
-  })
-  public agnoPublicacion: Date;
+  @IsNumber()
+  public agnoPublicacion: number;
 
   @ApiProperty({
     description: 'Número de páginas del libro',
@@ -138,14 +194,14 @@ export class GetProductDto {
 
   @ApiProperty({
     description: 'Lista con las reseñas realizadas por los usuarios',
-    type: [Review],
+    type: [Resena],
     default: [],
     isArray: true,
   })
   @IsArray()
   @ValidateNested({each: true})
-  @Type( () => Review)
-  public resenas: Review[];
+  @Type( () => Resena)
+  public resenas: Resena[];
 
   @ApiProperty({
     description: 'Descuento aplicado al producto de 0 a 100',
@@ -162,7 +218,7 @@ export class GetProductDto {
   @ApiProperty({
     description: 'Ruta de la carátula del libro',
     type: String,
-    example: './images/portada.png'
+    example: '/cover/portada.png'
   })
   @IsString()
   public caratula: string;
@@ -182,7 +238,7 @@ export class GetProductDto {
     type: String,
   })
   @IsString()
-  public ean: string; // Código de barra del producto
+  public ean: string;
   
   @ApiProperty({
     description: 'Resumen del libro',
@@ -193,25 +249,5 @@ export class GetProductDto {
   @IsString()
   public resumen: string;
 
-  constructor(product: Product){
-    
-    this.isbn = product.isbn;
-    this.nombre = product.nombre;
-    this.autor = product.autor;
-    this.stockLibro = product.stockLibro;
-    this.precio = product.precio;
-    this.rating = product.rating;
-    this.genero = product.genero;
-    this.editorial = product.editorial;
-    this.idioma = product.idioma;
-    this.encuadernacion = product.encuadernacion;
-    this.agnoPublicacion = product.agnoPublicacion;
-    this.numeroPaginas = product.numeroPaginas;
-    this.resenas = product.resenas;
-    this.descuento = product.descuento;
-    this.caratula = product.caratula;
-    this.dimensiones = product.dimensiones;
-    this.ean = product.ean;
-    this.resumen = product.resumen;
-  }
+  
 }

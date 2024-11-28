@@ -4,5 +4,19 @@ export declare enum Idioma {
     FRANCES = "Franc\u00E9s",
     ALEMAN = "Alem\u00E1n",
     PORTUGUES = "Portugu\u00E9s",
-    ITALIANO = "Italiano"
+    ITALIANO = "Italiano",
+    JAPONES = "Japon\u00E9s",
+    CHINO = "Chino",
+    RUSO = "Ruso",
+    COREANO = "Coreano",
+    ARABE = "\u00C1rabe",
+    HEBREO = "Hebreo",
+    GRIEGO = "Griego",
+    LATIN = "Lat\u00EDn",
+    HINDI = "Hindi",
+    BENGALI = "Bengal\u00ED",
+    VIETNAMITA = "Vietnamita",
+    POLACO = "Polaco",
+    TURCO = "Turco",
+    SUECO = "Sueco"
 }

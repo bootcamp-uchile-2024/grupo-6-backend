@@ -1,8 +1,9 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { Contains, IsDate, IsInt, IsOptional, IsString, Max, MaxDate, Min } from 'class-validator';
+import { ArrayNotEmpty, Contains, IsDate, IsInt, IsOptional, IsString, Max, MaxDate, Min } from 'class-validator';
 import { CreateProductDto } from './create-product.dto';
+import { GeneroEnum } from '../entities/generoEnum';
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
 
@@ -61,10 +62,9 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     @IsOptional()
     public rating?: number;
 
-    @ApiProperty({ description: 'ID de la editorial del libro', type: Number, example: '1', })
-    @IsInt()
+    @ApiProperty({ description: 'Nombre de la editorial del libro', type: String, example: 'Alfaguara', })
     @IsOptional()
-    public id_editorial?: number;
+    public editorial?: string;
 
     @ApiProperty({ description: 'ID del idioma del libro', type: Number, example: '1', })
     @IsInt()
@@ -149,5 +149,34 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     @IsString()
     @IsOptional()
     public resumen?: string;
-}
 
+    @ApiProperty({
+        description: 'Lista con el o los géneros del libro',
+        enum: [
+          'Ciencia Ficción',
+          'Romance',
+          'Fantasía',
+          'Histórico',
+          'Aventura',
+          'Suspenso',
+          'Terror',
+          'Policiaco',
+          'Drama',
+          'Comedia',
+          'Autoayuda',
+          'Biografía',
+          'Ensayo',
+          'Educativo',
+          'Infantil',
+          'Juvenil',
+          'Paranormal',
+          'Religión',
+          'Política',
+          'Filosofía',
+        ],
+        isArray: true,
+        example: [GeneroEnum.ROMANCE, GeneroEnum.EDUCATIVO],
+      })
+      @ArrayNotEmpty()
+      public genero: GeneroEnum[];
+}

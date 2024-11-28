@@ -1,46 +1,35 @@
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './entities/product.entity';
-import { Encuadernacion } from './entities/encuadernacion';
-import { GetProductDto } from './dto/get-product.dto';
-import { DataSource, Repository } from 'typeorm';
-import { proConexDTO } from './dto/proConexDTO';
-import { Libro } from 'src/orm/entity/libro';
-import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
 import { Autor } from 'src/orm/entity/autor';
+import { AutorLibro } from 'src/orm/entity/autor_libro';
+import { Editorial } from 'src/orm/entity/editorial';
+import { Encuadernacion } from 'src/orm/entity/encuadernacion';
 import { Genero } from 'src/orm/entity/genero';
+import { GeneroLibro } from 'src/orm/entity/genero_libro';
+import { IdiomaLibro } from 'src/orm/entity/idioma_libro';
+import { Libro } from 'src/orm/entity/libro';
+import { DataSource, Repository } from 'typeorm';
+import { CreateValidatedProductDto } from './dto/create-validated-product.dto';
+import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
+import { GetProductDto } from './dto/get-product.dto';
+import { proConexDTO } from './dto/proConexDTO';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { EncuadernacionEnum } from './entities/encuadernacionEnum';
+import { Product } from './entities/product.entity';
 export declare class ProductsService {
     private readonly dataSource;
     private readonly productRepository;
     private readonly autorRepository;
     private readonly generoRepository;
-    constructor(dataSource: DataSource, productRepository: Repository<Libro>, autorRepository: Repository<Autor>, generoRepository: Repository<Genero>);
+    private readonly editorialRepository;
+    private readonly autorLibroRepository;
+    private readonly generoLibroRepository;
+    private readonly idiomaRepository;
+    private readonly encuadernacionRepository;
+    constructor(dataSource: DataSource, productRepository: Repository<Libro>, autorRepository: Repository<Autor>, generoRepository: Repository<Genero>, editorialRepository: Repository<Editorial>, autorLibroRepository: Repository<AutorLibro>, generoLibroRepository: Repository<GeneroLibro>, idiomaRepository: Repository<IdiomaLibro>, encuadernacionRepository: Repository<Encuadernacion>);
     proConex: proConexDTO[];
     products: Product[];
-    create(createProductDto: CreateProductDto): CreateProductDto;
+    create(createProductDto: CreateValidatedProductDto, caratula: any): Promise<any>;
     getConexion(): Promise<proConexDTO[]>;
     findOne(isbn: string): Promise<GetProductDto>;
-    applyFilterProducts(filteredProducts: Product[], filters: {
-        priceMin?: number;
-        priceMax?: number;
-        autor?: string;
-        nombre?: string;
-        rating?: number;
-        genero?: any;
-        editorial?: any;
-        idioma?: any;
-        isbn?: string;
-        encuadernacion?: Encuadernacion;
-        agnoPublicacionMin?: number;
-        agnoPublicacionMax?: number;
-    }): Product[];
-    sortProducts(filteredProducts: Product[], filters: {
-        sortBy?: string;
-    }): Product[];
-    paginationProducts(filteredProducts: Product[], filters: {
-        limit?: number;
-        offset?: number;
-    }): Product[];
     getFilteredProducts(filters: {
         priceMin?: number;
         priceMax?: number;
@@ -54,7 +43,7 @@ export declare class ProductsService {
         editorial?: string[];
         idioma?: any;
         isbn?: string;
-        encuadernacion?: Encuadernacion;
+        encuadernacion?: EncuadernacionEnum;
         agnoPublicacionMin?: number;
         agnoPublicacionMax?: number;
     }): Promise<GetFilteredProductsDto>;
@@ -69,11 +58,32 @@ export declare class ProductsService {
         genero?: any;
         editorial?: any;
         idioma?: any;
-        encuadernacion?: Encuadernacion;
+        encuadernacion?: EncuadernacionEnum;
         agnoPublicacionMin?: number;
         agnoPublicacionMax?: number;
     }): GetProductDto[];
-    getGenres(): string[];
+    getGenres(): Promise<string[]>;
     remove(id: number): Promise<string>;
-    update(libro: Libro, updateProductDto: UpdateProductDto): Promise<Libro>;
+    update(libro: Libro, updateProductDto: UpdateProductDto, caratula?: any): Promise<GetProductDto>;
+    applyFilterProducts(filteredProducts: Product[], filters: {
+        priceMin?: number;
+        priceMax?: number;
+        autor?: string;
+        nombre?: string;
+        rating?: number;
+        genero?: any;
+        editorial?: any;
+        idioma?: any;
+        isbn?: string;
+        encuadernacion?: EncuadernacionEnum;
+        agnoPublicacionMin?: number;
+        agnoPublicacionMax?: number;
+    }): Product[];
+    sortProducts(filteredProducts: Product[], filters: {
+        sortBy?: string;
+    }): Product[];
+    paginationProducts(filteredProducts: Product[], filters: {
+        limit?: number;
+        offset?: number;
+    }): Product[];
 }

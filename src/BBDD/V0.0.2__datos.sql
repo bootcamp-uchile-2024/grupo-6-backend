@@ -1,4 +1,4 @@
-USE paginas_selectas;
+USE Paginas_Selectas;
 
 -- 1. Insertar en la tabla `usuario`
 INSERT INTO usuario (nombre, segundo_nombre, apellido_paterno, apellido_materno, correo_electronico, contrasena) VALUES 
@@ -275,26 +275,26 @@ INSERT INTO editorial (descripcion) VALUES
 
 -- 12. Insertar en la tabla `libro`
 INSERT INTO libro (isbn, id_idioma, id_encuadernacion, nombre, stock_libro, precio, rating, id_editorial, agno_publicacion, numero_paginas, descuento, caratula, dimensiones, codigo_barra, resumen) VALUES
-('9788408145703', 1, 1, 'Cien Años de Soledad', 100, 20000, 5, 1, 1967, 417, 10, 'cien_anos.jpg', '15x23 cm', '1234567890123', 'Obra maestra de Gabriel García Márquez'),
-('9780439064873', 2, 2, 'Harry Potter and the Chamber of Secrets', 150, 30000, 5, 3, 1998, 341, 15, 'hp_camber.jpg', '14x21 cm', '1234567890456', 'Segunda entrega de la famosa saga de J.K. Rowling'),
-('9788497592203', 1, 3, 'El Hobbit', 80, 18000, 5, 5, 1937, 310, 20, 'hobbit.jpg', '12x18 cm', '1234567890789', 'La historia de Bilbo Bolsón y su aventura en la Tierra Media'),
-('9780590353427', 2, 2, 'Harry Potter and the Sorcerer\'s Stone', 200, 25000, 5, 3, 1997, 309, 12, 'hp_sorcerer.jpg', '14x21 cm', '1234567890102', 'Primera entrega de la famosa saga de J.K. Rowling'),
-('9786073120572', 1, 1, 'Don Quijote de la Mancha', 90, 22000, 4, 4, 1605, 945, 18, 'quijote.jpg', '16x24 cm', '1234567890345', 'Obra maestra de Miguel de Cervantes'),
-('9788437604947', 1, 4, 'Crimen y Castigo', 75, 19000, 5, 5, 1866, 671, 10, 'crimen_castigo.jpg', '13x20 cm', '1234567890678', 'Obra maestra de Fiódor Dostoyevski'),
-('9788437604893', 1, 1, 'El Principito', 200, 15000, 5, 6, 1943, 96, 0, 'principito.jpg', '15x23 cm', '1234567890987', 'Clásico de Antoine de Saint-Exupéry'),
-('9780141439600', 2, 2, 'Pride and Prejudice', 120, 18000, 5, 2, 1813, 432, 5, 'pride_prejudice.jpg', '13x21 cm', '1234567890212', 'Clásico de Jane Austen'),
+('9788408145703', 1, 1, 'Cien Años de Soledad', 100, 20000, 5, 1, 1967, 417, 10, 'cienAnosDeSoledad.jpg', '15x23 cm', '1234567890123', 'Obra maestra de Gabriel García Márquez'),
+('9780439064873', 2, 2, 'Harry Potter and the Chamber of Secrets', 150, 30000, 5, 3, 1998, 341, 15, 'hpChamber.jpg', '14x21 cm', '1234567890456', 'Segunda entrega de la famosa saga de J.K. Rowling'),
+('9788497592203', 1, 3, 'El Hobbit', 80, 18000, 5, 5, 1937, 310, 20, 'elHobbit.jpg', '12x18 cm', '1234567890789', 'La historia de Bilbo Bolsón y su aventura en la Tierra Media'),
+('9780590353427', 2, 2, 'Harry Potter and the Sorcerer\'s Stone', 200, 25000, 5, 3, 1997, 309, 12, 'hpSorcerer.jpg', '14x21 cm', '1234567890102', 'Primera entrega de la famosa saga de J.K. Rowling'),
+('9786073120572', 1, 1, 'Don Quijote de la Mancha', 0, 22000, 4, 4, 1605, 945, 18, 'donQuijote.jpg', '16x24 cm', '1234567890345', 'Obra maestra de Miguel de Cervantes'),
+('9788437604947', 1, 4, 'Crimen y Castigo', 75, 19000, 5, 5, 1866, 671, 10, 'crimenCastigo.jpg', '13x20 cm', '1234567890678', 'Obra maestra de Fiódor Dostoyevski'),
+('9788437604893', 1, 1, 'El Principito', 200, 15000, 5, 6, 1943, 96, 0, 'elPrincipito.jpg', '15x23 cm', '1234567890987', 'Clásico de Antoine de Saint-Exupéry'),
+('9780141439600', 2, 2, 'Pride and Prejudice', 120, 18000, 5, 2, 1813, 432, 5, 'prideAndPrejudice.jpg', '13x21 cm', '1234567890212', 'Clásico de Jane Austen'),
 ('9780140449136', 2, 1, 'The Odyssey', 100, 25000, 4, 9, -800, 512, 0, 'odyssey.jpg', '14x22 cm', '1234567890432', 'Poema épico de Homero'),
-('9780316769488', 2, 2, 'The Catcher in the Rye', 130, 22000, 4, 7, 1951, 277, 5, 'catcher_rye.jpg', '13x20 cm', '1234567890654', 'Novela de J.D. Salinger sobre el adolescente Holden Caulfield'),
-('9780140449181', 2, 1, 'War and Peace', 50, 40000, 5, 5, 1869, 1225, 20, 'war_peace.jpg', '15x23 cm', '1234567890876', 'Obra maestra de León Tolstói'),
-('9788497592319', 1, 3, 'El Silmarillion', 70, 28000, 4, 5, 1977, 480, 10, 'silmarillion.jpg', '12x18 cm', '1234567890120', 'Historia épica sobre la creación de la Tierra Media'),
-('9780544003415', 2, 2, 'The Lord of the Rings', 200, 60000, 5, 5, 1954, 1178, 15, 'lotr.jpg', '15x23 cm', '1234567890321', 'Saga épica de J.R.R. Tolkien'),
+('9780316769488', 2, 2, 'The Catcher in the Rye', 130, 22000, 4, 7, 1951, 277, 5, 'catcherRye.jpg', '13x20 cm', '1234567890654', 'Novela de J.D. Salinger sobre el adolescente Holden Caulfield'),
+('9780140449181', 2, 1, 'War and Peace', 50, 40000, 5, 5, 1869, 1225, 20, 'warPeace.jpg', '15x23 cm', '1234567890876', 'Obra maestra de León Tolstói'),
+('9788497592319', 1, 3, 'El Silmarillion', 70, 28000, 4, 5, 1977, 480, 10, 'elSilmarillion.jpg', '12x18 cm', '1234567890120', 'Historia épica sobre la creación de la Tierra Media'),
+('9780544003415', 2, 2, 'The Lord of the Rings', 200, 60000, 5, 5, 1954, 1178, 15, 'lordOfTheRing.jpg', '15x23 cm', '1234567890321', 'Saga épica de J.R.R. Tolkien'),
 ('9781400079988', 2, 1, '1984', 150, 18000, 5, 9, 1949, 328, 5, '1984.jpg', '13x20 cm', '1234567890567', 'Distopía clásica de George Orwell'),
-('9780143039433', 2, 2, 'Anna Karenina', 80, 26000, 4, 4, 1877, 964, 12, 'anna_karenina.jpg', '14x21 cm', '1234567890798', 'Novela trágica de León Tolstói'),
-('9780143105985', 2, 1, 'Moby-Dick', 60, 22000, 4, 6, 1851, 635, 15, 'moby_dick.jpg', '14x21 cm', '1234567890910', 'Historia épica de Herman Melville'),
-('9781400031702', 2, 1, 'Crime and Punishment', 70, 19000, 5, 5, 1866, 671, 10, 'crime_punishment.jpg', '13x20 cm', '1234567890980', 'Obra de Fiódor Dostoyevski sobre la culpa y el castigo'),
+('9780143039433', 2, 2, 'Anna Karenina', 80, 26000, 4, 4, 1877, 964, 12, 'annaKarenina.jpg', '14x21 cm', '1234567890798', 'Novela trágica de León Tolstói'),
+('9780143105985', 2, 1, 'Moby-Dick', 60, 22000, 4, 6, 1851, 635, 15, 'mobyDick.jpg', '14x21 cm', '1234567890910', 'Historia épica de Herman Melville'),
+('9781400031702', 2, 1, 'Crime and Punishment', 70, 19000, 5, 5, 1866, 671, 10, 'crimeAndPunishment.jpg', '13x20 cm', '1234567890980', 'Obra de Fiódor Dostoyevski sobre la culpa y el castigo'),
 ('9780553296983', 2, 2, 'Dune', 80, 25000, 5, 5, 1965, 412, 10, 'dune.jpg', '15x23 cm', '1234567890111', 'Ópera espacial de Frank Herbert'),
-('9780451524935', 2, 2, 'Animal Farm', 150, 12000, 4, 9, 1945, 112, 0, 'animal_farm.jpg', '13x20 cm', '1234567890232', 'Sátira política de George Orwell'),
-('9780307387899', 2, 1, 'The Road', 90, 22000, 5, 7, 2006, 287, 0, 'the_road.jpg', '13x20 cm', '1234567890343', 'Novela post-apocalíptica de Cormac McCarthy');
+('9780451524935', 2, 2, 'Animal Farm', 150, 12000, 4, 9, 1945, 112, 0, 'animalFarm.jpg', '13x20 cm', '1234567890232', 'Sátira política de George Orwell'),
+('9780307387899', 2, 1, 'The Road', 90, 22000, 5, 7, 2006, 287, 0, 'TheRoad.jpg', '13x20 cm', '1234567890343', 'Novela post-apocalíptica de Cormac McCarthy');
 
 -- 13. Insertar en la tabla `genero_libro`
 INSERT INTO genero_libro (id_genero, id_libro) VALUES 

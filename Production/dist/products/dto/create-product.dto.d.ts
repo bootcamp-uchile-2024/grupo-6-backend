@@ -1,23 +1,19 @@
-import { Encuadernacion } from '../entities/encuadernacion';
-import { GeneroEnum } from '../entities/generoEnum';
+import { EncuadernacionEnum } from '../entities/encuadernacionEnum';
 import { Idioma } from '../entities/idioma';
-import { Review } from '../entities/review';
+import { GeneroEnum } from '../entities/generoEnum';
 export declare class CreateProductDto {
     isbn: string;
     nombre: string;
     autor: string[];
     stockLibro: number;
     precio: number;
-    rating: number;
     genero: GeneroEnum[];
     editorial: string;
     idioma: Idioma;
-    encuadernacion: Encuadernacion;
-    agnoPublicacion: Date;
+    encuadernacion: EncuadernacionEnum;
+    agnoPublicacion: number;
     numeroPaginas: number;
-    resenas: Review[];
     descuento: number;
-    caratula: string;
     dimensiones: string;
     ean: string;
     resumen: string;

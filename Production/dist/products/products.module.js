@@ -14,6 +14,11 @@ const genero_1 = require("../orm/entity/genero");
 const libro_1 = require("../orm/entity/libro");
 const products_controller_1 = require("./products.controller");
 const products_service_1 = require("./products.service");
+const idioma_libro_1 = require("../orm/entity/idioma_libro");
+const encuadernacion_1 = require("../orm/entity/encuadernacion");
+const editorial_1 = require("../orm/entity/editorial");
+const autor_libro_1 = require("../orm/entity/autor_libro");
+const genero_libro_1 = require("../orm/entity/genero_libro");
 let ProductsModule = class ProductsModule {
 };
 exports.ProductsModule = ProductsModule;
@@ -22,7 +27,12 @@ exports.ProductsModule = ProductsModule = __decorate([
         imports: [typeorm_1.TypeOrmModule.forFeature([
                 libro_1.Libro,
                 autor_1.Autor,
-                genero_1.Genero
+                genero_1.Genero,
+                idioma_libro_1.IdiomaLibro,
+                encuadernacion_1.Encuadernacion,
+                editorial_1.Editorial,
+                autor_libro_1.AutorLibro,
+                genero_libro_1.GeneroLibro,
             ])],
         controllers: [products_controller_1.ProductsController],
         providers: [products_service_1.ProductsService],

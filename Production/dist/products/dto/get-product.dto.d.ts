@@ -1,9 +1,11 @@
+import { EncuadernacionEnum } from '../entities/encuadernacionEnum';
 import { GeneroEnum } from '../entities/generoEnum';
 import { Idioma } from '../entities/idioma';
-import { Review } from '../entities/review';
-import { Encuadernacion } from '../entities/encuadernacion';
-import { Product } from '../entities/product.entity';
-export declare class GetProductDto {
+import { CreateProductDto } from './create-product.dto';
+import { Resena } from 'src/orm/entity/resena';
+declare const GetProductDto_base: import("@nestjs/mapped-types").MappedType<Partial<CreateProductDto>>;
+export declare class GetProductDto extends GetProductDto_base {
+    id: number;
     isbn: string;
     nombre: string;
     autor: string[];
@@ -13,14 +15,14 @@ export declare class GetProductDto {
     genero: GeneroEnum[];
     editorial: string;
     idioma: Idioma;
-    encuadernacion: Encuadernacion;
-    agnoPublicacion: Date;
+    encuadernacion: EncuadernacionEnum;
+    agnoPublicacion: number;
     numeroPaginas: number;
-    resenas: Review[];
+    resenas: Resena[];
     descuento: number;
     caratula: string;
     dimensiones: string;
     ean: string;
     resumen: string;
-    constructor(product: Product);
 }
+export {};

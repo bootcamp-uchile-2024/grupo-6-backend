@@ -10,36 +10,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetProductDto = void 0;
+const mapped_types_1 = require("@nestjs/mapped-types");
 const swagger_1 = require("@nestjs/swagger");
-const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
+const class_validator_1 = require("class-validator");
+const encuadernacionEnum_1 = require("../entities/encuadernacionEnum");
 const generoEnum_1 = require("../entities/generoEnum");
 const idioma_1 = require("../entities/idioma");
-const review_1 = require("../entities/review");
-const encuadernacion_1 = require("../entities/encuadernacion");
-class GetProductDto {
-    constructor(product) {
-        this.isbn = product.isbn;
-        this.nombre = product.nombre;
-        this.autor = product.autor;
-        this.stockLibro = product.stockLibro;
-        this.precio = product.precio;
-        this.rating = product.rating;
-        this.genero = product.genero;
-        this.editorial = product.editorial;
-        this.idioma = product.idioma;
-        this.encuadernacion = product.encuadernacion;
-        this.agnoPublicacion = product.agnoPublicacion;
-        this.numeroPaginas = product.numeroPaginas;
-        this.resenas = product.resenas;
-        this.descuento = product.descuento;
-        this.caratula = product.caratula;
-        this.dimensiones = product.dimensiones;
-        this.ean = product.ean;
-        this.resumen = product.resumen;
-    }
+const create_product_dto_1 = require("./create-product.dto");
+const resena_1 = require("../../orm/entity/resena");
+class GetProductDto extends (0, mapped_types_1.PartialType)(create_product_dto_1.CreateProductDto) {
 }
 exports.GetProductDto = GetProductDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'ID del libro',
+        type: Number,
+        example: 1,
+    }),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], GetProductDto.prototype, "id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'ISBN 13 del libro',
@@ -103,13 +94,29 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Lista con el o los géneros del libro',
         enum: [
-            'Suspenso', 'Histórico', 'Romance', 'Ciencia Ficción', 'Distópia', 'Aventura', 'Fantasía', 'Contemporáneo', 'Terror',
-            'Paranormal', 'Poesía', 'Juvenil', 'Infantil', 'Novela', 'Clásico', 'Policiaco', 'Drama', 'Comedia', 'Autoayuda',
-            'Salud y deporte', 'Técnicos y especializados', 'Biografía', 'Cocina', 'Viajes', 'Arte', 'Ciencia y matemáticas',
-            'Computación', 'Derecho y política', 'Economía y finanzas', 'Historia', 'Religión', 'Filosofía', 'Educativo', 'Ensayo',
+            'Ciencia Ficción',
+            'Romance',
+            'Fantasía',
+            'Histórico',
+            'Aventura',
+            'Suspenso',
+            'Terror',
+            'Policiaco',
+            'Drama',
+            'Comedia',
+            'Autoayuda',
+            'Biografía',
+            'Ensayo',
+            'Educativo',
+            'Infantil',
+            'Juvenil',
+            'Paranormal',
+            'Religión',
+            'Política',
+            'Filosofía',
         ],
         isArray: true,
-        example: [generoEnum_1.GeneroEnum.NOVELA, generoEnum_1.GeneroEnum.CLASICO],
+        example: [generoEnum_1.GeneroEnum.ROMANCE, generoEnum_1.GeneroEnum.EDUCATIVO],
     }),
     (0, class_validator_1.ArrayNotEmpty)(),
     __metadata("design:type", Array)
@@ -133,6 +140,20 @@ __decorate([
             'Alemán',
             'Portugués',
             'Italiano',
+            'Japonés',
+            'Chino',
+            'Ruso',
+            'Coreano',
+            'Árabe',
+            'Hebreo',
+            'Griego',
+            'Latín',
+            'Hindi',
+            'Bengalí',
+            'Vietnamita',
+            'Polaco',
+            'Turco',
+            'Sueco',
         ],
         example: idioma_1.Idioma.ESPANOL,
     }),
@@ -143,26 +164,40 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Tipo de encuadernación del libro',
         enum: [
-            'Tapa dura',
-            'Tapa blanda',
-            'Encuadernación en espiral',
+            'Tapa Dura',
+            'Tapa Blanda',
+            'Edición de Bolsillo',
+            'Edición de Lujo',
+            'Digital',
+            'Audiolibro',
+            'Impresión Bajo Demanda',
+            'Coleccionista',
+            'Edición Limitada',
+            'Rústica',
+            'Libreta de Apuntes',
+            'Manual',
+            'Guía de Viaje',
+            'Cómic',
+            'Manga',
+            'Folleto',
+            'Calendario',
+            'Póster',
+            'Plegable',
+            'Tarjeta',
         ],
-        example: encuadernacion_1.Encuadernacion.TAPA_DURA,
+        example: encuadernacionEnum_1.EncuadernacionEnum.TAPA_DURA,
     }),
-    (0, class_validator_1.IsEnum)({ entity: encuadernacion_1.Encuadernacion }),
+    (0, class_validator_1.IsEnum)({ entity: encuadernacionEnum_1.EncuadernacionEnum }),
     __metadata("design:type", String)
 ], GetProductDto.prototype, "encuadernacion", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Año de publicación del libro',
-        type: Date,
-        example: new Date(2015, 0),
+        type: 'number',
+        example: 2015,
     }),
-    (0, class_validator_1.IsDate)(),
-    (0, class_validator_1.MaxDate)(() => new Date(), {
-        message: () => `No se puede ingresar una fecha mayor al día de hoy: ${new Date().toDateString()})`
-    }),
-    __metadata("design:type", Date)
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
 ], GetProductDto.prototype, "agnoPublicacion", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
@@ -180,13 +215,13 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Lista con las reseñas realizadas por los usuarios',
-        type: [review_1.Review],
+        type: [resena_1.Resena],
         default: [],
         isArray: true,
     }),
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ValidateNested)({ each: true }),
-    (0, class_transformer_1.Type)(() => review_1.Review),
+    (0, class_transformer_1.Type)(() => resena_1.Resena),
     __metadata("design:type", Array)
 ], GetProductDto.prototype, "resenas", void 0);
 __decorate([
@@ -206,7 +241,7 @@ __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Ruta de la carátula del libro',
         type: String,
-        example: './images/portada.png'
+        example: '/cover/portada.png'
     }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

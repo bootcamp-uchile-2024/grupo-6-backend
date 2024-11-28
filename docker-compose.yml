@@ -1,15 +1,15 @@
 services:
-  api:
-    image: "node:${VERSION_NODE}"
-    command: "npm run start:dev"
-    user: node
-    working_dir: /home/node/nest
-    volumes:
-      - .:/home/node/nest
-    ports:
-      - "${PUERTO_NEST}:3000"
-    depends_on:
-      - mysql
+  # api:
+  #   image: "node:${VERSION_NODE}"
+  #   command: "npm run start:dev"
+  #   user: node
+  #   working_dir: /home/node/nest
+  #   volumes:
+  #     - .:/home/node/nest
+  #   ports:
+  #     - "${PUERTO_NEST}:3000"
+  #   depends_on:
+  #     - mysql
 
   mysql:
     image: mysql:${VERSION_DB}

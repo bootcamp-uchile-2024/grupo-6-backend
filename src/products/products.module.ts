@@ -5,12 +5,22 @@ import { Genero } from 'src/orm/entity/genero';
 import { Libro } from 'src/orm/entity/libro';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
+import { IdiomaLibro } from 'src/orm/entity/idioma_libro';
+import { Encuadernacion } from 'src/orm/entity/encuadernacion';
+import { Editorial } from 'src/orm/entity/editorial';
+import { AutorLibro } from 'src/orm/entity/autor_libro';
+import { GeneroLibro } from 'src/orm/entity/genero_libro';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
     Libro,
     Autor, 
-    Genero
+    Genero,
+    IdiomaLibro,
+    Encuadernacion,
+    Editorial,
+    AutorLibro,
+    GeneroLibro,
   ])],
   controllers: [ProductsController],
   providers: [ProductsService],

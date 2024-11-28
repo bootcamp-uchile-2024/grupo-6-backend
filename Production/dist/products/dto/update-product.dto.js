@@ -15,6 +15,7 @@ const swagger_1 = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 const create_product_dto_1 = require("./create-product.dto");
+const generoEnum_1 = require("../entities/generoEnum");
 class UpdateProductDto extends (0, mapped_types_1.PartialType)(create_product_dto_1.CreateProductDto) {
 }
 exports.UpdateProductDto = UpdateProductDto;
@@ -64,11 +65,10 @@ __decorate([
     __metadata("design:type", Number)
 ], UpdateProductDto.prototype, "rating", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ description: 'ID de la editorial del libro', type: Number, example: '1', }),
-    (0, class_validator_1.IsInt)(),
+    (0, swagger_1.ApiProperty)({ description: 'Nombre de la editorial del libro', type: String, example: 'Alfaguara', }),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Number)
-], UpdateProductDto.prototype, "id_editorial", void 0);
+    __metadata("design:type", String)
+], UpdateProductDto.prototype, "editorial", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ description: 'ID del idioma del libro', type: Number, example: '1', }),
     (0, class_validator_1.IsInt)(),
@@ -160,4 +160,35 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateProductDto.prototype, "resumen", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Lista con el o los géneros del libro',
+        enum: [
+            'Ciencia Ficción',
+            'Romance',
+            'Fantasía',
+            'Histórico',
+            'Aventura',
+            'Suspenso',
+            'Terror',
+            'Policiaco',
+            'Drama',
+            'Comedia',
+            'Autoayuda',
+            'Biografía',
+            'Ensayo',
+            'Educativo',
+            'Infantil',
+            'Juvenil',
+            'Paranormal',
+            'Religión',
+            'Política',
+            'Filosofía',
+        ],
+        isArray: true,
+        example: [generoEnum_1.GeneroEnum.ROMANCE, generoEnum_1.GeneroEnum.EDUCATIVO],
+    }),
+    (0, class_validator_1.ArrayNotEmpty)(),
+    __metadata("design:type", Array)
+], UpdateProductDto.prototype, "genero", void 0);
 //# sourceMappingURL=update-product.dto.js.map

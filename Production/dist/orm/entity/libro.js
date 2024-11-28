@@ -60,7 +60,7 @@ __decorate([
 ], Libro.prototype, "id_editorial", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Date)
+    __metadata("design:type", Number)
 ], Libro.prototype, "agno_publicacion", void 0);
 __decorate([
     (0, typeorm_1.Column)(),

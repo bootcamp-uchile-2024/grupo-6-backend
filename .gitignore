@@ -5,11 +5,11 @@
 /build
 /acceso1234.pem
 /Production/dist
+/Production/node_modules
 
 # DB
 /sql
 /Production/sql
-
 
 # Logs
 logs

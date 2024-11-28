@@ -16,11 +16,11 @@ export class CreateShoppingcartDto {
   @ApiProperty({example: '1', description: 'cantidad de un mismo libro'})
   public cantidad: number;
 
-  @IsInt()
+  /*@IsInt()
   @ApiProperty({example: '1', description: 'precio de un libro'})
   public precio: number;
 
   @IsInt()
   @ApiProperty({example: '1', description: 'descuento de un libro'})
-  public descuento: number;
+  public descuento: number;*/
 }

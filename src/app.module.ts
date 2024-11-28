@@ -29,7 +29,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
         if (!config.PUERTO_NEST) {
           throw new Error('Port Nest is required');
         }
-        if (config.PORT == '6000') {
+        if (config.PUERTO_NEST == '6000') {
           throw new Error('Port Nest must be diferent from 6000');
         }
         return {

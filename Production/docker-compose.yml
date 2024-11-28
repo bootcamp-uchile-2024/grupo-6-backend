@@ -1,6 +1,6 @@
 services:
   api:
-    image: ncarvajalg/grupo-6-backend:v4.0.1
+    image: ncarvajalg/grupo-6-backend:v5.0.3
     container_name: g6_backend
 
     environment:
@@ -8,7 +8,7 @@ services:
       - NODE_ENV=production
 
     ports:
-      - "3000:5000"
+      - "3000:${PUERTO_NEST}"
 
     depends_on:
       - mysql
@@ -21,7 +21,7 @@ services:
     container_name: g6_backend_bd
 
     ports:
-      - "3307:${PORT_DB}"
+      - "3306:${PUERTO_DB}"
 
     volumes:
       - ./sql:/var/lib/mysql
@@ -33,3 +33,14 @@ services:
     env_file:
       - .env
     
+  flyway:
+    image: flyway/flyway:${VERSION_FLYWAY}
+    volumes:
+      - ./BBDD:/flyway/sql
+    environment:
+      FLYWAY_URL: jdbc:mysql://${RUTA_DB}:${PUERTO_DB}/${NOMBRE_DB}?allowPublicKeyRetrieval=true
+      FLYWAY_USER: ${USUARIO_DB}
+      FLYWAY_PASSWORD: ${CLAVE_ROOT_DB}
+    entrypoint: ["flyway", "-connectRetries=60", "migrate"]
+    depends_on: 
+      - mysql

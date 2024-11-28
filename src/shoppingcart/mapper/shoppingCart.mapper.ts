@@ -13,7 +13,7 @@ export class CarritoMapper {
         carritoDto.caratula = libro.caratula;
         carritoDto.precio = libro.precio;
         carritoDto.cantidad = carrito.cantidad;
-        carritoDto.idUsuario = carrito.usuario.id;
+        carritoDto.idUsuario = carrito.usuario_id;
         carritoDto.descuento = libro.descuento;
         carritoDto.stockLibro = libro.stock_libro;
         return carritoDto;

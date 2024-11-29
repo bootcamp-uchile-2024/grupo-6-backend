@@ -157,7 +157,7 @@ export class OrmModule {
 
  ### Realizar Pull a imagen:
  ```bash
- docker pull ncarvajalg/grupo-6-backend:v4.0.1
+ docker pull ncarvajalg/grupo-6-backend:v5.0.3
  ```
 
  ### Correr contenedor:
@@ -183,7 +183,7 @@ export class OrmModule {
 
 Editar conexion con los siguientes datos que aparecen en la imagen:
 - Server Host: localhost
-- Port: 3307
+- Port: 3306
 - Username: root
 - Password: grupo-6
 
@@ -276,6 +276,25 @@ El modelo conceptual y el modelo de entidad relacion aparecen en la carpeta `/mo
  Prefijo: `change/nombre-archivo`
     - Ejemplo: `change/users.service.ts`
 
+ ### Implementación de servidor de estaticos
+ Instalar dependencia
+ 
+  ```bash
+ npm install @nestjs/serve-static
+ ```
+ 
+ Luego configurar las rutas de los directorios en el módulo de la aplicación, en imports:
+
+  ```bash
+ ServeStaticModule.forRoot({
+      rootPath: './estatics',
+      serveRoot: '/cover',
+      })
+ ```
+ Ejemplo de extracción de estatico del proyecto:
+
+    http://18.222.107.138:3000/cover/animalFarm.jpg
+ 
  ### Integración a Producción
  Una vez completados los cambios en tu rama, crea un Pull
  Request (PR) hacia la rama main para revisión. El PR debe
@@ -283,7 +302,7 @@ El modelo conceptual y el modelo de entidad relacion aparecen en la carpeta `/mo
  instrucción necesaria para probarlos.
 
  ### Link de Imagen Productiva
- http://18.222.107.251:3000/api
+ http://18.222.107.138:3000/api
 
 
 ## Contacto

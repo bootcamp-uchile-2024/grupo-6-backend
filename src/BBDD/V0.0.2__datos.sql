@@ -1,3 +1,5 @@
+USE Paginas_Selectas;
+
 -- 1. Insertar en la tabla `usuario`
 INSERT INTO usuario (nombre, segundo_nombre, apellido_paterno, apellido_materno, correo_electronico, contrasena) VALUES 
 ('Juan', 'Carlos', 'Pérez', 'González', 'juan.perez@gmail.com', 'password123'),

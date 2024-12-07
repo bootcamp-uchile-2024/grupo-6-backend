@@ -7,6 +7,7 @@ import { LibroCompra } from 'src/orm/entity/libro_compra';
 import { Usuario } from 'src/orm/entity/usuario';
 import { PurchasesController } from './purchases.controller';
 import { PurchasesService } from './purchases.service';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { PurchasesService } from './purchases.service';
       Direccion,
       Carrito,
       LibroCompra
-    ])
+    ]),
+    UsersModule
   ],
   controllers: [PurchasesController],
   providers: [PurchasesService],

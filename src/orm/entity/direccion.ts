@@ -32,6 +32,9 @@ export class Direccion {
     @Column()
     nombre_region: string;
 
+    @Column()
+    estado: string;
+
     @ManyToOne(() => Usuario)
     @JoinColumn({ name: "id_usuario" })
     usuario: Usuario;

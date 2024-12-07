@@ -1,274 +1,205 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { isArray } from 'class-validator';
-import { error } from 'console';
+import { Direccion } from 'src/orm/entity/direccion';
+import { DireccionTipoDireccion } from 'src/orm/entity/direccion_tipoDireccion';
+import { TipoDireccion } from 'src/orm/entity/tipoDireccion';
 import { Usuario } from 'src/orm/entity/usuario';
 import { Repository } from 'typeorm';
+import { CreateAddressDto } from './dto/create-address.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Address } from './entities/address.entity';
-import { TipoDireccion } from './entities/tipoDireccion.entity';
-import { User } from './entities/user.entity';
+import { GetAddressDto } from './dto/get-address.dto';
+import { GetAllUsersDto } from './dto/get-all-users.dto';
+import { GetLoginUserDto } from './dto/get-login-user.dto';
+import { GetUserDto } from './dto/get-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { Estado } from './enum/estado.enum';
+import { AddressMapper } from './mapper/address.mapper';
+import { UserMapper } from './mapper/user.mapper';
+import { UpdateAddressDto } from './dto/update-address.dto';
 
 @Injectable()
 export class UsersService {
-  private usuarios: User[] = [
-    new User(
-      1,
-      'Cristobal Andres',
-      'Sanchez',
-      'Ossandon',
-      'c.sanch.oss@gmail.com',
-      'qwerty',
-      [
-        new Address(
-          1,
-          'El condor',
-          '125',
-          'N/A',
-          'Nunoa',
-          'Santiago',
-          'Region Metropolitana',
-          [TipoDireccion.ENVIO, TipoDireccion.FACTURACION],
-          'CASA',
-        ),
-      ]
-    ),
-    new User(
-      2,
-      'Daniel Antonio',
-      'Fernandez',
-      'Correa',
-      'd.fernandez.correa@gmail.com',
-      '12345',
-      [
-        new Address(
-          1,
-          'San Marcos',
-          '27',
-          'N/A',
-          'Penalolen',
-          'Santiago',
-          'Region Metropolitana',
-          [TipoDireccion.ENVIO, TipoDireccion.FACTURACION],
-          'CASA',
-        ),
-      ]
-    ),
-  ];
-
   constructor(
     @InjectRepository(Usuario) 
     private readonly userRepository: Repository<Usuario>,
 
+    @InjectRepository(Direccion) 
+    private readonly direccionRepository: Repository<Direccion>,
+
+    @InjectRepository(TipoDireccion) 
+    private readonly tipoDireccionRepository: Repository<TipoDireccion>,
+    
+    @InjectRepository(DireccionTipoDireccion) 
+    private readonly direccionTipoDireccionRepository: Repository<DireccionTipoDireccion>,
+
+    private readonly jwtService: JwtService
     ) {}
 
-  createSHA256Hash(inputString) {
-    const crypto = require('crypto');
-    const hash = crypto.createHash('sha256');
-    hash.update(inputString);
-    return hash.digest('hex');
-  }
-
-  create(createUserDto: CreateUserDto) {
-    const existeUsuario = this.usuarios.findIndex(
-      (element: User) =>
-        element.correoElectronico == createUserDto.correoElectronico,
-    );
-    if (existeUsuario != -1) {
-      throw new error();
-    }
-    const usuario = new User(
-      this.usuarios.length + 1,
-      createUserDto.nombres,
-      createUserDto.apellidoPaterno,
-      createUserDto.apellidoMaterno,
-      createUserDto.correoElectronico,
-      this.createSHA256Hash(createUserDto.contrasena),
-      []
-    );
-
-    this.usuarios.push(usuario);
-    return usuario;
-  }
-
-  findOne(id: number): User {
-    const usuario: User = this.usuarios.find(
-      (element: User) => element.idUsuario == id,
-    );
-    if (!usuario) {
-      throw new Error();
+  async noExisteUsuario(id: number): Promise<Usuario>{
+    const usuario: Usuario = await this.userRepository.findOneBy({id: +id});
+    if (!usuario || usuario.estado === Estado.INACTIVO) {
+      throw new NotFoundException("Usuario no existe.");
     }
     return usuario;
   }
 
+  async noExisteDireccion(id: number): Promise<Direccion>{
+    const direccion: Direccion = await this.direccionRepository.findOne({
+      where: {
+        id: +id
+      },
+      relations: {
+        tipodirecciones: true
+      }
+    });
+    if (!direccion || direccion.estado === Estado.INACTIVO) {
+      throw new NotFoundException("Direccion no existe.");
+    }
+    return direccion;
+  }
 
-  async findAllUsuarios(): Promise<Usuario[]> {
-    const usuarios: Promise<Usuario[]> = this.userRepository.find({});
-    return usuarios;
+  async login(loginUserDto: LoginUserDto): Promise<GetLoginUserDto>{
+    const usuario = await this.userRepository.findOne({
+      where: {
+        correo_electronico: loginUserDto.correoElectronico
+      }
+    });
+    if (loginUserDto.contrasena !== usuario.contrasena) {
+      throw new UnauthorizedException("Correo electronico o contraseña incorrecta.");
+    }
+    const contenido = {
+      idUsuario: usuario.id,
+      rol: usuario.rol,
+    }
+
+    const getLoginUserDto = UserMapper.entityTogetLoginUserDto(usuario);
+    getLoginUserDto.token = await this.jwtService.signAsync(contenido);
+    return getLoginUserDto;
+  }
+
+  async createUser(createUserDto: CreateUserDto): Promise<GetUserDto> {
+    const usuario = UserMapper.createUserDtoToEntity(createUserDto);
+    const guardado = await this.userRepository.save(usuario)
+    const getUserDto = UserMapper.entityToGetUserDto(guardado);
+    return getUserDto;
+  }
+
+  async findOneUser(id: number): Promise<GetUserDto> {
+    const usuario: Usuario = await this.noExisteUsuario(id);
+    const getUserDto = UserMapper.entityToGetUserDto(usuario);
+    return getUserDto;
   }
 
 
-  update(
+  async findAllUsuarios(nroPagina: number, cantidadPorPagina: number): Promise<GetAllUsersDto<GetUserDto>> {
+    const nroPaginaValido = nroPagina - 1;
+    const offset = cantidadPorPagina * nroPaginaValido;
+
+    const usuarios: [ Usuario[], number ] = await this.userRepository.findAndCount({
+      order: {
+        id: "ASC"
+      },
+      take: cantidadPorPagina,
+      skip: offset
+    });
+
+
+    const paginaGetAllUsersDto = new GetAllUsersDto<GetUserDto>();
+    paginaGetAllUsersDto.totalUsuarios = usuarios[1];
+    paginaGetAllUsersDto.totalPaginas = Math.ceil(usuarios[1] / cantidadPorPagina);
+    paginaGetAllUsersDto.nroPagina = nroPagina;
+    paginaGetAllUsersDto.cantidadPorPagina = cantidadPorPagina;
+    paginaGetAllUsersDto.usuarios = UserMapper.entityListToGetUserDtoList(usuarios[0]);
+    return paginaGetAllUsersDto;
+  }
+
+  
+  async findUserAddresses(id: number): Promise<GetAddressDto[]> {
+    await this.noExisteUsuario(+id);
+    const direccion = await this.direccionRepository.find({
+      where: {
+        id_usuario: +id,
+        estado: 'ACTIVO'
+      },
+      relations: {
+        tipodirecciones: true
+      }
+    });
+
+    if (direccion.length === 0) {
+      throw new NotFoundException("Este usuario no tiene ninguna direccion asociada.");
+    }
+
+    const getAddressesDto: GetAddressDto[] = AddressMapper.entityListToGetAddressDtoList(direccion);
+    return getAddressesDto;
+  }
+  
+
+  async updateUser(
     id: number,
-    nombres?: string,
-    apellidoPaterno?: string,
-    apellidoMaterno?: string,
-    correoElectronico?: string,
-    contrasena?: string
-  ): CreateUserDto {
-    const elemento: number = this.usuarios.findIndex(
-      (element: User) => element.idUsuario == id,
-    );
-    if (elemento == -1) {
-      throw new Error();
-    }
-    if (nombres) {
-      this.usuarios[elemento].nombres = nombres;
-    }
-    if (apellidoPaterno) {
-      this.usuarios[elemento].apellidoPaterno = apellidoPaterno;
-    }
-    if (apellidoMaterno) {
-      this.usuarios[elemento].apellidoMaterno = apellidoMaterno;
-    }
-    if (correoElectronico) {
-      this.usuarios[elemento].correoElectronico = correoElectronico;
-    }
-    if (contrasena) {
-      this.usuarios[elemento].contrasena = this.createSHA256Hash(contrasena);
-    }
-    return this.usuarios[elemento];
+    updateUserDto: UpdateUserDto
+  ): Promise<UpdateUserDto> {
+    const findUsuario: Usuario = await this.noExisteUsuario(+id);
+    UserMapper.updateUserDtoToEntity(updateUserDto,findUsuario);
+    await this.userRepository.save(findUsuario);
+    return updateUserDto;
   }
 
-  createAddress(
+  async createAddress(
     idUsuario: number,
-    calle: string,
-    numeroCalle: string,
-    comuna: string,
-    ciudad: string,
-    region: string,
-    tipoDireccion: string | string[],
-    numeroDepartamento?: string,
-    informacionAdicional?: string,
-  ): Address {
-    const elementoUs: number = this.usuarios.findIndex(
-      (element: User) => element.idUsuario == idUsuario,
-    );
-    if (elementoUs == -1) {
-      throw new HttpException('No existe usuario con el id ingresado.', 404);
-    }
+    createAddressDto: CreateAddressDto
+  ): Promise<CreateAddressDto> {
+    await this.noExisteUsuario(+idUsuario);
+    const nuevaDireccion: Direccion = AddressMapper.createAddressDtoToEntity(createAddressDto, +idUsuario);
+    const maxIdDireccion: number = await this.direccionRepository.maximum("id")
+    await this.direccionRepository.save(nuevaDireccion);
 
-    const newAdress: Address = new Address(0, '', '', '', '', '', '', [], '');
-
-    const idDireccion: number = this.usuarios[elementoUs].direccion.length + 1;
-    newAdress.idDireccion = idDireccion;
-    newAdress.calle = calle;
-    newAdress.numeroCalle = numeroCalle;
-    newAdress.comuna = comuna;
-    newAdress.ciudad = ciudad;
-    newAdress.region = region;
-    if (!isArray(tipoDireccion)) {
-      newAdress.tipoDireccion.push(tipoDireccion as TipoDireccion);
-    } else {
-      newAdress.tipoDireccion = tipoDireccion as TipoDireccion[];
+    for(let tipo of createAddressDto.tipoDireccion){
+      let nuevaDireccionTipoDireccion: DireccionTipoDireccion = new DireccionTipoDireccion();
+      let tipoDireccion: Promise<TipoDireccion> = this.tipoDireccionRepository.findOneBy({descripcion: tipo})
+      nuevaDireccionTipoDireccion.id_direccion = maxIdDireccion + 1
+      nuevaDireccionTipoDireccion.id_tipoDireccion = (await tipoDireccion).id
+      await this.direccionTipoDireccionRepository.save(nuevaDireccionTipoDireccion)
     }
-    if (numeroDepartamento) {
-      newAdress.numeroDepartamento = numeroDepartamento;
-    }
-    if (informacionAdicional) {
-      newAdress.informacionAdicional = informacionAdicional;
-    }
-
-    this.usuarios[elementoUs].direccion.push(newAdress);
-    return newAdress;
+    return createAddressDto;
   }
 
-  updateAddress(
-    idUsuario: number,
+  async updateAddress(
     idDireccion: number,
-    calle?: string,
-    numeroCalle?: string,
-    numeroDepartamento?: string,
-    comuna?: string,
-    ciudad?: string,
-    region?: string,
-    tipoDireccion?: string | string[],
-    informacionAdicional?: string,
-  ): Address {
-    const elementoUs: number = this.usuarios.findIndex(
-      (element: User) => element.idUsuario == idUsuario,
-    );
-    if (elementoUs == -1) {
-      throw new HttpException('No existe usuario con el id ingresado.', 404);
-    }
-    const elementoAd: number = this.usuarios[elementoUs].direccion.findIndex(
-      (element: Address) => element.idDireccion == idDireccion,
-    );
-    if (elementoAd == -1) {
-      throw new HttpException('No existe direccion con el id ingresado.', 404);
-    }
-
-    if (calle) {
-      this.usuarios[elementoUs].direccion[elementoAd].calle = calle;
-    }
-    if (numeroCalle) {
-      this.usuarios[elementoUs].direccion[elementoAd].numeroCalle = numeroCalle;
-    }
-    if (numeroDepartamento) {
-      this.usuarios[elementoUs].direccion[elementoAd].numeroDepartamento =
-        numeroDepartamento;
-    }
-    if (comuna) {
-      this.usuarios[elementoUs].direccion[elementoAd].comuna = comuna;
-    }
-    if (ciudad) {
-      this.usuarios[elementoUs].direccion[elementoAd].ciudad = ciudad;
-    }
-    if (region) {
-      this.usuarios[elementoUs].direccion[elementoAd].region = region;
-    }
-    if (tipoDireccion) {
-      if (!isArray(tipoDireccion)) {
-        this.usuarios[elementoUs].direccion[elementoAd].tipoDireccion = [];
-        this.usuarios[elementoUs].direccion[elementoAd].tipoDireccion.push(
-          tipoDireccion as TipoDireccion,
-        );
-      } else {
-        this.usuarios[elementoUs].direccion[elementoAd].tipoDireccion = [];
-        this.usuarios[elementoUs].direccion[elementoAd].tipoDireccion =
-          tipoDireccion as TipoDireccion[];
+    updateAddressDto: UpdateAddressDto
+  ): Promise<UpdateAddressDto> {
+    const direccion: Direccion = await this.noExisteDireccion(+idDireccion);
+    const nuevaDireccion: Direccion = AddressMapper.updateAddressDtoToEntity(updateAddressDto, direccion);
+    await this.direccionRepository.save(nuevaDireccion);
+    
+    if(updateAddressDto.tipoDireccion){
+      await this.direccionTipoDireccionRepository.delete({id_direccion: idDireccion});
+      for(let tipo of updateAddressDto.tipoDireccion){
+        let nuevaDireccionTipoDireccion: DireccionTipoDireccion = new DireccionTipoDireccion();
+        let tipoDireccion: Promise<TipoDireccion> = this.tipoDireccionRepository.findOneBy({descripcion: tipo})
+        nuevaDireccionTipoDireccion.id_direccion = idDireccion
+        nuevaDireccionTipoDireccion.id_tipoDireccion = (await tipoDireccion).id
+        await this.direccionTipoDireccionRepository.save(nuevaDireccionTipoDireccion)
       }
     }
-    if (informacionAdicional) {
-      this.usuarios[elementoUs].direccion[elementoAd].informacionAdicional =
-        informacionAdicional;
-    }
-    return this.usuarios[elementoUs].direccion[elementoAd];
+    return updateAddressDto;
   }
 
-  remove(id: number) {
-    const elemento: number = this.usuarios.findIndex(
-      (element: User) => element.idUsuario == id,
-    );
-    if (elemento == -1) {
-      throw new Error();
-    }
-    this.usuarios.splice(elemento, 1);
+  async removeUser(id: number): Promise<GetUserDto> {
+    const usuario: Usuario = await this.noExisteUsuario(+id);
+    usuario.estado = Estado.INACTIVO
+    const borrarUsuario = await this.userRepository.save(usuario);
+    const getUserDto = UserMapper.entityToGetUserDto(borrarUsuario);
+    return getUserDto;
   }
 
-  removeAddress(idUser: number, idAdress: number) {
-    const elementoUs: number = this.usuarios.findIndex(
-      (element: User) => element.idUsuario == idUser,
-    );
-    if (elementoUs == -1) {
-      throw new HttpException('No existe usuario con el id ingresado.', 404);
-    }
-    const elementoAd: number = this.usuarios[elementoUs].direccion.findIndex(
-      (element: Address) => element.idDireccion == idAdress,
-    );
-    if (elementoAd == -1) {
-      throw new HttpException('No existe direccion con el id ingresado.', 404);
-    }
-    this.usuarios[elementoUs].direccion.splice(elementoAd, 1);
+  async removeAddress(idDireccion: number): Promise<GetAddressDto> {
+    const direccion: Direccion = await this.noExisteDireccion(+idDireccion);
+    direccion.estado = Estado.INACTIVO;
+    await this.direccionRepository.save(direccion);
+    const getAddressDto = AddressMapper.entityToGetAddressDto(direccion);
+    return getAddressDto
   }
 }

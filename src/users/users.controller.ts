@@ -3,32 +3,65 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
   Param,
-  ParseArrayPipe,
   ParseIntPipe,
   Post,
   Put,
-  Query,
+  UseGuards,
   UsePipes,
-  ValidationPipe,
+  ValidationPipe
 } from '@nestjs/common';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Usuario } from 'src/orm/entity/usuario';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RolesAutorizados } from 'src/seguridad/decorator/rol.decorator';
+import { JwtGuard } from 'src/seguridad/guard/jwt.guard';
+import { ValidarRolGuard } from 'src/seguridad/guard/validar-rol.guard';
+import { CreateAddressDto } from './dto/create-address.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Address } from './entities/address.entity';
-import { TipoDireccion } from './entities/tipoDireccion.entity';
-import { User } from './entities/user.entity';
+import { GetAddressDto } from './dto/get-address.dto';
+import { GetAllUsersDto } from './dto/get-all-users.dto';
+import { GetLoginUserDto } from './dto/get-login-user.dto';
+import { GetUserDto } from './dto/get-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { Rol } from './enum/rol.enum';
+import { HashPipe } from './pipe/hash.pipe';
+import { UsuarioExistePipe } from './pipe/usuario-existe.pipe';
+import { UsuarioNoExistePipe } from './pipe/usuario-no-existe.pipe';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+
+
   @ApiResponse({
     status: 200,
     description:
-      'Este codigo se debe a que se pudo crear correctamente el usuario.',
+      'Este codigo se debe a que el usuario pudo logear correctamente.', type: GetLoginUserDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description:
+      'Este codigo se debe a que el correo electronico o la contraseña ingresada es incorrecta.',
+  })
+  @ApiTags('Users')
+  @UsePipes(
+    new ValidationPipe(),
+    UsuarioNoExistePipe, 
+    HashPipe)
+  @ApiBody({ type: LoginUserDto })
+  @Post("login")
+  async login(@Body() loginUsuarioDto: LoginUserDto) : Promise<GetLoginUserDto> {
+    return await this.usersService.login(loginUsuarioDto);
+  }
+   
+
+  @ApiResponse({
+    status: 200,
+    description:
+      'Este codigo se debe a que se pudo crear correctamente el usuario.',type: GetUserDto,
   })
   @ApiResponse({
     status: 400,
@@ -36,119 +69,94 @@ export class UsersController {
       'Este codigo se debe a que ya existe un usuario con el correo electronico ingresado.',
   })
   @ApiTags('Users')
-  @Post()
-  @UsePipes(new ValidationPipe())
-  create(@Body() createUserDto: CreateUserDto): CreateUserDto {
-    try {
-      const usuario = this.usersService.create(createUserDto);
-      return usuario;
-    } catch (error) {
-      throw new HttpException(
-        'Ya existe usuario con el correo electronico ingresado.',
-        400,
-      );
-    }
+  @Post('signIn')
+  @UsePipes(
+    new ValidationPipe(),
+    UsuarioExistePipe, 
+    HashPipe)
+    @ApiBody({ type: CreateUserDto })
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<GetUserDto> {
+    return await this.usersService.createUser(createUserDto);
   }
 
   @ApiResponse({
     status: 200,
     description:
-      'Este codigo se debe a que se pudo crear la direccion del usuario de manera exitosa.',
+      'Este codigo se debe a que se pudo encontrar correctamente las direcciones del usuario.',type: [GetAddressDto],
   })
   @ApiResponse({
-    status: 404,
+    status: 400,
     description:
       'Este codigo se debe a que no existe un usuario con el id ingresado.',
   })
-  @ApiQuery({
-    name: 'calle',
+  @ApiTags('Users')
+  @Get(':id/addresses')
+  @ApiBearerAuth()  
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER,Rol.ADMIN)
+  async findUserAddresses(
+    @Param('id', 
+      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))
+    id: number,
+  ): Promise<GetAddressDto[]>{
+    return await this.usersService.findUserAddresses(+id);
+  }
+
+  @ApiResponse({
+    status: 200,
     description:
-      'Nombre de la calle. (debe contener un formato de string correcto).',
-    required: true,
+      'Este codigo se debe a que se pudo crear correctamente la direccion de un usuario.',type: CreateAddressDto,
   })
-  @ApiQuery({
-    name: 'numeroCalle',
+  @ApiResponse({
+    status: 400,
     description:
-      'Numero de la calle (debe contener un formato de string correcto).',
-    required: true,
-  })
-  @ApiQuery({
-    name: 'numeroDepartamento',
-    description:
-      'Numero del departamento (debe contener formato de string  correcto).',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'comuna',
-    description:
-      'Comuna a la que vive el usuario (debe contener formato de string correcto).',
-    required: true,
-  })
-  @ApiQuery({
-    name: 'ciudad',
-    description:
-      'Ciudad a la que vive el usuario (debe contener formato de string correcto).',
-    required: true,
-  })
-  @ApiQuery({
-    name: 'region',
-    description:
-      'Region a la que vive el usuario (debe contener formato de string correcto).',
-    required: true,
-  })
-  @ApiQuery({
-    name: 'tipoDireccion',
-    description: "Tipo de direccion, puede ser 'Envio' o 'Facturacion'.",
-    required: true,
-    enum: TipoDireccion,
-    isArray: true,
-  })
-  @ApiQuery({
-    name: 'informacionAdicional',
-    description:
-      'Informacion adicional de la direccion del usuario, como por ejemplo referencias para llegar a la direccion.',
-    required: false,
+      'Este codigo se debe a que no existe usuario con el ID ingresado.',
   })
   @ApiTags('Users')
-  @UsePipes(new ValidationPipe())
-  @Post(':idUsuario/address')
-  createAddress(
-    @Param(
-      'idUsuario',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    idUsuario: number,
-    @Query('calle') calle: string,
-    @Query('numeroCalle') numeroCalle: string,
-    @Query('comuna') comuna: string,
-    @Query('ciudad') ciudad: string,
-    @Query('region') region: string,
-    @Query(
-      'tipoDireccion',
-      new ParseArrayPipe({ items: String, separator: ',', optional: true }),
-    )
-    tipoDireccion: string | string[],
-    @Query('numeroDepartamento') numeroDepartamento?: string,
-    @Query('informacionAdicional') informacionAdicional?: string,
-  ): Address {
-    const createAddress: Address = this.usersService.createAddress(
-      idUsuario,
-      calle,
-      numeroCalle,
-      comuna,
-      ciudad,
-      region,
-      tipoDireccion,
-      numeroDepartamento,
-      informacionAdicional,
-    );
-    return createAddress;
+  @Post(':id/address')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER,Rol.ADMIN)
+  @UsePipes(
+    new ValidationPipe())
+  @ApiBody({ type: CreateAddressDto })
+  async createAddress( 
+    @Param('id') idUsuario: number,
+    @Body() createAddressDto: CreateAddressDto): Promise<CreateAddressDto> {
+    return await this.usersService.createAddress(+idUsuario,createAddressDto);
   }
+
+
+  @ApiResponse({
+    status: 200,
+    description:
+      'Este codigo se debe a que se pudo modificar correctamente la direccion de un usuario.',type: UpdateAddressDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description:
+      'Este codigo se debe a que no existe direccion con el ID ingresado.',
+  })
+  @ApiTags('Users')
+  @Put('address/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER,Rol.ADMIN)
+  @UsePipes(
+    new ValidationPipe())
+  @ApiBody({ type: UpdateAddressDto })
+  async updateAddress( 
+    @Param('id') idDireccion: number,
+    @Body() updateAddressDto: UpdateAddressDto): Promise<UpdateAddressDto> {
+    return await this.usersService.updateAddress(+idDireccion,updateAddressDto);
+  }
+
 
   @ApiResponse({
     status: 200,
     description:
       'Este codigo se debe a que se pudo encontrar el usuario de manera exitosa.',
+    type: GetUserDto
   })
   @ApiResponse({
     status: 404,
@@ -157,16 +165,34 @@ export class UsersController {
   })
   @ApiTags('Users')
   @Get(':id')
-  findOne(
-    @Param('id', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))
-    id: number,
-  ): User {
-    try {
-      const usuario = this.usersService.findOne(id);
-      return usuario;
-    } catch (error) {
-      throw new HttpException('No existe usuario con el id ingresado.', 404);
-    }
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER,Rol.ADMIN)
+  async findOneUser(
+    @Param('id', 
+      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))
+    id: number
+  ): Promise<GetUserDto>{
+    return await this.usersService.findOneUser(id);
+  }
+
+
+  @ApiResponse({
+    status: 200,
+    description:
+      'Este codigo se debe a que se pudo encontrar los usuarios de manera exitosa.', type: GetAllUsersDto,
+  })
+  @ApiTags('Users')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.ADMIN)
+  @Get(":pagina/:cantidadPorPagina")
+  async findAllUsuarios(
+    @Param("pagina") pagina: number,
+    @Param("cantidadPorPagina") cantidadPorPagina: number,
+  ): Promise<GetAllUsersDto<GetUserDto>>{
+    const resultado : GetAllUsersDto<GetUserDto> = await this.usersService.findAllUsuarios(+pagina, +cantidadPorPagina);
+    return resultado;
   }
 
 
@@ -174,186 +200,47 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description:
-      'Este codigo se debe a que se pudo encontrar los usuarios de manera exitosa.',
-  })
-  // @ApiResponse({
-  //   status: 404,
-  //   description:
-  //     'Este codigo se debe a que no existe un usuario con el id ingresado.',
-  // })
-  @ApiTags('Users')
-  @Get()
-  async findAllUsuarios(): Promise<Usuario[]> {
-    return this.usersService.findAllUsuarios();
-  }
-
-
-
-  @ApiResponse({
-    status: 200,
-    description:
-      'Este codigo se debe a que se pudo modificar el usuario de manera exitosa.',
+      'Este codigo se debe a que se pudo modificar correctamente el usuario.',type: UpdateUserDto,
   })
   @ApiResponse({
-    status: 404,
+    status: 400,
     description:
-      'Este codigo se debe a que no existe un usuario con el id ingresado.',
+      'Este codigo se debe a que no existe usuario con el id ingresado.',
   })
-  @ApiQuery({
-    name: 'nombres',
-    description:
-      'Primer y segundo nombre del usuario (debe contener un formato de string correcto).',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'apellidoPaterno',
-    description:
-      'Apellido paterno del usuario (debe contener un formato de string correcto).',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'apellidoMaterno',
-    description:
-      'Apellido materno del usuario (debe contener un formato de string correcto).',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'correoElectronico',
-    description:
-      'Correo electronico del usuario (debe ser un correo con formato válido).',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'contrasena',
-    description: 'Contrasena del usuario.',
-    required: false,
-  })
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER,Rol.ADMIN)
   @ApiTags('Users')
-  @UsePipes(new ValidationPipe())
   @Put(':id')
-  update(
-    @Param('id', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))
-    id: number,
-    @Query('nombres') nombres?: string,
-    @Query('apellidoPaterno') apellidoPaterno?: string,
-    @Query('apellidoMaterno') apellidoMaterno?: string,
-    @Query('correoElectronico') correoElectronico?: string,
-    @Query('contrasena') contrasena?: string
-  ): CreateUserDto {
-    try {
-      const updateUsuario: CreateUserDto = this.usersService.update(
-        id,
-        nombres,
-        apellidoPaterno,
-        apellidoMaterno,
-        correoElectronico,
-        contrasena,
-      );
-      return updateUsuario;
-    } catch (error) {
-      throw new HttpException('No existe usuario con el id ingresado.', 404);
-    }
+  @UsePipes(new ValidationPipe())
+  @ApiBody({ type: UpdateUserDto })
+  async updateUser(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<UpdateUserDto> {
+    return await this.usersService.updateUser(+id,updateUserDto);
   }
+
 
   @ApiResponse({
     status: 200,
     description:
-      'Este codigo se debe a que se pudo modificar la direccion del usuario de manera exitosa.',
+      'Este codigo se debe a que se pudo eliminar la direccion de manera exitosa.',
+    type: GetAddressDto
   })
   @ApiResponse({
     status: 404,
     description:
-      'Este codigo se debe a que no existe un usuario con el id ingresado, o no existe el id de la direccion ingresada.',
-  })
-  @ApiQuery({
-    name: 'calle',
-    description:
-      'Nombre de la calle. (debe contener un formato de string correcto).',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'numeroCalle',
-    description:
-      'Numero de la calle (debe contener un formato de string correcto).',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'numeroDepartamento',
-    description:
-      'Numero del departamento (debe contener formato de string  correcto).',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'comuna',
-    description:
-      'Comuna a la que vive el usuario (debe contener formato de string correcto).',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'ciudad',
-    description:
-      'Ciudad a la que vive el usuario (debe contener formato de string correcto).',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'region',
-    description:
-      'Region a la que vive el usuario (debe contener formato de string correcto).',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'tipoDireccion',
-    description: "Tipo de direccion, puede ser 'Envio' o 'Facturacion'.",
-    required: false,
-    enum: TipoDireccion,
-    isArray: true,
-  })
-  @ApiQuery({
-    name: 'informacionAdicional',
-    description:
-      'Informacion adicional de la direccion del usuario, como por ejemplo referencias para llegar a la direccion.',
-    required: false,
+      'Este codigo se debe a que no existe la direccion con el id ingresado.',
   })
   @ApiTags('Users')
-  @UsePipes(new ValidationPipe())
-  @Put(':idUsuario/address/:idDireccion')
-  updateAddress(
-    @Param(
-      'idUsuario',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    idUsuario: number,
-    @Param(
-      'idDireccion',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    idDireccion: number,
-    @Query('calle') calle?: string,
-    @Query('numeroCalle') numeroCalle?: string,
-    @Query('numeroDepartamento') numeroDepartamento?: string,
-    @Query('comuna') comuna?: string,
-    @Query('ciudad') ciudad?: string,
-    @Query('region') region?: string,
-    @Query(
-      'tipoDireccion',
-      new ParseArrayPipe({ items: String, separator: ',', optional: true }),
-    )
-    tipoDireccion?: string | string[],
-    @Query('informacionAdicional') informacionAdicional?: string,
-  ): Address {
-    const updateAddress: Address = this.usersService.updateAddress(
-      idUsuario,
-      idDireccion,
-      calle,
-      numeroCalle,
-      numeroDepartamento,
-      comuna,
-      ciudad,
-      region,
-      tipoDireccion,
-      informacionAdicional,
-    );
-    return updateAddress;
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER,Rol.ADMIN)
+  @Delete('address/:id')
+  async removeAddress(
+    @Param('id', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))
+    id: number,
+  ): Promise<GetAddressDto> {
+    const deleteDireccion : GetAddressDto = await this.usersService.removeAddress(+id);
+    return deleteDireccion;
   }
 
   @ApiResponse({
@@ -367,43 +254,16 @@ export class UsersController {
       'Este codigo se debe a que no existe un usuario con el id ingresado.',
   })
   @ApiTags('Users')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER,Rol.ADMIN)
   @Delete(':id')
-  remove(
+  async removeUser(
     @Param('id', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))
     id: number,
-  ): void {
-    try {
-      const usuario = this.usersService.remove(id);
-    } catch (error) {
-      throw new HttpException('No existe usuario con el id ingresado.', 404);
-    }
+  ): Promise<GetUserDto> {
+    const deleteUser : GetUserDto = await this.usersService.removeUser(id);
+    return deleteUser;
   }
 
-  @ApiResponse({
-    status: 200,
-    description:
-      'Este codigo se debe a que se pudo eliminar el usuario de manera exitosa.',
-  })
-  @ApiResponse({
-    status: 404,
-    description:
-      'Este codigo se debe a que no existe un usuario con el id ingresado o no existe el id del correo electronico ingresado.',
-  })
-  @ApiTags('Users')
-  @Delete(':idUsuario/address/:idDireccion')
-  removeAdress(
-    @Param(
-      'idUsuario',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    idUsuario: number,
-    @Param(
-      'idDireccion',
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
-    )
-    idDireccion: number,
-  ): void {
-    const usuario = this.usersService.removeAddress(idUsuario, idDireccion);
-    return usuario;
-  }
 }

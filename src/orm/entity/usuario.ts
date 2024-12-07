@@ -10,10 +10,7 @@ export class Usuario {
     id: number;
 
     @Column()
-    nombre: string;
-
-    @Column()
-    segundo_nombre:string;
+    nombres: string;
 
     @Column()
     apellido_paterno: string;
@@ -26,6 +23,12 @@ export class Usuario {
 
     @Column()
     contrasena: string;
+
+    @Column()
+    rol: string;
+    
+    @Column()
+    estado: string;
 
     @OneToMany(() => Direccion, (direccion) => direccion.usuario)
     direccion: Direccion[];

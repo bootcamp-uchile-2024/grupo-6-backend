@@ -15,6 +15,7 @@ import { TipoDireccion } from "./entity/tipoDireccion";
 import { Usuario } from "./entity/usuario";
 import { AutorLibro } from "./entity/autor_libro";
 import { GeneroLibro } from "./entity/genero_libro";
+import { DireccionTipoDireccion } from "./entity/direccion_tipoDireccion";
 
 
 @Module({
@@ -41,7 +42,8 @@ import { GeneroLibro } from "./entity/genero_libro";
                 LibroCompra,
                 Carrito,
                 AutorLibro,
-                GeneroLibro,             
+                GeneroLibro,  
+                DireccionTipoDireccion           
             ]
         }),
         OrmModule,

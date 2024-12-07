@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, Length, MaxLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateUserDto {
+export class UpdateUserDto {
+  @IsOptional()
   @IsNotEmpty({ message: 'Por favor introducir un nombre.' })
   @IsString({ message: 'Introducir un formato de nombre correcto.' })
   @ApiProperty({
@@ -11,6 +12,7 @@ export class CreateUserDto {
   })
   public nombres: string;
 
+  @IsOptional()
   @IsNotEmpty({ message: 'Por favor introducir un apellido paterno.' })
   @IsString({ message: 'Introducir un formato de nombre correcto.' })
   @ApiProperty({
@@ -20,6 +22,7 @@ export class CreateUserDto {
   })
   public apellidoPaterno: string;
 
+  @IsOptional()
   @IsNotEmpty({ message: 'Por favor introducir un apellido materno.' })
   @IsString({ message: 'Introducir un formato de nombre correcto.' })
   @ApiProperty({
@@ -29,6 +32,7 @@ export class CreateUserDto {
   })
   public apellidoMaterno: string;
 
+  @IsOptional()
   @IsNotEmpty({ message: 'Por favor introducir un correo electronico.' })
   @IsEmail({}, { message: 'El email debe ser un correo electrónico válido' })
   @ApiProperty({
@@ -38,6 +42,7 @@ export class CreateUserDto {
   })
   public correoElectronico: string;
 
+  @IsOptional()
   @IsNotEmpty({ message: 'Por favor introducir una contrasena.' })
   @ApiProperty({ example: '12345', description: 'Contrasena del usuario.' })
   public contrasena: string;

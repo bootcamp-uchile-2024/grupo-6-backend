@@ -1,4 +1,4 @@
-USE `paginas_selectas`;
+USE paginas_selectas;
 
 CREATE TABLE usuario (
     id INT AUTO_INCREMENT PRIMARY KEY,

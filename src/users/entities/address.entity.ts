@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TipoDireccion } from './tipoDireccion.entity';
+import { TipoDireccionn } from './tipoDireccion.entity';
 import { IsEnum, IsString } from 'class-validator';
 
 export class Address {
@@ -48,15 +48,15 @@ export class Address {
   @IsString({ message: 'Introducir un formato de nombre correcto.' })
   public region: string;
   @ApiProperty({
-    example: [TipoDireccion.ENVIO, TipoDireccion.FACTURACION],
+    example: [TipoDireccionn.ENVIO, TipoDireccionn.FACTURACION],
     description: "Tipo de direccion, puede ser 'Envio' o 'Facturacion'.",
-    enum: TipoDireccion,
+    enum: TipoDireccionn,
   })
-  @IsEnum(TipoDireccion, {
+  @IsEnum(TipoDireccionn, {
     message:
       "El tipo de direccion tiene que ser el formato correcto. Ej: 'Envio' o 'Facturacion'.",
   })
-  public tipoDireccion: TipoDireccion[];
+  public tipoDireccion: TipoDireccionn[];
   @ApiProperty({
     example: 'CASA',
     description:
@@ -73,7 +73,7 @@ export class Address {
     comuna: string,
     ciudad: string,
     region: string,
-    tipoDireccion: TipoDireccion[],
+    tipoDireccion: TipoDireccionn[],
     informacionAdicional: string,
   ) {
     this.idDireccion = idDireccion;

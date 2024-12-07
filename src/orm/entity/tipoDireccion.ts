@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from "typeorm";
 import { Direccion } from "./direccion";
 
 @Entity({name: "tipoDireccion"})
@@ -9,7 +9,7 @@ export class TipoDireccion {
     @Column()
     descripcion: string;
 
-    @ManyToMany(() => Direccion)
+    @ManyToMany(() => Direccion, (direccion) => direccion.tipodirecciones)
     @JoinTable({ name: 'direccion_tipoDireccion',
         joinColumn: {
             name: 'id_tipoDireccion',

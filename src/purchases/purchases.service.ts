@@ -10,6 +10,7 @@ import { PurchasesMapper } from './mappers/purchases.mapper';
 import { Direccion } from 'src/orm/entity/direccion';
 import { Carrito } from 'src/orm/entity/carrito';
 import { LibroCompra } from 'src/orm/entity/libro_compra';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PurchasesService {
@@ -32,6 +33,8 @@ export class PurchasesService {
 
     @InjectRepository(LibroCompra)
     private readonly libroCompraRepository: Repository<LibroCompra>,
+
+    private readonly usuariosService: UsersService
   ){}
 
   // Crear pedido
@@ -91,13 +94,7 @@ export class PurchasesService {
   // Obtener pedidos de usuario
   async findAllClient(id_usuario: number): Promise<GetPurchaseDto[]> {
     // Obtener usuario
-    const usuario: Usuario = await this.usuarioRepository.findOne({
-      where: { id: id_usuario }
-    });
-    
-    if (!usuario){
-        throw new NotFoundException(`No existe un usuario con ID: ${id_usuario}`)
-    }
+    const usuario: Usuario = await this.usuariosService.noExisteUsuario(id_usuario);
 
     // Obtener pedidos
     const pedidos: HistorialCompra[] = await this.historialCompraRepository.find({

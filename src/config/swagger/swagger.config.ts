@@ -28,6 +28,7 @@ export function configSwagger(app: INestApplication) {
         .setContact(authorName, authorUrl, authorEmail)
         .setLicense(licence, "")
         .addTag('App')
+        .addBearerAuth()
         .build();
 
     const configProducts = new DocumentBuilder()
@@ -96,7 +97,11 @@ export function configSwagger(app: INestApplication) {
         }
     );
 
-    SwaggerModule.setup('api', app, documentApp);
+    SwaggerModule.setup('api', app, documentApp, {
+        swaggerOptions: {
+          persistAuthorization: true // PERMITE GUARDAR EL JWT
+        }
+      });
     SwaggerModule.setup('api/products', app, documentProducts);
     SwaggerModule.setup('api/shoppingcart', app, documentShoppincart);
     SwaggerModule.setup('api/users', app, documentUsers);

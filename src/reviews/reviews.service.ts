@@ -6,6 +6,7 @@ import { Usuario } from 'src/orm/entity/usuario';
 import { Repository } from 'typeorm';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { ResenaMapper } from './mappers/review.mapper';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ReviewsService {
@@ -13,16 +14,12 @@ export class ReviewsService {
   constructor(
     @InjectRepository(Resena) private readonly resenaRepository: Repository<Resena>,
     @InjectRepository(Usuario) private readonly usuarioRepository: Repository<Usuario>,
-    @InjectRepository(Libro) private readonly libroRepository: Repository<Libro>
+    @InjectRepository(Libro) private readonly libroRepository: Repository<Libro>,
+    private readonly usuariosService: UsersService
   ) {}
   
   async createResena(idUsuario: number, idLibro: number, createReviewDto: CreateReviewDto): Promise<CreateReviewDto> {
-    let existeUsuario: boolean = await this.usuarioRepository.existsBy({
-      id: +idUsuario
-    });
-    if(!existeUsuario){
-      throw new BadRequestException('No existe el usuario con el id ingresado.')
-    }
+    await this.usuariosService.noExisteUsuario(+idUsuario);
 
     let existeLibro: boolean = await this.libroRepository.existsBy({
       id: +idLibro
@@ -39,12 +36,7 @@ export class ReviewsService {
 
   async findResenasUsuario(idUsuario: number): Promise<Resena[]> {
 
-    let existeUsuario: boolean = await this.usuarioRepository.existsBy({
-      id: +idUsuario
-    });
-    if(!existeUsuario){
-      throw new BadRequestException('No existe el usuario con el id ingresado.')
-    }
+    await this.usuariosService.noExisteUsuario(+idUsuario);
 
     let resenasUsuario = await this.resenaRepository.find({
       select: {
@@ -90,8 +82,7 @@ export class ReviewsService {
         comentario:true,
         fecha: true,
         usuario: {
-          nombre: true,
-          segundo_nombre: true,
+          nombres: true,
           apellido_paterno: true,
           apellido_materno: true,
         }

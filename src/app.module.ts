@@ -12,6 +12,7 @@ import { UsersModule } from './users/users.module';
 import { OrmModule } from './orm/orm.module';
 import { PurchasesModule } from './purchases/purchases.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { SeguridadModule } from './seguridad/seguridad.module';
 
 @Module({
   imports: [
@@ -42,7 +43,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     ServeStaticModule.forRoot({
       rootPath: './estatics',
       serveRoot: '/cover',
-      })
+      }),
+    SeguridadModule
   ],
   controllers: [AppController],
   providers: [AppService],

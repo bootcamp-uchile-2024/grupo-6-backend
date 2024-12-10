@@ -1,11 +1,15 @@
 services:
   api:
-    image: ncarvajalg/grupo-6-backend:v5.0.3
+    image: ncarvajalg/grupo-6-backend:v6.0.1
     container_name: g6_backend
 
     environment:
-      - ARCHIVO_ENV=production
-      - NODE_ENV=production
+      - PUERTO_NESTJS=${PUERTO_NEST}
+      - DB_HOST=${RUTA-DB}
+      - DB_PORT=${PUERTO_DB}
+      - DB_USER=${USUARIO_DB}
+      - DB_PASS=${CLAVE_ROOT_DB}
+      - DB_NAME=${NOMBRE_DB}
 
     ports:
       - "3000:${PUERTO_NEST}"

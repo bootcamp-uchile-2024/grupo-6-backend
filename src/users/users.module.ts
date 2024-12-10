@@ -19,7 +19,7 @@ import { DireccionTipoDireccion } from 'src/orm/entity/direccion_tipoDireccion';
   SeguridadModule,
   JwtModule.register({
     global: true,
-    secret: process.env.SECRET_KEY, // LLAVE SECRETA
+    secret: 'security', // LLAVE SECRETA
     signOptions: { expiresIn: '5h' }, // TIEMPO DE EXPIRACION
   })
 ],

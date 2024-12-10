@@ -28,6 +28,7 @@ services:
       FLYWAY_URL: jdbc:mysql://${RUTA_DB}:${PUERTO_DB}/${NOMBRE_DB}?allowPublicKeyRetrieval=true
       FLYWAY_USER: ${USUARIO_DB}
       FLYWAY_PASSWORD: ${CLAVE_ROOT_DB}
+##    command: repair
     entrypoint: ["flyway", "-connectRetries=60", "migrate"]
     depends_on: 
       - mysql

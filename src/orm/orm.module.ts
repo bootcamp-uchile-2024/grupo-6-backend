@@ -22,7 +22,7 @@ import { DireccionTipoDireccion } from "./entity/direccion_tipoDireccion";
     imports: [
         TypeOrmModule.forRoot({
             type: 'mysql',
-            host: 'localhost', //process.env.DB_HOST,
+            host: 'mysql', //process.env.DB_HOST,
             port: 3306, //+process.env.DB_PORT,
             username: 'root',  //process.env.DB_USER,
             password: 'grupo-6', //process.env.DB_PASS,

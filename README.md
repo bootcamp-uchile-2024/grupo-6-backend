@@ -157,7 +157,7 @@ export class OrmModule {
 
  ### Realizar Pull a imagen:
  ```bash
- docker pull ncarvajalg/grupo-6-backend:v5.0.3
+ docker pull ncarvajalg/grupo-6-backend:v6.0.2
  ```
 
  ### Correr contenedor:
@@ -302,7 +302,7 @@ El modelo conceptual y el modelo de entidad relacion aparecen en la carpeta `/mo
  instrucción necesaria para probarlos.
 
  ### Link de Imagen Productiva
- http://18.222.107.138:3000/api
+ http://3.145.38.6:3000/api
 
 
 ## Contacto

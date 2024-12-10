@@ -234,6 +234,19 @@ export class ProductsController {
     }
   }
 
+  // Obtener categorías ----------------------------------------------------
+  @ApiTags('Products')
+  @ApiResponse({ status: 200, description: 'Se obtuvo la lista de editoriales de forma satisfactoria.', type: String, isArray: true })
+  @ApiResponse({ status: 400, description: 'Hubo un error al obtener la lista de editoriales.', })
+  @Get('publishers')
+  async getPublishers(): Promise<string[]> {
+    try {
+      return await this.productsService.getPublishers();
+    } catch (error) {
+      throw new HttpException('Error al obtener las editoriales de libros', 400);
+    }
+  }
+
   // Probar conexión -------------------------------------------------------
   @Get('conexion')
   async getConexion(): Promise<proConexDTO[]> {

@@ -602,7 +602,16 @@ export class ProductsService {
     const generosEntity: Genero[] = await this.generoRepository.find({
       select: ['descripcion']
     });
-    return generosEntity.map( genero => genero.descripcion)
+    return generosEntity.map( genero => genero.descripcion );
+  }
+
+  // Obtener editoriales de los libros -------------------------------------
+  async getPublishers(): Promise<string[]> {
+    const editorialesEntity: Editorial[] = await this.editorialRepository.find({
+      select: ['descripcion']
+    });
+
+    return editorialesEntity.map( editorial => editorial.descripcion );
   }
 
   // Eliminar un producto --------------------------------------------------

@@ -1,20 +1,27 @@
 services:
-  # api:
-  #   image: "node:${VERSION_NODE}"
-  #   command: "npm run start:dev"
-  #   user: node
-  #   working_dir: /home/node/nest
-  #   volumes:
-  #     - .:/home/node/nest
-  #   ports:
-  #     - "${PUERTO_NEST}:3000"
-  #   depends_on:
-  #     - mysql
+  api:
+    image: "node:${VERSION_NODE}"
+    command: "npm run start:dev"
+    user: node
+    working_dir: /home/node/nest
+    volumes:
+      - .:/home/node/nest
+    environment:
+      - PUERTO_NEST=${PUERTO_NEST}
+      - PUERTO_DB=${PUERTO_DB}
+      - CLAVE_ROOT_DB=${CLAVE_ROOT_DB}
+      - NOMBRE_DB=${NOMBRE_DB}
+      - USUARIO_DB=${USUARIO_DB}
+      - RUTA_DB=${RUTA_DB}
+    ports:
+      - "${PUERTO_NEST}:3000"
+    depends_on:
+      - mysql
 
   mysql:
     image: mysql:${VERSION_DB}
     environment:
-      MYSQL_ROOT_PASSWORD: ${CLAVE_ROOT_DB}
+      - MYSQL_ROOT_PASSWORD=${CLAVE_ROOT_DB}
     volumes:
       - ./sql:/var/lib/mysql
     ports:

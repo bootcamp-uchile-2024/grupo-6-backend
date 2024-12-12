@@ -1,5 +1,5 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, ParseArrayPipe, ParseEnumPipe, ParseIntPipe, Patch, Post, Query, UploadedFile, UploadedFiles, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, ParseArrayPipe, ParseEnumPipe, ParseIntPipe, Patch, Post, Query, UploadedFile, UploadedFiles, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiBearerAuth, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Libro } from 'src/orm/entity/libro';
 import { ParseEnumGeneroArrayPipe } from 'src/parse-enum-array-pipe/parse-enum-genero-array-pipe.pipe';
 import { ParseEnumIdiomaArrayPipe } from 'src/parse-enum-array-pipe/parse-enum-idioma-array-pipe';
@@ -18,6 +18,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ValidationCreateProductsPipe } from './pipes/validation-create-products.pipe';
 import { Genero } from 'src/orm/entity/genero';
 import { ValidationGetProductsPipe } from './pipes/validation-get-product.pipe';
+import { JwtGuard } from 'src/seguridad/guard/jwt.guard';
+import { ValidarRolGuard } from 'src/seguridad/guard/validar-rol.guard';
+import { RolesAutorizados } from 'src/seguridad/decorator/rol.decorator';
+import { Rol } from 'src/users/enum/rol.enum';
 
 @Controller('products')
 export class ProductsController {
@@ -25,6 +29,9 @@ export class ProductsController {
 
   // Crear producto --------------------------------------------------------
   @ApiTags('Products')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.ADMIN)
   @UseInterceptors(FileInterceptor('caratula'))
   @UsePipes(ValidationCreateProductsPipe)
   @ApiResponse({  status: 200,  description: 'Creación de producto exitosa',  type: GetProductDto })
@@ -256,6 +263,9 @@ export class ProductsController {
 
   // Eliminar un producto --------------------------------------------------
   @ApiTags('Products')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.ADMIN)
   @UsePipes(ValidationDeleteProductsPipe)
   @ApiResponse({ status: 200, description: 'Se eliminó el libro correctamente' })
   @ApiResponse({ status: 400, description: 'Error al eliminar el libro' })
@@ -270,6 +280,9 @@ export class ProductsController {
 
   // Actualizar un producto ------------------------------------------------
   @ApiTags('Products')
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.ADMIN)
   @UsePipes(ValidationUpdateProductsPipe)
   @UseInterceptors(FileInterceptor('caratula'))
   @ApiResponse({ status: 200, description: 'Se actualizó el libro correctamente' })

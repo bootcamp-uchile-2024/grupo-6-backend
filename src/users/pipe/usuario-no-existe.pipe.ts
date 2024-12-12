@@ -14,20 +14,18 @@ export class UsuarioNoExistePipe implements PipeTransform {
         ) {}
 
   async transform(value: any, metadata: ArgumentMetadata) {
-    // const correo = value.correoElectronico
-    // if(typeof value == "number"){ 
-    //   const id: number = +value
-    //   const idNoExisteBool: boolean = await this.userRepository.existsBy({id: +id})
-    //   const usuarioInactivoBool1: boolean = await this.userRepository.existsBy({id: +id,estado: 'INACTIVO'})
-    //   if(!idNoExisteBool){
-    //     if(!idNoExisteBool || usuarioInactivoBool1){
-    //       throw new NotFoundException("Usuario no existe.");
-    //     }
-    //   }
-    // }
-    const noExisteBool = await this.userRepository.findOneBy({correo_electronico: value.correoElectronico})
+    if(typeof value === "number"){
+        const id: number = +value;
+        const idNoExisteBool: boolean = await this.userRepository.existsBy({id: +id, estado: Estado.ACTIVO});
+        if(!idNoExisteBool){
+          throw new NotFoundException("Usuario no existe.");
+        }
+        return value;
+    }
 
-    if (!noExisteBool || noExisteBool.estado === Estado.INACTIVO) {
+
+    const correoNoExisteBool = await this.userRepository.existsBy({correo_electronico: value.correoElectronico, estado: Estado.ACTIVO})
+    if (!correoNoExisteBool) {
         throw new NotFoundException("Usuario no existe.");
     }
 

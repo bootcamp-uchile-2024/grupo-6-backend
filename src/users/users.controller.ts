@@ -7,11 +7,12 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Req,
   UseGuards,
   UsePipes,
   ValidationPipe
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RolesAutorizados } from 'src/seguridad/decorator/rol.decorator';
 import { JwtGuard } from 'src/seguridad/guard/jwt.guard';
 import { ValidarRolGuard } from 'src/seguridad/guard/validar-rol.guard';
@@ -23,8 +24,11 @@ import { GetLoginUserDto } from './dto/get-login-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
+import { UpdateUserAdminDto } from './dto/update-user-admin.dto copy';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Rol } from './enum/rol.enum';
+import { ValidarUserIdFromAddressGuard } from './guard/userId-in-addressTable.guard';
+import { ValidarUserParamIdGuard } from './guard/validar-userId.guard';
 import { HashPipe } from './pipe/hash.pipe';
 import { UsuarioExistePipe } from './pipe/usuario-existe.pipe';
 import { UsuarioNoExistePipe } from './pipe/usuario-no-existe.pipe';
@@ -35,7 +39,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
 
-
+  @ApiOperation({ summary: 'Inicio de sesion.'})
   @ApiResponse({
     status: 200,
     description:
@@ -57,7 +61,7 @@ export class UsersController {
     return await this.usersService.login(loginUsuarioDto);
   }
    
-
+  @ApiOperation({ summary: 'Registro de usuario.'})
   @ApiResponse({
     status: 200,
     description:
@@ -69,7 +73,7 @@ export class UsersController {
       'Este codigo se debe a que ya existe un usuario con el correo electronico ingresado.',
   })
   @ApiTags('Users')
-  @Post('signIn')
+  @Post('signUp')
   @UsePipes(
     new ValidationPipe(),
     UsuarioExistePipe, 
@@ -79,6 +83,7 @@ export class UsersController {
     return await this.usersService.createUser(createUserDto);
   }
 
+  @ApiOperation({ summary: 'Obtener las direcciones de un usuario.'})
   @ApiResponse({
     status: 200,
     description:
@@ -90,18 +95,20 @@ export class UsersController {
       'Este codigo se debe a que no existe un usuario con el id ingresado.',
   })
   @ApiTags('Users')
-  @Get(':id/addresses')
+  @Get(':userId/addresses')
   @ApiBearerAuth()  
-  @UseGuards(JwtGuard, ValidarRolGuard)
+  @UseGuards(JwtGuard, ValidarRolGuard, ValidarUserParamIdGuard)
   @RolesAutorizados(Rol.USER,Rol.ADMIN)
   async findUserAddresses(
-    @Param('id', 
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))
-    id: number,
+    @Param('userId', 
+      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
+      UsuarioNoExistePipe)
+      userId: number,
   ): Promise<GetAddressDto[]>{
-    return await this.usersService.findUserAddresses(+id);
+    return await this.usersService.findUserAddresses(+userId);
   }
 
+  @ApiOperation({ summary: 'Agregar direccion nueva a un usuario.'})
   @ApiResponse({
     status: 200,
     description:
@@ -113,20 +120,22 @@ export class UsersController {
       'Este codigo se debe a que no existe usuario con el ID ingresado.',
   })
   @ApiTags('Users')
-  @Post(':id/address')
+  @Post(':userId/address')
   @ApiBearerAuth()
-  @UseGuards(JwtGuard, ValidarRolGuard)
+  @UseGuards(JwtGuard, ValidarRolGuard, ValidarUserParamIdGuard)
   @RolesAutorizados(Rol.USER,Rol.ADMIN)
   @UsePipes(
     new ValidationPipe())
   @ApiBody({ type: CreateAddressDto })
   async createAddress( 
-    @Param('id') idUsuario: number,
+    @Param('userId', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
+    UsuarioNoExistePipe) userId: number,
     @Body() createAddressDto: CreateAddressDto): Promise<CreateAddressDto> {
-    return await this.usersService.createAddress(+idUsuario,createAddressDto);
+    return await this.usersService.createAddress(+userId,createAddressDto);
   }
 
 
+  @ApiOperation({ summary: 'Modificar una direccion de un usuario.'})
   @ApiResponse({
     status: 200,
     description:
@@ -138,20 +147,20 @@ export class UsersController {
       'Este codigo se debe a que no existe direccion con el ID ingresado.',
   })
   @ApiTags('Users')
-  @Put('address/:id')
+  @Put('address/:addressId')
   @ApiBearerAuth()
-  @UseGuards(JwtGuard, ValidarRolGuard)
+  @UseGuards(JwtGuard, ValidarRolGuard, ValidarUserIdFromAddressGuard)
   @RolesAutorizados(Rol.USER,Rol.ADMIN)
   @UsePipes(
     new ValidationPipe())
   @ApiBody({ type: UpdateAddressDto })
   async updateAddress( 
-    @Param('id') idDireccion: number,
+    @Param('addressId', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true })) addressId: number,
     @Body() updateAddressDto: UpdateAddressDto): Promise<UpdateAddressDto> {
-    return await this.usersService.updateAddress(+idDireccion,updateAddressDto);
+    return await this.usersService.updateAddress(+addressId,updateAddressDto);
   }
 
-
+  @ApiOperation({ summary: 'Obtener datos de un usuario.'})
   @ApiResponse({
     status: 200,
     description:
@@ -164,19 +173,20 @@ export class UsersController {
       'Este codigo se debe a que no existe un usuario con el id ingresado.',
   })
   @ApiTags('Users')
-  @Get(':id')
+  @Get(':userId')
   @ApiBearerAuth()
-  @UseGuards(JwtGuard, ValidarRolGuard)
+  @UseGuards(JwtGuard, ValidarRolGuard, ValidarUserParamIdGuard)
   @RolesAutorizados(Rol.USER,Rol.ADMIN)
   async findOneUser(
-    @Param('id', 
-      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))
-    id: number
+    @Param('userId', 
+      new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
+      UsuarioNoExistePipe)
+      userId: number
   ): Promise<GetUserDto>{
-    return await this.usersService.findOneUser(id);
+    return await this.usersService.findOneUser(+userId);
   }
 
-
+  @ApiOperation({ summary: 'Obtener todos los usuarios con paginado.'})
   @ApiResponse({
     status: 200,
     description:
@@ -188,15 +198,15 @@ export class UsersController {
   @RolesAutorizados(Rol.ADMIN)
   @Get(":pagina/:cantidadPorPagina")
   async findAllUsuarios(
-    @Param("pagina") pagina: number,
-    @Param("cantidadPorPagina") cantidadPorPagina: number,
+    @Param("pagina", new ParseIntPipe({ errorHttpStatusCode: 400, optional: true })) pagina: number,
+    @Param("cantidadPorPagina", new ParseIntPipe({ errorHttpStatusCode: 400, optional: true })) cantidadPorPagina: number,
   ): Promise<GetAllUsersDto<GetUserDto>>{
     const resultado : GetAllUsersDto<GetUserDto> = await this.usersService.findAllUsuarios(+pagina, +cantidadPorPagina);
     return resultado;
   }
 
 
-
+  @ApiOperation({ summary: 'Modificar informacion de un usuario con rol de USER.'})
   @ApiResponse({
     status: 200,
     description:
@@ -209,16 +219,45 @@ export class UsersController {
   })
   @ApiBearerAuth()
   @UseGuards(JwtGuard, ValidarRolGuard)
-  @RolesAutorizados(Rol.USER,Rol.ADMIN)
+  @RolesAutorizados(Rol.USER)
   @ApiTags('Users')
-  @Put(':id')
+  @Put()
   @UsePipes(new ValidationPipe())
   @ApiBody({ type: UpdateUserDto })
-  async updateUser(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<UpdateUserDto> {
-    return await this.usersService.updateUser(+id,updateUserDto);
+  async updateUser(
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() request): Promise<UpdateUserDto> {
+    const datosUsuario = request.datosUsuario;
+    return await this.usersService.updateUser(+datosUsuario.idUsuario,updateUserDto);
   }
 
+  
+  @ApiOperation({ summary: 'Modificar informacion de un usuario con rol de ADMIN.'})
+  @ApiResponse({
+    status: 200,
+    description:
+      'Este codigo se debe a que se pudo modificar correctamente el usuario.',type: UpdateUserAdminDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description:
+      'Este codigo se debe a que no existe usuario con el id ingresado.',
+  })
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.ADMIN)
+  @ApiTags('Users')
+  @Put(':userId/admin')
+  @UsePipes(new ValidationPipe())
+  @ApiBody({ type: UpdateUserAdminDto })
+  async updateUserAdmin(
+    @Param('userId', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
+    UsuarioNoExistePipe)
+    userId: number, @Body() updateUserAdminDto: UpdateUserAdminDto): Promise<UpdateUserAdminDto> {
+    return await this.usersService.updateUserAdmin(+userId,updateUserAdminDto);
+  }
 
+  @ApiOperation({ summary: 'Eliminar la direccion de un usuario.'})
   @ApiResponse({
     status: 200,
     description:
@@ -232,17 +271,19 @@ export class UsersController {
   })
   @ApiTags('Users')
   @ApiBearerAuth()
-  @UseGuards(JwtGuard, ValidarRolGuard)
+  @UseGuards(JwtGuard, ValidarRolGuard,ValidarUserIdFromAddressGuard)
   @RolesAutorizados(Rol.USER,Rol.ADMIN)
-  @Delete('address/:id')
+  @Delete('address/:addressId')
+  // async removeAddress(
   async removeAddress(
-    @Param('id', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))
-    id: number,
+    @Param('addressId', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))
+    addressId: number
   ): Promise<GetAddressDto> {
-    const deleteDireccion : GetAddressDto = await this.usersService.removeAddress(+id);
+    const deleteDireccion : GetAddressDto = await this.usersService.removeAddress(+addressId);
     return deleteDireccion;
   }
 
+  @ApiOperation({ summary: 'Eliminar un usuario.'})
   @ApiResponse({
     status: 200,
     description:
@@ -255,14 +296,15 @@ export class UsersController {
   })
   @ApiTags('Users')
   @ApiBearerAuth()
-  @UseGuards(JwtGuard, ValidarRolGuard)
+  @UseGuards(JwtGuard, ValidarRolGuard, ValidarUserParamIdGuard)
   @RolesAutorizados(Rol.USER,Rol.ADMIN)
-  @Delete(':id')
+  @Delete(':userId')
   async removeUser(
-    @Param('id', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }))
-    id: number,
+    @Param('userId', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
+    UsuarioNoExistePipe)
+    userId: number,
   ): Promise<GetUserDto> {
-    const deleteUser : GetUserDto = await this.usersService.removeUser(id);
+    const deleteUser : GetUserDto = await this.usersService.removeUser(+userId);
     return deleteUser;
   }
 

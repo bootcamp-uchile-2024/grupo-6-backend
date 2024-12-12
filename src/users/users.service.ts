@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Direccion } from 'src/orm/entity/direccion';
@@ -13,11 +13,13 @@ import { GetAllUsersDto } from './dto/get-all-users.dto';
 import { GetLoginUserDto } from './dto/get-login-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Estado } from './enum/estado.enum';
 import { AddressMapper } from './mapper/address.mapper';
 import { UserMapper } from './mapper/user.mapper';
-import { UpdateAddressDto } from './dto/update-address.dto';
+import { UpdateUserAdminDto } from './dto/update-user-admin.dto copy';
+import { Rol } from './enum/rol.enum';
 
 @Injectable()
 export class UsersService {
@@ -37,18 +39,10 @@ export class UsersService {
     private readonly jwtService: JwtService
     ) {}
 
-  async noExisteUsuario(id: number): Promise<Usuario>{
-    const usuario: Usuario = await this.userRepository.findOneBy({id: +id});
-    if (!usuario || usuario.estado === Estado.INACTIVO) {
-      throw new NotFoundException("Usuario no existe.");
-    }
-    return usuario;
-  }
-
-  async noExisteDireccion(id: number): Promise<Direccion>{
+  async validarDireccionYUsuario(addressId: number): Promise<Direccion>{
     const direccion: Direccion = await this.direccionRepository.findOne({
       where: {
-        id: +id
+        id: +addressId
       },
       relations: {
         tipodirecciones: true
@@ -86,8 +80,8 @@ export class UsersService {
     return getUserDto;
   }
 
-  async findOneUser(id: number): Promise<GetUserDto> {
-    const usuario: Usuario = await this.noExisteUsuario(id);
+  async findOneUser(userId: number): Promise<GetUserDto> {
+    const usuario: Usuario = await this.userRepository.findOneBy({id: +userId});
     const getUserDto = UserMapper.entityToGetUserDto(usuario);
     return getUserDto;
   }
@@ -98,6 +92,10 @@ export class UsersService {
     const offset = cantidadPorPagina * nroPaginaValido;
 
     const usuarios: [ Usuario[], number ] = await this.userRepository.findAndCount({
+      where: {
+        estado: Estado.ACTIVO,
+        rol: Rol.USER
+      },
       order: {
         id: "ASC"
       },
@@ -116,11 +114,10 @@ export class UsersService {
   }
 
   
-  async findUserAddresses(id: number): Promise<GetAddressDto[]> {
-    await this.noExisteUsuario(+id);
+  async findUserAddresses(userId: number): Promise<GetAddressDto[]> {
     const direccion = await this.direccionRepository.find({
       where: {
-        id_usuario: +id,
+        id_usuario: +userId,
         estado: 'ACTIVO'
       },
       relations: {
@@ -137,22 +134,34 @@ export class UsersService {
   }
   
 
-  async updateUser(
-    id: number,
+  async updateUser( 
+    userId: number,
     updateUserDto: UpdateUserDto
   ): Promise<UpdateUserDto> {
-    const findUsuario: Usuario = await this.noExisteUsuario(+id);
-    UserMapper.updateUserDtoToEntity(updateUserDto,findUsuario);
-    await this.userRepository.save(findUsuario);
+    const usuario: Usuario = await this.userRepository.findOneBy({id: +userId});
+    if(!usuario){
+      throw new NotFoundException("Usuario no existe.")
+    }
+    UserMapper.updateUserDtoToEntity(updateUserDto,usuario);
+    await this.userRepository.save(usuario);
     return updateUserDto;
   }
 
+  async updateUserAdmin(
+    userId: number,
+    updateUserAdminDto: UpdateUserAdminDto
+  ): Promise<UpdateUserAdminDto> {
+    const usuario: Usuario = await this.userRepository.findOneBy({id: +userId});
+    UserMapper.updateUserAdminDtoToEntity(updateUserAdminDto,usuario)
+    await this.userRepository.save(usuario);
+    return updateUserAdminDto;
+  }
+
   async createAddress(
-    idUsuario: number,
+    userId: number,
     createAddressDto: CreateAddressDto
   ): Promise<CreateAddressDto> {
-    await this.noExisteUsuario(+idUsuario);
-    const nuevaDireccion: Direccion = AddressMapper.createAddressDtoToEntity(createAddressDto, +idUsuario);
+    const nuevaDireccion: Direccion = AddressMapper.createAddressDtoToEntity(createAddressDto, +userId);
     const maxIdDireccion: number = await this.direccionRepository.maximum("id")
     await this.direccionRepository.save(nuevaDireccion);
 
@@ -167,19 +176,19 @@ export class UsersService {
   }
 
   async updateAddress(
-    idDireccion: number,
+    addressId: number,
     updateAddressDto: UpdateAddressDto
   ): Promise<UpdateAddressDto> {
-    const direccion: Direccion = await this.noExisteDireccion(+idDireccion);
+    const direccion: Direccion = await this.validarDireccionYUsuario(+addressId);
     const nuevaDireccion: Direccion = AddressMapper.updateAddressDtoToEntity(updateAddressDto, direccion);
     await this.direccionRepository.save(nuevaDireccion);
     
     if(updateAddressDto.tipoDireccion){
-      await this.direccionTipoDireccionRepository.delete({id_direccion: idDireccion});
+      await this.direccionTipoDireccionRepository.delete({id_direccion: addressId});
       for(let tipo of updateAddressDto.tipoDireccion){
         let nuevaDireccionTipoDireccion: DireccionTipoDireccion = new DireccionTipoDireccion();
         let tipoDireccion: Promise<TipoDireccion> = this.tipoDireccionRepository.findOneBy({descripcion: tipo})
-        nuevaDireccionTipoDireccion.id_direccion = idDireccion
+        nuevaDireccionTipoDireccion.id_direccion = addressId
         nuevaDireccionTipoDireccion.id_tipoDireccion = (await tipoDireccion).id
         await this.direccionTipoDireccionRepository.save(nuevaDireccionTipoDireccion)
       }
@@ -187,19 +196,19 @@ export class UsersService {
     return updateAddressDto;
   }
 
-  async removeUser(id: number): Promise<GetUserDto> {
-    const usuario: Usuario = await this.noExisteUsuario(+id);
+  async removeUser(userId: number): Promise<GetUserDto> {
+    const usuario: Usuario = await this.userRepository.findOneBy({id: +userId});
     usuario.estado = Estado.INACTIVO
     const borrarUsuario = await this.userRepository.save(usuario);
     const getUserDto = UserMapper.entityToGetUserDto(borrarUsuario);
     return getUserDto;
   }
 
-  async removeAddress(idDireccion: number): Promise<GetAddressDto> {
-    const direccion: Direccion = await this.noExisteDireccion(+idDireccion);
+  async removeAddress(addressId: number): Promise<GetAddressDto> {
+    const direccion: Direccion = await this.validarDireccionYUsuario(+addressId);
     direccion.estado = Estado.INACTIVO;
     await this.direccionRepository.save(direccion);
     const getAddressDto = AddressMapper.entityToGetAddressDto(direccion);
     return getAddressDto
   }
-}
+} 

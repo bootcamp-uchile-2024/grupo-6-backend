@@ -3,10 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Libro } from 'src/orm/entity/libro';
 import { Resena } from 'src/orm/entity/resena';
 import { Usuario } from 'src/orm/entity/usuario';
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { ResenaMapper } from './mappers/review.mapper';
-import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ReviewsService {
@@ -19,8 +19,6 @@ export class ReviewsService {
   ) {}
   
   async createResena(idUsuario: number, idLibro: number, createReviewDto: CreateReviewDto): Promise<CreateReviewDto> {
-    await this.usuariosService.noExisteUsuario(+idUsuario);
-
     let existeLibro: boolean = await this.libroRepository.existsBy({
       id: +idLibro
     });
@@ -35,8 +33,6 @@ export class ReviewsService {
   }
 
   async findResenasUsuario(idUsuario: number): Promise<Resena[]> {
-
-    await this.usuariosService.noExisteUsuario(+idUsuario);
 
     let resenasUsuario = await this.resenaRepository.find({
       select: {

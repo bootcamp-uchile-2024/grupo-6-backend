@@ -5,6 +5,7 @@ import { Rol } from "../enum/rol.enum";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { Estado } from "../enum/estado.enum";
 import { UpdateUserDto } from "../dto/update-user.dto";
+import { UpdateUserAdminDto } from "../dto/update-user-admin.dto copy";
 
 export class UserMapper {
 
@@ -55,5 +56,14 @@ export class UserMapper {
         entity.contrasena = dto.contrasena;
     return entity;
   }
+
+  static updateUserAdminDtoToEntity(dto: UpdateUserAdminDto, entity: Usuario) : Usuario {
+    entity.nombres = dto.nombres;
+    entity.apellido_paterno = dto.apellidoPaterno;
+    entity.apellido_materno = dto.apellidoMaterno;
+    entity.correo_electronico = dto.correoElectronico;
+  return entity;  
+}
+
 
 }

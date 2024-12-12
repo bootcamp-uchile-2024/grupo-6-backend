@@ -2,6 +2,7 @@ import { ArgumentMetadata, BadRequestException, Injectable, NotFoundException, P
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from 'src/orm/entity/usuario';
 import { Repository } from 'typeorm';
+import { Estado } from '../enum/estado.enum';
 
 @Injectable()
 export class UsuarioExistePipe implements PipeTransform {

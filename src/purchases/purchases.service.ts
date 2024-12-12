@@ -93,8 +93,6 @@ export class PurchasesService {
 
   // Obtener pedidos de usuario
   async findAllClient(id_usuario: number): Promise<GetPurchaseDto[]> {
-    // Obtener usuario
-    const usuario: Usuario = await this.usuariosService.noExisteUsuario(id_usuario);
 
     // Obtener pedidos
     const pedidos: HistorialCompra[] = await this.historialCompraRepository.find({

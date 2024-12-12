@@ -8,13 +8,18 @@ import {
   NotFoundException,
   ParseIntPipe,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ShoppingcartService } from './shoppingcart.service';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { ShoppingcartSalidaDto } from './dto/create-shoppingcart.salida.dto';
 import { CreateShoppingcartDto } from './dto/create-shoppingcart.dto';
 import { ShoppingcartUpdateDto } from './dto/shoppingcart.update.dto';
+import { JwtGuard } from 'src/seguridad/guard/jwt.guard';
+import { ValidarRolGuard } from 'src/seguridad/guard/validar-rol.guard';
+import { Rol } from 'src/users/enum/rol.enum';
+import { RolesAutorizados } from 'src/seguridad/decorator/rol.decorator';
 
 @Controller('shoppingcart')
 export class ShoppingcartController {
@@ -34,6 +39,9 @@ export class ShoppingcartController {
     status: 201,
     description: 'Producto agregado a carrito de compras',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER)
   @Post()
   async create(
     @Body() createShoppingcartDto: CreateShoppingcartDto,
@@ -51,6 +59,9 @@ export class ShoppingcartController {
     status: 201,
     description: 'Productos agregado a carrito de compras',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER)
   @Post()
   async createlibros(@Body() createShoppingcartDto: CreateShoppingcartDto[]): Promise <ShoppingcartSalidaDto[]> {
     return await this.shoppingcartService.createlibros(createShoppingcartDto);
@@ -63,6 +74,9 @@ export class ShoppingcartController {
     status: 404,
     description: 'No se puede obtener carrito de compras',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER)
   @Get()
   async obtenerCarrito(): Promise <ShoppingcartSalidaDto[]> {
     return await this.shoppingcartService.obtenerCarrito();
@@ -75,6 +89,9 @@ export class ShoppingcartController {
     status: 404,
     description: 'No se puede obtener carrito de compras',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER)
   @Put()
   async cantidadMasMenos(@Body() updateDto: ShoppingcartUpdateDto): Promise<void> {
     return await this.shoppingcartService.cantidadMasMenos(updateDto);
@@ -90,6 +107,9 @@ export class ShoppingcartController {
     status: 404,
     description: 'Carrito de compra no existe',
   })
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER)
   @Delete(':id')
   async removecarrito(
     @Param(

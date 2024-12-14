@@ -99,7 +99,7 @@ CREATE TABLE libro (
     caratula VARCHAR(50) NOT NULL,
     resumen VARCHAR(2000),
     fecha_creacion DATE NOT NULL,
-    novedad BOOLEAN NOT NULL,
+    destacado BOOLEAN NOT NULL,
     habilitado BOOLEAN NOT NULL,
     FOREIGN KEY (id_autor) REFERENCES autor(id),
     FOREIGN KEY (id_idioma) REFERENCES idioma_libro(id),

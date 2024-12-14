@@ -82,55 +82,51 @@ CREATE TABLE editorial (
 
 
 CREATE TABLE libro (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-    isbn VARCHAR(30),
-    id_idioma INT,
-    id_encuadernacion INT,
+    isbn VARCHAR(30) PRIMARY KEY,
     nombre VARCHAR(150) NOT NULL,
+    id_autor INT,
     stock_libro INT NOT NULL,
     precio INT NOT NULL,
     rating INT,
     id_editorial INT,
+    id_idioma INT,
+    id_encuadernacion INT,
     agno_publicacion INT,
     numero_paginas INT,
     descuento INT,
-    caratula VARCHAR(50),
     dimensiones VARCHAR(20),
     codigo_barra VARCHAR(50),
+    caratula VARCHAR(50) NOT NULL,
     resumen VARCHAR(2000),
+    fecha_creacion DATE NOT NULL,
+    novedad BOOLEAN NOT NULL,
+    habilitado BOOLEAN NOT NULL,
+    FOREIGN KEY (id_autor) REFERENCES autor(id),
     FOREIGN KEY (id_idioma) REFERENCES idioma_libro(id),
     FOREIGN KEY (id_encuadernacion) REFERENCES encuadernacion(id),
     FOREIGN KEY (id_editorial) REFERENCES editorial(id)
 );
 
+
 CREATE TABLE genero_libro (
     id_genero INT,
-    id_libro INT,
-    PRIMARY KEY (id_genero, id_libro),
+    isbn_libro VARCHAR(30),
+    PRIMARY KEY (id_genero, isbn_libro),
     FOREIGN KEY (id_genero) REFERENCES genero(id),
-    FOREIGN KEY (id_libro) REFERENCES libro(id)
+    FOREIGN KEY (isbn_libro) REFERENCES libro(isbn)
 );
 
-CREATE TABLE autor_libro (
-    id_autor INT,
-    id_libro INT,
-    PRIMARY KEY (id_autor, id_libro),
-    FOREIGN KEY (id_autor) REFERENCES autor(id),
-    FOREIGN KEY (id_libro) REFERENCES libro(id)
-);
 
 CREATE TABLE resena (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
-    id_libro INT NOT NULL,
+    isbn_libro VARCHAR(30) NOT NULL,
     comentario VARCHAR(1000),
     rating INT NOT NULL,
     fecha DATE NOT NULL,
     FOREIGN KEY (id_usuario) REFERENCES usuario(id),
-    FOREIGN KEY (id_libro) REFERENCES libro(id)
+    FOREIGN KEY (isbn_libro) REFERENCES libro(isbn)
 );
-
-
 
 CREATE TABLE historial_compra (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -145,20 +141,20 @@ CREATE TABLE historial_compra (
 
 CREATE TABLE libro_compra (
     id_compra INT,
-    id_libro INT,
+    isbn_libro VARCHAR(30),
     cantidad INT NOT NULL,
-    PRIMARY KEY (id_compra, id_libro),
+    PRIMARY KEY (id_compra, isbn_libro),
     FOREIGN KEY (id_compra) REFERENCES historial_compra(id),
-    FOREIGN KEY (id_libro) REFERENCES libro(id)
+    FOREIGN KEY (isbn_libro) REFERENCES libro(isbn)
 );
 
 -- adición de tabla carrito de compras
 
 CREATE TABLE carrito (
     usuario_id INT,
-    libro_id INT,
+    isbn_libro VARCHAR(30),
     cantidad INT,
-    PRIMARY KEY (usuario_id, libro_id),
+    PRIMARY KEY (usuario_id, isbn_libro),
     FOREIGN KEY (usuario_id) REFERENCES usuario (id),
-    FOREIGN KEY (libro_id) REFERENCES libro(id)
+    FOREIGN KEY (isbn_libro) REFERENCES libro(isbn)
 );

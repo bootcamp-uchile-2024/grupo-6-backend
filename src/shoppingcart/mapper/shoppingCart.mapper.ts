@@ -9,7 +9,7 @@ export class CarritoMapper {
     static entityToDto(carrito: Carrito, libro: Libro): ShoppingcartSalidaDto {
         const carritoDto = new ShoppingcartSalidaDto();
         carritoDto.nombre = libro.nombre;
-        carritoDto.autor = libro.autores;
+        carritoDto.autor = libro.autor;
         carritoDto.caratula = libro.caratula;
         carritoDto.precio = libro.precio;
         carritoDto.cantidad = carrito.cantidad;
@@ -22,7 +22,7 @@ export class CarritoMapper {
     static dtoToEntity(carritoDto: CreateShoppingcartDto ): Carrito {
         const carrito = new Carrito();
         carrito.usuario_id = carritoDto.idUsuario;
-        carrito.libro_id = carritoDto.isbn;
+        carrito.isbn_libro = carritoDto.isbn;
         carrito.cantidad = carritoDto.cantidad;
         return carrito;
         }

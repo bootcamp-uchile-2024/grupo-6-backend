@@ -1,30 +1,23 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { ArrayNotEmpty, Contains, IsDate, IsInt, IsOptional, IsString, Max, MaxDate, Min } from 'class-validator';
-import { CreateProductDto } from './create-product.dto';
+import { ArrayNotEmpty, Contains, IsBoolean, IsInt, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 import { GeneroEnum } from '../entities/generoEnum';
+import { CreateProductDto } from './create-product.dto';
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
-
-    // @ApiProperty({ description: 'ISBN 13 del libro', type: String, example: '9788420412146', })
-    // @IsString()
-    // @IsOptional()
-    // public isbn?: string;
 
     @ApiProperty({ description: 'Nombre del libro', type: String, example: 'Don Quijote de la Mancha' })
     @IsString()
     @IsOptional()
     public nombre?: string;
 
-    // @ApiProperty({
-    //     description: 'Array con los ID de nombres de los autores del libro',
-    //     type: [Number],
-    //     example: [1, 2],
-    //     isArray: true,
-    // })
-    // @IsOptional()
-    // public idAutores?: number[];
+    @ApiProperty({
+        description: 'Autor del libro',
+        type: String,
+        example: 'Jane Austen',
+    })
+    @IsOptional()
+    public autor?: string;
 
     @ApiProperty({ 
         description: 'Número de libros en stock',
@@ -34,7 +27,7 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     })
     @Min(1)
     @IsOptional()
-    public stock_libro?: number;
+    public stockLibro?: number;
 
     @ApiProperty({
         description: 'Precio del libro (sin descuento)',
@@ -76,19 +69,9 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     @IsOptional()
     public id_encuadernacion?: number;
 
-    @ApiProperty({
-        description: 'Año de publicación del libro',
-        type: Date,
-        example: new Date(2015, 0),
-        })
-    @IsDate()
-    @Type(() => Date)
-    @MaxDate( () => new Date(), {
-        message: () =>
-            `No se puede ingresar una fecha mayor al día de hoy: ${new Date().toDateString()})`
-        })
-    @IsOptional()
-    public agno_publicacion?: Date;
+    @ApiProperty({ description: 'Año de publicación del libro', type: 'number', example: 2001})
+    @IsNumber()
+    public agnoPublicacion?: number;
 
     @ApiProperty({ 
         description: 'Número de páginas del libro',
@@ -101,7 +84,7 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     @Min(1)
     @Max(10000)
     @IsOptional()
-    public numero_paginas?: number;
+    public numeroPaginas?: number;
 
     @ApiProperty({ 
         description: 'Descuento aplicado al producto de 0 a 100',
@@ -122,8 +105,8 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     public caratula?: string;
 
     @ApiProperty({
-        description: 'Dimensiones del libro en formato "Ancho cm x Alto cm"',
-        example: '15cm x 25cm',
+        description: 'Dimensiones del libro en formato "Ancho x Alto cm"',
+        example: '15 x 25cm',
         type: String,
     })
     @IsString()
@@ -133,12 +116,12 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
 
     @ApiProperty({
         description: 'Código de barra del libro en formato EAN-13',
-        example: '978-8-42-041214-6',
+        example: '9788420412146',
         type: String,
     })
     @IsString()
     @IsOptional()
-    public codigo_barra?: string;
+    public codigoBarra?: string;
 
     @ApiProperty({
         description: 'Resumen del libro',
@@ -153,30 +136,48 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     @ApiProperty({
         description: 'Lista con el o los géneros del libro',
         enum: [
-          'Ciencia Ficción',
-          'Romance',
-          'Fantasía',
-          'Histórico',
-          'Aventura',
-          'Suspenso',
-          'Terror',
-          'Policiaco',
-          'Drama',
-          'Comedia',
-          'Autoayuda',
-          'Biografía',
-          'Ensayo',
-          'Educativo',
-          'Infantil',
-          'Juvenil',
-          'Paranormal',
-          'Religión',
-          'Política',
-          'Filosofía',
-        ],
+            'Ciencia Ficción',
+            'Romance',
+            'Fantasía',
+            'Histórico',
+            'Aventura',
+            'Suspenso',
+            'Terror',
+            'Policiaco',
+            'Drama',
+            'Comedia',
+            'Autoayuda',
+            'Biografía',
+            'Ensayo',
+            'Educativo',
+            'Infantil',
+            'Juvenil',
+            'Paranormal',
+            'Religión y Mitología',
+            'Política',
+            'Filosofía',
+            'Novelas',
+            'Fotografía',
+            'Cuentos',
+            'Ilustración',
+            'Diseño',
+            'Biografías',
+            'Deporte',
+            'Motocicletas',
+            'Arquitectura',
+            'Literatura clásica',
+          ],
         isArray: true,
         example: [GeneroEnum.ROMANCE, GeneroEnum.EDUCATIVO],
       })
       @ArrayNotEmpty()
       public genero: GeneroEnum[];
+
+    @ApiProperty({ description: 'Indicador de si el producto es destacado o no', type: Boolean, example: true })
+    @IsBoolean()
+    public destacado?: boolean;
+
+    @ApiProperty({ description: 'Indicador de si el producto esta habilitado o no', type: Boolean, example: true })
+    @IsBoolean()
+    public habilitado?: boolean;
 }

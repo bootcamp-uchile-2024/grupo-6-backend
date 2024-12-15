@@ -22,7 +22,7 @@ export class ShoppingcartService {
   async create(createShoppingcartDto: CreateShoppingcartDto): Promise <ShoppingcartSalidaDto> {
     const libroEncontrado = await this.libroRepository.findOne({
       where:{
-        id: createShoppingcartDto.isbn
+        isbn: createShoppingcartDto.isbn
       }
     }) 
     const carrito = this.carritoRepository.create(createShoppingcartDto);
@@ -39,7 +39,7 @@ export class ShoppingcartService {
 
       const libroEncontrado = await this.libroRepository.findOne({
         where:{
-          id: unico.isbn
+          isbn: unico.isbn
         }
       }) 
       const carrito = this.carritoRepository.create(unico);
@@ -57,7 +57,7 @@ export class ShoppingcartService {
     for (const carrito of carritos){
       const libroEncontrado = await this.libroRepository.findOne({
         where:{
-          id: carrito.libro_id
+          isbn: carrito.isbn_libro
         }
       })
       const item = CarritoMapper.entityToDto(carrito, libroEncontrado);
@@ -73,7 +73,7 @@ export class ShoppingcartService {
       const productoEncontrado = await this.carritoRepository.findOne({
         where:{
           usuario_id: updateDto.idUsuario,
-          libro_id: updateDto.isbn
+          isbn_libro: updateDto.isbn
         }   
       })
       productoEncontrado.cantidad = updateDto.cantidad;
@@ -83,7 +83,7 @@ export class ShoppingcartService {
       const productoEncontrado = await this.carritoRepository.findOne({
         where:{
           usuario_id: updateDto.idUsuario,
-          libro_id: updateDto.isbn
+          isbn_libro: updateDto.isbn
         }   
       })
       await this.carritoRepository.remove(productoEncontrado);
@@ -101,7 +101,7 @@ export class ShoppingcartService {
     for (const carrito of carritos){
       const libroEncontrado = await this.libroRepository.findOne({
         where:{
-          id: carrito.libro_id
+          isbn: carrito.isbn_libro
         }
       })
       const item = CarritoMapper.entityToDto(carrito, libroEncontrado);

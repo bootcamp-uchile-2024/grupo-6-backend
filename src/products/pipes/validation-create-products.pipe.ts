@@ -42,10 +42,10 @@ export class ValidationCreateProductsPipe implements PipeTransform {
             }
             // Revisar que no exista otro libro con igual codigo de barra
             const existeProductoEAN = await this.libroRepository.existsBy({
-                codigo_barra: value.ean,
+                codigo_barra: value.codigoBarra,
             })
             if (existeProductoEAN){
-                throw new BadRequestException(`Ya existe un libro con código de barra: ${value.ean}`)
+                throw new BadRequestException(`Ya existe un libro con código de barra: ${value.codigo_barra}`)
             }
             // Revisar existencia idioma y obtener ID
             const idiomaEntity: IdiomaLibro = await this.idiomaRepository.findOneBy({
@@ -69,44 +69,26 @@ export class ValidationCreateProductsPipe implements PipeTransform {
             const editorialEntity: Editorial = await this.editorialRepository.findOneBy({
                 descripcion: value.editorial,
             })
-            
-            if (editorialEntity){
-                value.id_editorial = editorialEntity.id;
-            } else {
-                value.id_editorial = false;
-            };
+            value.id_editorial = (editorialEntity) ? editorialEntity.id : false;
 
             // Revisar existencia de generos
-            const id_generos: number[] = [];
+            const id_generos: (number | boolean) [] = [];
 
             for (const g of value.genero){
                 const generoEntity: Genero = await this.generoRepository.findOneBy({
                     descripcion: g
                 })
-
-                if (!generoEntity){
-                    throw new NotFoundException(`No existe un genero: ${g}`);
-                } else {
-                    id_generos.push(generoEntity.id)
-                }
+                id_generos.push(
+                    (generoEntity) ? generoEntity.id : false
+                );
             }
             value.id_generos = id_generos;
             
-            // Revisar existencia de autores
-            const id_autores = [];
-
-            for (const autor of value.autor){
-                const autorEntity: Autor = await this.autorRepository.findOneBy({
-                    nombre: autor
-                })
-
-                if (autorEntity){
-                    id_autores.push(autorEntity.id);
-                } else {
-                    id_autores.push(false);
-                };
-            }
-            value.id_autores = id_autores;
+            // Revisar existencia de autores        
+            const autorEntity: Autor = await this.autorRepository.findOneBy({
+                nombre: value.autor
+            })
+            value.id_autor = (autorEntity) ? autorEntity.id : false;
 
         } else if (metadata.type == 'custom'){
             // Revisar que no exista el mismo archivo

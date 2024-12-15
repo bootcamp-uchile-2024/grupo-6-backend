@@ -11,6 +11,6 @@ export class CreateValidatedProductDto extends PartialType(CreateProductDto){
     public id_idioma?: number;
     public id_encuadernacion?: number;
     public id_generos?: number[];
-    public id_autores?: number[];
+    public id_autor?: number;
 
 }

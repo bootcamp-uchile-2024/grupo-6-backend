@@ -25,9 +25,9 @@ export class ReviewsController {
   async createResena(
     // @Query('idUsuario', new ParseIntPipe({ errorHttpStatusCode: 400}), ValidacionExisteUsuarioPipe) idUsuario: number,
     @Query('idUsuario', new ParseIntPipe({ errorHttpStatusCode: 400})) idUsuario: number,
-    @Query('idLibro') idLibro: number,
+    @Query('isbnLibro') isbn_libro: string,
     @Body() createReviewDto: CreateReviewDto): Promise<CreateReviewDto> {
-    return await this.reviewsService.createResena(idUsuario,idLibro,createReviewDto)
+    return await this.reviewsService.createResena(idUsuario, isbn_libro, createReviewDto)
   }
 
   @ApiTags('reviews')
@@ -37,9 +37,9 @@ export class ReviewsController {
   }
 
   @ApiTags('reviews')
-  @Get('product/:id')
-  async findResenasLibro(@Param('id') idLibro: number): Promise<Resena[]> {
-    return this.reviewsService.findResenasLibro(idLibro);
+  @Get('product/:isbn')
+  async findResenasLibro(@Param('isbn') isbn_libro: string): Promise<Resena[]> {
+    return this.reviewsService.findResenasLibro(isbn_libro);
   }
 
 }

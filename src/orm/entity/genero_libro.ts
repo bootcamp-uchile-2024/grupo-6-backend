@@ -6,5 +6,5 @@ export class GeneroLibro {
     id_genero: number;
     
     @PrimaryColumn()
-    id_libro: number;
+    isbn_libro: string;
 }

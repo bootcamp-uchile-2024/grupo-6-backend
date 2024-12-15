@@ -13,7 +13,7 @@ export class ValidationUpdateProductsPipe implements PipeTransform {
     async transform(value: any, metadata: ArgumentMetadata) {
         // Validación de ID de libro
         if (metadata.type === 'param'){
-            const libro: Libro = await this.productRepository.findOneBy({ id: value });
+            const libro: Libro = await this.productRepository.findOneBy({ isbn: value });
             
             // Validar existencia de libro
             if (!libro){

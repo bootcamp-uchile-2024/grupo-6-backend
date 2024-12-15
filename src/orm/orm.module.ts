@@ -13,7 +13,6 @@ import { LibroCompra } from "./entity/libro_compra";
 import { Resena } from "./entity/resena";
 import { TipoDireccion } from "./entity/tipoDireccion";
 import { Usuario } from "./entity/usuario";
-import { AutorLibro } from "./entity/autor_libro";
 import { GeneroLibro } from "./entity/genero_libro";
 import { DireccionTipoDireccion } from "./entity/direccion_tipoDireccion";
 
@@ -41,7 +40,6 @@ import { DireccionTipoDireccion } from "./entity/direccion_tipoDireccion";
                 HistorialCompra,
                 LibroCompra,
                 Carrito,
-                AutorLibro,
                 GeneroLibro,  
                 DireccionTipoDireccion           
             ]

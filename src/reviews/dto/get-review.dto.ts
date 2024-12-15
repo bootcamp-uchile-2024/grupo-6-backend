@@ -1,9 +1,9 @@
 export class GetReviewDto {
 
     public id: number;
-    public rating: number;
+    public isbnLibro: string;
     public comentario: string;
+    public rating: number;
     public fecha: Date;
-    public nombreLibro: string;
 }
     

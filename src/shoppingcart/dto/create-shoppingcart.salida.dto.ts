@@ -12,8 +12,8 @@ export class ShoppingcartSalidaDto {
     @ApiProperty({example: 'El señor de los Anillos: La comunidad del Anillo', description: 'Nombre del libro'})
     public nombre: string;
   
-    @ApiProperty({example: ['J.R.R TOLKIEN'], description: 'Autor del libro'})
-    public autor: Autor[];
+    @ApiProperty({example: 'J.R.R Tolkien', description: 'Autor del libro'})
+    public autor: Autor;
   
     @ApiProperty({example: 10, description: 'Stock de libros disponibles'})
     public stockLibro: number;

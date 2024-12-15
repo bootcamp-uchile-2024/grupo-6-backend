@@ -13,20 +13,18 @@ export class ReviewsService {
 
   constructor(
     @InjectRepository(Resena) private readonly resenaRepository: Repository<Resena>,
-    @InjectRepository(Usuario) private readonly usuarioRepository: Repository<Usuario>,
     @InjectRepository(Libro) private readonly libroRepository: Repository<Libro>,
-    private readonly usuariosService: UsersService
   ) {}
   
-  async createResena(idUsuario: number, idLibro: number, createReviewDto: CreateReviewDto): Promise<CreateReviewDto> {
+  async createResena(idUsuario: number, isbn_libro: string, createReviewDto: CreateReviewDto): Promise<CreateReviewDto> {
     let existeLibro: boolean = await this.libroRepository.existsBy({
-      id: +idLibro
+      isbn: isbn_libro
     });
     if(!existeLibro){
       throw new BadRequestException('No existe el libro con el ID ingresado.')
     }
 
-    let resena: Resena = ResenaMapper.dtoToEntity(+idUsuario,+idLibro,createReviewDto);
+    let resena: Resena = ResenaMapper.dtoToEntity(+idUsuario, isbn_libro, createReviewDto);
     await this.resenaRepository.save(resena)
 
     return createReviewDto;
@@ -62,10 +60,10 @@ export class ReviewsService {
   }
 
 
-  async findResenasLibro(idLibro: number): Promise<Resena[]> {
+  async findResenasLibro(isbn_libro: string): Promise<Resena[]> {
 
     let existeLibro: boolean = await this.libroRepository.existsBy({
-      id: +idLibro
+      isbn: isbn_libro
     });
     if(!existeLibro){
       throw new BadRequestException('No existe el libro con el ID ingresado.')
@@ -84,7 +82,7 @@ export class ReviewsService {
         }
       },
       where: {
-        id_libro: +idLibro
+        isbn_libro: isbn_libro
       },
       relations: {
         usuario: true

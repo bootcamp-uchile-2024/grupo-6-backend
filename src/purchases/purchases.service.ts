@@ -54,7 +54,7 @@ export class PurchasesService {
     const nuevoLibroCompra: LibroCompra[] = carritoUsuario.map(
       item => this.libroCompraRepository.create({
         id_compra: createPurchaseDto.id,
-        id_libro: item.libro_id,
+        isbn_libro: item.isbn_libro,
         cantidad: item.cantidad,
       })
     )

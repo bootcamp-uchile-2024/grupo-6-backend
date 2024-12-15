@@ -11,7 +11,7 @@ export class Resena {
     id_usuario: number;
 
     @Column()
-    id_libro: number;
+    isbn_libro: string;
 
     @Column()
     comentario: string;
@@ -23,7 +23,7 @@ export class Resena {
     fecha: Date;
 
     @ManyToOne(() => Libro, (libro) => libro.resena, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "id_libro" })
+    @JoinColumn({ name: "isbn_libro" })
     libro: Libro;
 
     @ManyToOne(() => Usuario)

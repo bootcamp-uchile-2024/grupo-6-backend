@@ -18,8 +18,8 @@ export class Genero {
             referencedColumnName: 'id',
         },
         inverseJoinColumn: {
-            name: 'id_libro',
-            referencedColumnName: 'id',
+            name: 'isbn_libro',
+            referencedColumnName: 'isbn',
         },
     })
     libros: Libro[];

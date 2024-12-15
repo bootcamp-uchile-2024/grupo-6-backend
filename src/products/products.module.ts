@@ -8,7 +8,6 @@ import { ProductsService } from './products.service';
 import { IdiomaLibro } from 'src/orm/entity/idioma_libro';
 import { Encuadernacion } from 'src/orm/entity/encuadernacion';
 import { Editorial } from 'src/orm/entity/editorial';
-import { AutorLibro } from 'src/orm/entity/autor_libro';
 import { GeneroLibro } from 'src/orm/entity/genero_libro';
 
 @Module({
@@ -19,7 +18,6 @@ import { GeneroLibro } from 'src/orm/entity/genero_libro';
     IdiomaLibro,
     Encuadernacion,
     Editorial,
-    AutorLibro,
     GeneroLibro,
   ])],
   controllers: [ProductsController],

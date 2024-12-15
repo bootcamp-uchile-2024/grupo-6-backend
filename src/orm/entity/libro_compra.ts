@@ -8,7 +8,7 @@ export class LibroCompra {
     id_compra: number;
     
     @PrimaryColumn()
-    id_libro: number;
+    isbn_libro: string;
 
     @Column()
     cantidad: number;
@@ -18,6 +18,6 @@ export class LibroCompra {
     historialCompra: HistorialCompra;
 
     @ManyToOne(() => Libro, (libro) => libro.libroCompra, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "id_libro" })
+    @JoinColumn({ name: "isbn_libro" })
     libro: Libro;
 }

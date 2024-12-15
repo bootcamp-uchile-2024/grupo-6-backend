@@ -1,9 +1,13 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, ParseArrayPipe, ParseEnumPipe, ParseIntPipe, Patch, Post, Query, UploadedFile, UploadedFiles, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, ParseArrayPipe, ParseBoolPipe, ParseEnumPipe, ParseIntPipe, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Libro } from 'src/orm/entity/libro';
-import { ParseEnumGeneroArrayPipe } from 'src/parse-enum-array-pipe/parse-enum-genero-array-pipe.pipe';
-import { ParseEnumIdiomaArrayPipe } from 'src/parse-enum-array-pipe/parse-enum-idioma-array-pipe';
-import { CreateProductDto } from './dto/create-product.dto';
+import { ParseEnumGeneroArrayPipe } from 'src/products/pipes/parse-enum-genero-array-pipe.pipe';
+import { ParseEnumIdiomaArrayPipe } from 'src/products/pipes/parse-enum-idioma-array-pipe';
+import { RolesAutorizados } from 'src/seguridad/decorator/rol.decorator';
+import { JwtGuard } from 'src/seguridad/guard/jwt.guard';
+import { ValidarRolGuard } from 'src/seguridad/guard/validar-rol.guard';
+import { Rol } from 'src/users/enum/rol.enum';
 import { GetFilteredProductsDto } from './dto/get-filtered-products.dto';
 import { GetProductDto } from './dto/get-product.dto';
 import { proConexDTO } from './dto/proConexDTO';
@@ -11,17 +15,12 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { EncuadernacionEnum } from './entities/encuadernacionEnum';
 import { GeneroEnum } from './entities/generoEnum';
 import { Idioma } from './entities/idioma';
+import { ValidationCreateProductsPipe } from './pipes/validation-create-products.pipe';
 import { ValidationDeleteProductsPipe } from './pipes/validation-delete-products.pipe';
+import { ValidationGetProductsPipe } from './pipes/validation-get-product.pipe';
 import { ValidationUpdateProductsPipe } from './pipes/validation-update-products.pipe';
 import { ProductsService } from './products.service';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ValidationCreateProductsPipe } from './pipes/validation-create-products.pipe';
-import { Genero } from 'src/orm/entity/genero';
-import { ValidationGetProductsPipe } from './pipes/validation-get-product.pipe';
-import { JwtGuard } from 'src/seguridad/guard/jwt.guard';
-import { ValidarRolGuard } from 'src/seguridad/guard/validar-rol.guard';
-import { RolesAutorizados } from 'src/seguridad/decorator/rol.decorator';
-import { Rol } from 'src/users/enum/rol.enum';
+import { ValidationSearchProductsPipe } from './pipes/validation-search-products.pipe';
 
 @Controller('products')
 export class ProductsController {
@@ -29,19 +28,20 @@ export class ProductsController {
 
   // Crear producto --------------------------------------------------------
   @ApiTags('Products')
+  @ApiOperation({ summary:'Crear un producto'})
   @ApiBearerAuth()
   @UseGuards(JwtGuard, ValidarRolGuard)
   @RolesAutorizados(Rol.ADMIN)
   @UseInterceptors(FileInterceptor('caratula'))
   @UsePipes(ValidationCreateProductsPipe)
-  @ApiResponse({  status: 200,  description: 'Creación de producto exitosa',  type: GetProductDto })
-  @ApiResponse({ status: 404, description: 'Error al crear producto. Revisar datos ingresados', })
-  @UsePipes( new ValidationPipe())
+  @ApiResponse({ status: 200,  description: 'Creación de producto exitosa',  type: GetProductDto })
+  @ApiResponse({ status: 404, description: 'Error al crear producto. Revisar datos ingresados.', })
+  // @UsePipes( new ValidationPipe() )
   @Post()
   async create(
     @Body() createProductDto,
     @UploadedFile() caratula
-  ): Promise<any> {
+  ): Promise<GetProductDto> {
 
     try {
       return await this.productsService.create(createProductDto, caratula);
@@ -50,8 +50,57 @@ export class ProductsController {
     }
   }
 
+  // Eliminar un producto --------------------------------------------------
+  @ApiTags('Products')
+  @ApiOperation({ summary:'Eliminar un producto'})
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.ADMIN)
+  @UsePipes(ValidationDeleteProductsPipe)
+  @ApiResponse({ status: 200, description: 'Se eliminó el libro correctamente' })
+  @ApiResponse({ status: 400, description: 'Error al eliminar el libro' })
+  @ApiParam({ name: 'isbn', required: true, type: 'string', example: '9788439732471', description: 'ISBN del libro' })
+  @Delete(':isbn')
+  async remove(@Param('isbn') isbn: string): Promise<object> {
+    try {
+      return await this.productsService.remove(isbn);
+    } catch (error) {
+      throw new HttpException('Error al eliminar el libro', 400);
+    }
+  }
+
+  // Actualizar un producto ------------------------------------------------
+  @ApiTags('Products')
+  @ApiOperation({ summary:'Modificar un producto'})
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.ADMIN)
+  @UsePipes(ValidationUpdateProductsPipe)
+  @UseInterceptors(FileInterceptor('caratula'))
+  @ApiResponse({ status: 200, description: 'Se actualizó el libro correctamente' })
+  @ApiResponse({ status: 400, description: 'Error al actualizar libro' })
+  @ApiParam({ name: 'isbn', required: true, type: 'string', example: '9788439732471', description: 'ISBN del libro' })
+  @Patch(':isbn')
+  async update(
+    @Param('isbn') isbn: Libro, 
+    @Body() updatePurchaseDto: UpdateProductDto ,
+    @UploadedFile() caratula?
+  ): Promise<GetProductDto> {
+    try {
+      console.log(isbn, updatePurchaseDto, caratula)
+      return await this.productsService.update(isbn, updatePurchaseDto, caratula);
+    } catch (error) {
+      if (error instanceof BadRequestException){
+        throw error
+      } else {
+        throw new HttpException(error, 400);
+      }
+    }
+  }
+
   // HU Filtro de productos ------------------------------------------------
   @ApiTags('Products')
+  @ApiOperation({ summary:'Obtener catalogo de productos'})
   @ApiQuery({ name: 'priceMin', description: 'Filtro con precio mínimo', required: false, })
   @ApiQuery({ name: 'priceMax', description: 'Filtro con precio máximo', required: false, })
   @ApiQuery({
@@ -88,6 +137,9 @@ export class ProductsController {
   @ApiQuery({ name: 'encuadernacion', description: 'Encuadernación del libro', required: false, enum: EncuadernacionEnum, })
   @ApiQuery({ name: 'agnoPublicacionMin', description: 'Año mínimo de publicación del libro', required: false, example: 2010, })
   @ApiQuery({ name: 'agnoPublicacionMax', description: 'Año máximo de publicación del libro', required: false, example: 2024, })
+  @ApiQuery({ name: 'tendencia', description: 'Ordena los productos por cantidad de ventas', required: false, type: Boolean })
+  @ApiQuery({ name: 'novedades', description: 'Ordena los productos desde el más recientemente agregado', required: false, type: Boolean })
+  @ApiQuery({ name: 'destacado', description: 'Devuelve los productos catalogados como destacados', required: false, type: Boolean })
   @ApiResponse({ status: 200, description: 'Solicitud generada correctamente',  type: GetProductDto, isArray: true })
   @ApiResponse({ status: 404, description: 'No existen productos que cumplan la solicitud', })
   @Get('catalog')
@@ -106,7 +158,10 @@ export class ProductsController {
     @Query('isbn') isbn?: string,
     @Query('encuadernacion', new ParseEnumPipe(EncuadernacionEnum, { optional: true }), ) encuadernacion?: EncuadernacionEnum,
     @Query('agnoPublicacionMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMin?: number,
-    @Query( 'agnoPublicacionMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMax?: number,
+    @Query('agnoPublicacionMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMax?: number,
+    @Query('tendencia', new ParseBoolPipe({ errorHttpStatusCode: 400, optional: true})) tendencias?: boolean,
+    @Query('novedades', new ParseBoolPipe({ errorHttpStatusCode: 400, optional: true})) novedades?: boolean,
+    @Query('destacado', new ParseBoolPipe({ errorHttpStatusCode: 400, optional: true})) destacados?: boolean,
   ): Promise<GetFilteredProductsDto> {
     const filters = {
       priceMin,
@@ -124,25 +179,30 @@ export class ProductsController {
       encuadernacion,
       agnoPublicacionMin,
       agnoPublicacionMax,
+      tendencias,
+      novedades,
+      destacados,
     };
     try {
       return await this.productsService.getFilteredProducts(filters);
     } catch (error) {
-      throw new HttpException('Error al obtener categorias', 400);
+      throw new HttpException('Error al obtener los productos', 400);
     }
   }
 
   // HU Buscador de producto -----------------------------------------------
   @ApiTags('Products')
-  @ApiQuery({ name: 'query', description: 'Nombre, autor o ISBN de libro buscado', })
+  @ApiOperation({ summary:'Búsqueda de productos'})
+  @UsePipes(ValidationSearchProductsPipe)
+  @ApiQuery({ name: 'query', description: 'Nombre, autor, editorial o ISBN de libro buscado', })
   @ApiQuery({ name: 'priceMin', description: 'Filtro con precio mínimo', required: false, })
   @ApiQuery({ name: 'priceMax', description: 'Filtro con precio máximo', required: false, })
-  @ApiQuery({ name: 'limit', description: 'Número máximo de productos a entregar. Valor por defecto = 10', required: false,  })
   @ApiQuery({
-    name: 'offset',
-    description: 'Desde qué posición empezar a devolver productos. Valor por defecto = 0',
+    name: 'pagina',
+    description: 'Número de la página a mostrar, empezando desde 1. Valor por defecto = 1',
     required: false,
   })
+  @ApiQuery({ name: 'cantidad', description: 'Cantidad de productos a devolver. Valor por defecto = 12', required: false,})
   @ApiQuery({ name: 'sortBy', description: 'Nombre de la propiedad sobre la cual filtrar', required: false, example: 'precio', })
   @ApiQuery({ name: 'autor', description: 'Nombre del autor del libro', required: false, example: 'Gabriel Garcia Marquez', })
   @ApiQuery({ name: 'rating', description: 'Rating del libro. Valor entre 0 y 5', required: false, })
@@ -169,15 +229,18 @@ export class ProductsController {
   @ApiQuery({ name: 'encuadernacion', description: 'Encuadernación del libro', required: false, enum: EncuadernacionEnum, })
   @ApiQuery({ name: 'agnoPublicacionMin', description: 'Año mínimo de publicación del libro', required: false, example: 2010, })
   @ApiQuery({ name: 'agnoPublicacionMax', description: 'Año máximo de publicación del libro', required: false, example: 2024, })
+  @ApiQuery({ name: 'tendencia', description: 'Ordena los productos por cantidad de ventas', required: false, type: Boolean })
+  @ApiQuery({ name: 'novedades', description: 'Ordena los productos desde el más recientemente agregado', required: false, type: Boolean })
+  @ApiQuery({ name: 'destacado', description: 'Devuelve los productos catalogados como destacados', required: false, type: Boolean })
   @ApiResponse({ status: 200,  description: 'Solicitud generada correctamente', type: GetProductDto, isArray: true })
   @ApiResponse({ status: 404, description: 'No existen productos que cumplan la solicitud', })
   @Get('search')
-  getSearchedProducts(
+  async getSearchedProducts(
     @Query('query') query: string,
     @Query('priceMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMin?: number,
     @Query('priceMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMax?: number,
-    @Query('limit', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) limit = 10,
-    @Query('offset', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), )offset = 0,
+    @Query('pagina', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) pagina = 1,
+    @Query('cantidad', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) cantidad = 12,
     @Query('sortBy') sortBy?: string,
     @Query('autor') autor?: string,
     @Query('rating', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) rating?: number,
@@ -185,15 +248,17 @@ export class ProductsController {
     @Query('editorial', new ParseArrayPipe({ items: String, separator: ',', optional: true, errorHttpStatusCode: 400, }), ) editorial?: string | string[],
     @Query('idioma', new ParseEnumIdiomaArrayPipe(Idioma)) idioma?: string | string[],
     @Query('encuadernacion', new ParseEnumPipe(EncuadernacionEnum, { optional: true }), ) encuadernacion?: EncuadernacionEnum, 
-    @Query( 'agnoPublicacionMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMin?: number, 
-    @Query( 'agnoPublicacionMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMax?: number,
-  ): GetProductDto[] {
-    console.log(typeof idioma);
+    @Query('agnoPublicacionMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMin?: number, 
+    @Query('agnoPublicacionMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMax?: number,
+    @Query('tendencia', new ParseBoolPipe({ errorHttpStatusCode: 400, optional: true})) tendencias?: boolean,
+    @Query('novedades', new ParseBoolPipe({ errorHttpStatusCode: 400, optional: true})) novedades?: boolean,
+    @Query('destacado', new ParseBoolPipe({ errorHttpStatusCode: 400, optional: true})) destacados?: boolean,
+  ): Promise<GetFilteredProductsDto> {
     const filters = {
       priceMin,
       priceMax,
-      limit,
-      offset,
+      pagina,
+      cantidad,
       sortBy,
       autor,
       rating,
@@ -203,6 +268,9 @@ export class ProductsController {
       encuadernacion,
       agnoPublicacionMin,
       agnoPublicacionMax,
+      tendencias,
+      novedades,
+      destacados,
     };
     try {
       return this.productsService.getSearchedProductos(query, filters);
@@ -216,6 +284,7 @@ export class ProductsController {
 
   // Buscar 1 producto -----------------------------------------------------
   @ApiTags('Products')
+  @ApiOperation({ summary:'Obtener un producto'})
   @UsePipes(ValidationGetProductsPipe)
   @ApiResponse({ status: 200, description: 'Este codigo se debe a que se pudo enviar el libro en base al isbn ingresado.', type: GetProductDto, })
   @ApiResponse({ status: 404, description: 'Este codigo se debe a que no encuentra el isbn del libro.', })
@@ -230,6 +299,7 @@ export class ProductsController {
 
   // Obtener generos -------------------------------------------------------
   @ApiTags('Products')
+  @ApiOperation({ summary:'Obtener el listado de géneros'})
   @ApiResponse({ status: 200, description: 'Se obtuvo la lista de generos de forma satisfactoria.', type: String, isArray: true })
   @ApiResponse({ status: 400, description: 'Hubo un error al obtener la lista de generos.', })
   @Get('genres')
@@ -241,8 +311,9 @@ export class ProductsController {
     }
   }
 
-  // Obtener categorías ----------------------------------------------------
+  // Obtener editoriales ----------------------------------------------------
   @ApiTags('Products')
+  @ApiOperation({ summary:'Obtener el listado de editoriales'})
   @ApiResponse({ status: 200, description: 'Se obtuvo la lista de editoriales de forma satisfactoria.', type: String, isArray: true })
   @ApiResponse({ status: 400, description: 'Hubo un error al obtener la lista de editoriales.', })
   @Get('publishers')
@@ -254,6 +325,33 @@ export class ProductsController {
     }
   }
 
+  // Obtener encuadernaciones ----------------------------------------------------
+  @ApiTags('Products')
+  @ApiOperation({ summary:'Obtener el listado de encuadernaciones'})
+  @ApiResponse({ status: 200, description: 'Se obtuvo la lista de encuadernaciones de forma satisfactoria.', type: String, isArray: true })
+  @ApiResponse({ status: 400, description: 'Hubo un error al obtener la lista de encuadernaciones.', })
+  @Get('bindings')
+  async getBinding(): Promise<string[]> {
+    try {
+      return await this.productsService.getBinding();
+    } catch (error) {
+      throw new HttpException('Error al obtener las encuadernaciones de libros', 400);
+    }
+  }
+  // Obtener Idiomas ----------------------------------------------------
+  @ApiTags('Products')
+  @ApiOperation({ summary:'Obtener el listado de idiomas'})
+  @ApiResponse({ status: 200, description: 'Se obtuvo la lista de idiomas de forma satisfactoria.', type: String, isArray: true })
+  @ApiResponse({ status: 400, description: 'Hubo un error al obtener la lista de idiomas.', })
+  @Get('languages')
+  async getLanguages(): Promise<string[]> {
+    try {
+      return await this.productsService.getLanguages();
+    } catch (error) {
+      throw new HttpException('Error al obtener los idiomas de libros', 400);
+    }
+  }
+
   // Probar conexión -------------------------------------------------------
   @Get('conexion')
   async getConexion(): Promise<proConexDTO[]> {
@@ -261,49 +359,5 @@ export class ProductsController {
     return resolucion;
   }
 
-  // Eliminar un producto --------------------------------------------------
-  @ApiTags('Products')
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, ValidarRolGuard)
-  @RolesAutorizados(Rol.ADMIN)
-  @UsePipes(ValidationDeleteProductsPipe)
-  @ApiResponse({ status: 200, description: 'Se eliminó el libro correctamente' })
-  @ApiResponse({ status: 400, description: 'Error al eliminar el libro' })
-  @Delete(':id')
-  async remove(@Param('id') id: string): Promise<string> {
-    try {
-      return await this.productsService.remove(+id);
-    } catch (error) {
-      throw new HttpException('Error al eliminar el libro', 400);
-    }
-  }
-
-  // Actualizar un producto ------------------------------------------------
-  @ApiTags('Products')
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard, ValidarRolGuard)
-  @RolesAutorizados(Rol.ADMIN)
-  @UsePipes(ValidationUpdateProductsPipe)
-  @UseInterceptors(FileInterceptor('caratula'))
-  @ApiResponse({ status: 200, description: 'Se actualizó el libro correctamente' })
-  @ApiResponse({ status: 400, description: 'Error al actualizar libro' })
-  @ApiParam({name: 'id', required: true, type: 'number', description: 'ID del libro'})
-  @Patch(':id')
-  async update(
-    @Param('id') id: Libro, 
-    @Body() updatePurchaseDto: UpdateProductDto ,
-    @UploadedFile() caratula?
-  ): Promise<GetProductDto> {
-    try {
-      console.log(id, updatePurchaseDto, caratula)
-      return await this.productsService.update(id, updatePurchaseDto, caratula);
-    } catch (error) {
-      if (error instanceof BadRequestException){
-        throw error
-      } else {
-        throw new HttpException(error, 400);
-      }
-    }
-  }
 
 }

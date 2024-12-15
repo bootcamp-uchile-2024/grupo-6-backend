@@ -1,33 +1,27 @@
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
-import { Editorial } from "./editorial";
-import { IdiomaLibro } from "./idioma_libro";
-import { Encuadernacion } from "./encuadernacion";
-import { Resena } from "./resena";
-import { LibroCompra } from "./libro_compra";
-import { Genero } from "./genero";
 import { Autor } from "./autor";
 import { Carrito } from "./carrito";
+import { Editorial } from "./editorial";
+import { Encuadernacion } from "./encuadernacion";
+import { Genero } from "./genero";
+import { IdiomaLibro } from "./idioma_libro";
+import { LibroCompra } from "./libro_compra";
+import { Resena } from "./resena";
 
 @Entity({name: "libro"})
 export class Libro {
     @PrimaryColumn()
-    id: number;
-    
-    @Column()
     isbn: string;
-
-    @Column()
-    id_idioma: number;
-
-    @Column()
-    id_encuadernacion: number;
 
     @Column()
     nombre: string;
 
     @Column()
-    stock_libro: number;
+    id_autor: number;
 
+    @Column()
+    stock_libro: number;
+    
     @Column()
     precio: number;
 
@@ -35,7 +29,13 @@ export class Libro {
     rating: number;
 
     @Column()
-    id_editorial:number;
+    id_editorial: number;
+
+    @Column()
+    id_idioma: number;
+
+    @Column()
+    id_encuadernacion: number;
 
     @Column()
     agno_publicacion: number;
@@ -47,16 +47,25 @@ export class Libro {
     descuento: number;
 
     @Column()
-    caratula: string;
-
-    @Column()
     dimensiones: string;
 
     @Column()
     codigo_barra: string;
 
     @Column()
+    caratula: string;
+
+    @Column()
     resumen: string;
+
+    @Column()
+    fecha_creacion: string;
+
+    @Column()
+    destacado: boolean;
+
+    @Column()
+    habilitado: boolean;
 
     @ManyToOne(() => Editorial)
     @JoinColumn({ name: "id_editorial" })
@@ -76,11 +85,12 @@ export class Libro {
     })
     generos: Genero[];
 
-    @ManyToMany(() => Autor, (autor) => autor.libros,{ 
+    @ManyToOne(() => Autor, (autor) => autor.libros, { 
         onDelete: "CASCADE",
-        cascade: true
+        cascade: true,
     })
-    autores: Autor[];
+    @JoinColumn({ name: 'id_autor'})
+    autor: Autor;
 
     @OneToMany(() => Resena, (resena) => resena.libro, { cascade: true })
     resena: Resena[];
@@ -89,6 +99,6 @@ export class Libro {
     libroCompra: LibroCompra[];
 
     @ManyToOne(() => Carrito, (carrito) => carrito.libros, { cascade: true })
-    @JoinColumn({ name: "id" })
+    @JoinColumn({ name: "isbn" })
     carrito: Carrito;
 }

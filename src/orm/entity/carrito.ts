@@ -10,7 +10,7 @@ export class Carrito {
     usuario_id: number;
     
     @PrimaryColumn()
-    libro_id: number;
+    isbn_libro: string;
 
     @Column()
     cantidad: number;

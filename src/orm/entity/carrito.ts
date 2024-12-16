@@ -15,6 +15,12 @@ export class Carrito {
     @Column()
     cantidad: number;
 
+    @Column()
+    precio: number;
+
+    @Column()
+    descuento: number;
+
     @ManyToOne(() => Usuario)
     @JoinColumn({ name: "usuario_id" })
     usuario: Usuario;

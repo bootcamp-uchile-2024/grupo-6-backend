@@ -21,26 +21,11 @@ export class Carrito {
     @Column()
     descuento: number;
 
-    @ManyToOne(() => Usuario)
+    @ManyToOne(() => Usuario, (usuario)=>usuario.carritos)
     @JoinColumn({ name: "usuario_id" })
     usuario: Usuario;
 
-    @OneToMany(() => Libro, (libro) => libro.carrito, { onDelete: "CASCADE" })
-    libros: Libro[];
-/*
-    @ManyToMany(() => Usuario, (usuario) => usuario.carrito)
-    @JoinTable({ name: 'carrito_usuario',
-        joinColumn: {
-            name: 'id_dispositivo',
-            referencedColumnName: 'id',
-        },
-        inverseJoinColumn: {
-            name: 'usuario_id',
-            referencedColumnName: 'id',
-        },
-    })
-    arriendo: Arriendo[];
-
-    @ManyToMany(() => Dispositivo, (dispositivo) => dispositivo.arriendo)
-    dispositivo: Dispositivo[];*/
+    @ManyToOne(() => Libro, (libro) => libro.carritos, { onDelete: "CASCADE" })
+    @JoinColumn({name: 'isbn_libro'})
+    libro: Libro;
 }

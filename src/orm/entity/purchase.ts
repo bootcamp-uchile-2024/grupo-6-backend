@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Usuario } from "./usuario";
 import { HistorialCompra } from "./historial_compra";
 import { Direccion } from "./direccion";
@@ -7,11 +7,12 @@ import { CarritoInformacion } from "./carrito_informacion";
 
 @Entity({name: "purchase"})
 export class Purchase {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id_compra: number;
 
-    @PrimaryColumn()
-    usuario_id: number;
+    @ManyToOne(() => Usuario, (usuario) => usuario.compras)
+    @JoinColumn({ name: 'usuario_id' })
+    usuario: Usuario;
     
     @Column()
     id_metodo_pago: number;
@@ -19,27 +20,16 @@ export class Purchase {
     @Column()
     fecha_compra: string;
 
-    @Column()
-    carrito_id: number;
+    @ManyToOne(() => CarritoInformacion, (carritoInformacion) => carritoInformacion.usuario)
+    @JoinColumn({ name: 'carrito_id' })
+    carrito: CarritoInformacion;
 
     @Column()
     id_direccion: number;
 
-    @OneToOne(() => Usuario)
-    @JoinColumn({ name: 'usuario_id' })
-    usuario: Usuario;
-
-    @OneToOne(() => CarritoInformacion)
-    @JoinColumn({ name: 'carrito_id' })
-    carritoInformacion: CarritoInformacion;
-
-    @OneToOne(() => Direccion)
+    @ManyToOne(() => Direccion, (direccion) => direccion.compras)
     @JoinColumn({ name: 'id_direccion' })
     direccion: Direccion;
-
-    @ManyToOne(() => HistorialCompra)
-    @JoinColumn({ name: "id_compra" })
-    historialCompra: HistorialCompra;
 }
 
 

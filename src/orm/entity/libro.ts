@@ -98,7 +98,6 @@ export class Libro {
     @OneToMany(() => LibroCompra, (libroCompra) => libroCompra.libro, { cascade: true })
     libroCompra: LibroCompra[];
 
-    @ManyToOne(() => Carrito, (carrito) => carrito.libros, { cascade: true })
-    @JoinColumn({ name: "isbn" })
-    carrito: Carrito;
+    @OneToMany(() => Carrito, (carrito) => carrito.libro)
+    carritos: Carrito[];
 }

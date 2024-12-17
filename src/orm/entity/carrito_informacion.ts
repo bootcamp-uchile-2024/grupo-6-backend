@@ -1,16 +1,18 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Usuario } from "./usuario";
 import { Purchase } from "src/purchases/entities/purchase.entity";
 import { Carrito } from "./carrito";
+import { estadoEnum } from "src/shoppingcart/enum/estado.enum";
 
 
 @Entity({name: "carrito_informacion"})
 export class CarritoInformacion {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id_carrito: number;
 
-    @PrimaryColumn()
-    usuario_id: number;
+    @ManyToOne(() => Usuario, (usuario) => usuario.carritosInformacion)
+    @JoinColumn({ name: 'usuario_id' })
+    usuario: Usuario;
     
     @Column()
     fecha_actualizacion: string;
@@ -18,10 +20,6 @@ export class CarritoInformacion {
     @Column()
     precio_total: number;
 
-    @OneToOne(() => Usuario)
-    @JoinColumn({ name: 'usuario_id' })
-    usuario: Usuario;
-
-    @OneToOne(() => CarritoInformacion, (carritoInformacion) => carritoInformacion.purchase)
-    purchase: Purchase;
+    @Column()
+    estado: estadoEnum;    
 }

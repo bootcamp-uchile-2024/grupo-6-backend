@@ -83,13 +83,13 @@ export class ProductsService {
       if (!id_genero){
         const genero = new Genero();
         genero.descripcion = createProductDto.genero[i] as GeneroEnum;
-        createProductDto.id_generos[i] = genero.id;
         try {
           await this.generoRepository.save(genero)
+          const nuevoGenero = await this.generoRepository.findOneBy({descripcion: genero.descripcion});
+          createProductDto.id_generos[i] = nuevoGenero.id;
         } catch(error) {
           throw new HttpException('Error al guardar genero', 400)
         }
-
       }
     }
       
@@ -522,7 +522,7 @@ export class ProductsService {
       isbn: isbn
     })
     // Eliminar libro de BD
-    await this.productRepository.delete(isbn);
+    await this.productRepository.delete(libro);
 
     // Eliminar caratula
     const ruta_archivo: string = `${ruta_archivos_local}/${libro.caratula}`

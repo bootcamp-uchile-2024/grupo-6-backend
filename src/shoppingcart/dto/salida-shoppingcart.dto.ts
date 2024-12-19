@@ -4,8 +4,9 @@ import { ShoppingcartDto } from './Shoppincart.dto';
 import { Type } from 'class-transformer';
 
 
-export class CreateShoppingcartDto {
+export class SalidaShoppingcartDto {
 
+  @IsInt()
   @ApiProperty({example: '2024-05-25', description: 'fecha de actualización'})
   fechaCompra: string;
 
@@ -18,5 +19,5 @@ export class CreateShoppingcartDto {
   @ValidateNested({ each: true })
   @ApiProperty({type: ShoppingcartDto, isArray: true})
   @Type(() => ShoppingcartDto)
-  shoppingCart: ShoppingcartDto[];
+  productos: ShoppingcartDto[];
 }

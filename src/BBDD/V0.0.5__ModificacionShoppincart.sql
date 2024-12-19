@@ -83,4 +83,4 @@ INSERT INTO purchase (id_compra, carrito_id, id_metodo_pago, fecha_compra, usuar
 (1, 5, 1, '2024-12-15', 19, 19),
 (2, 3, 2, '2024-12-15', 8, 8);
 
-ALTER TABLE carrito ADD CONSTRAINT carrito_id FOREIGN KEY (carrito_id) REFERENCES carrito_informacion(id_carrito);
+ALTER TABLE carrito ADD CONSTRAINT fk_carrito_carrito_informacion FOREIGN KEY (carrito_id) REFERENCES carrito_informacion(id_carrito);

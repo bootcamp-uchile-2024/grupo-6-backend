@@ -46,18 +46,18 @@ export class PurchasesService {
     fecha_entrega.setDate(fecha_entrega.getDate() + 10); // Se asume que la entrega es 10 días después de la compra
 
     // Obtener carrito según ID carrito
-    const carritoUsuario: Carrito[] = await this.carritoRepository.findBy({ 
+    /*const carritoUsuario: Carrito[] = await this.carritoRepository.findBy({ 
       usuario_id: createPurchaseDto.id_usuario 
-    });
+    });*/
     
     // Definir Libro_Compra 
-    const nuevoLibroCompra: LibroCompra[] = carritoUsuario.map(
+    /*const nuevoLibroCompra: LibroCompra[] = carritoUsuario.map(
       item => this.libroCompraRepository.create({
         id_compra: createPurchaseDto.id,
         isbn_libro: item.isbn_libro,
         cantidad: item.cantidad,
       })
-    )
+    )*/
 
     // Definir dirección
     const direccion: Direccion = await this.direccionRepository.findOneBy({ 
@@ -74,7 +74,7 @@ export class PurchasesService {
       fecha_compra: fecha_compra,
       fecha_entrega: fecha_entrega,
       id_direccion_entrega: createPurchaseDto.id_direccion_entrega,
-      libroCompra: nuevoLibroCompra,
+      //libroCompra: nuevoLibroCompra,
       direccion: direccion,
     });
 

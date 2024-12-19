@@ -2,35 +2,30 @@ import { Carrito } from "src/orm/entity/carrito";
 import { CreateShoppingcartDto } from "../dto/create-shoppingcart.dto";
 import { ShoppingcartSalidaDto } from "../dto/create-shoppingcart.salida.dto";
 import { Libro } from "src/orm/entity/libro";
+import { CarritoInformacion } from "src/orm/entity/carrito_informacion";
+import { SalidaShoppingcartDto } from "../dto/salida-shoppingcart.dto";
+import { ShoppingcartDto } from "../dto/Shoppincart.dto";
 
 
 
 export class CarritoMapper {
-    static entityToDto(carrito: Carrito, libro: Libro): ShoppingcartSalidaDto {
-        const carritoDto = new ShoppingcartSalidaDto();
-        carritoDto.nombre = libro.nombre;
-        carritoDto.autor = libro.autor;
-        carritoDto.caratula = libro.caratula;
-        carritoDto.precio = libro.precio;
-        carritoDto.cantidad = carrito.cantidad;
-        carritoDto.idUsuario = carrito.usuario_id;
-        carritoDto.descuento = libro.descuento;
-        carritoDto.stockLibro = libro.stock_libro;
-        return carritoDto;
-    };
+    static entityToDto(carritos: Carrito[], carritoInformacion: CarritoInformacion): SalidaShoppingcartDto {
+        const carritoDto = new SalidaShoppingcartDto();
+        carritoDto.fechaCompra = carritoInformacion.fecha_actualizacion;
+        carritoDto.precioTotal = carritoInformacion.precio_total;
 
-    static dtoToEntity(carritoDto: CreateShoppingcartDto ): Carrito {
-        const carrito = new Carrito();
-        carrito.usuario_id = carritoDto.idUsuario;
-        carrito.isbn_libro = carritoDto.isbn;
-        carrito.cantidad = carritoDto.cantidad;
-        return carrito;
+        const productos: ShoppingcartDto[] = [];
+        for(const carrito of carritos){
+            const producto = new ShoppingcartDto();
+            producto.isbn = carrito.isbn_libro;
+            producto.cantidad = carrito.cantidad;
+            producto.precio = carrito.precio;
+            producto.descuento = carrito.descuento;
+            productos.push(producto);
         }
 
-    static entityListToDtoList(carritos: Carrito[], libros: Libro[]): ShoppingcartSalidaDto[] {
-        const carritoDtos = carritos.map((carrito, index) => {
-            return this.entityToDto(carrito, libros[index]);
-        });
-        return carritoDtos;
+        carritoDto.productos = productos;
+        
+        return carritoDto;
     };
 }

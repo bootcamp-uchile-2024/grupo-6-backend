@@ -10,9 +10,12 @@ export class CarritoInformacion {
     @PrimaryGeneratedColumn()
     id_carrito: number;
 
+    @OneToOne(() => Carrito, (carrito) => carrito.carritoInformacion)
+    carrito: Carrito;
+
     @ManyToOne(() => Usuario, (usuario) => usuario.carritosInformacion)
     @JoinColumn({ name: 'usuario_id' })
-    usuario: Usuario;
+    usuario_id: number;
     
     @Column()
     fecha_actualizacion: string;
@@ -21,5 +24,5 @@ export class CarritoInformacion {
     precio_total: number;
 
     @Column()
-    estado: estadoEnum;    
+    estado: estadoEnum;
 }

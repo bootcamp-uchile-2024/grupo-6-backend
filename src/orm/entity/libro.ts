@@ -97,7 +97,4 @@ export class Libro {
 
     @OneToMany(() => LibroCompra, (libroCompra) => libroCompra.libro, { cascade: true })
     libroCompra: LibroCompra[];
-
-    @OneToMany(() => Carrito, (carrito) => carrito.libro)
-    carritos: Carrito[];
 }

@@ -5,11 +5,12 @@ import { ProductsModule } from 'src/products/products.module';
 import { Carrito } from 'src/orm/entity/carrito';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Libro } from 'src/orm/entity/libro';
+import { CarritoInformacion } from 'src/orm/entity/carrito_informacion';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
     Carrito,
-    Libro
+    CarritoInformacion
   ])],
   controllers: [ShoppingcartController],
   providers: [ShoppingcartService],

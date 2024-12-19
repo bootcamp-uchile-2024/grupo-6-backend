@@ -20,9 +20,9 @@ export class Purchase {
     @Column()
     fecha_compra: string;
 
-    @ManyToOne(() => CarritoInformacion, (carritoInformacion) => carritoInformacion.usuario)
+    /*@ManyToOne(() => CarritoInformacion, (carritoInformacion) => carritoInformacion.usuario)
     @JoinColumn({ name: 'carrito_id' })
-    carrito: CarritoInformacion;
+    carrito: CarritoInformacion;*/
 
     @Column()
     id_direccion: number;

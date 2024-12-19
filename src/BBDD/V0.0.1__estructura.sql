@@ -151,10 +151,10 @@ CREATE TABLE libro_compra (
 -- adición de tabla carrito de compras
 
 CREATE TABLE carrito (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT,
     isbn_libro VARCHAR(30),
     cantidad INT,
-    PRIMARY KEY (usuario_id, isbn_libro),
     FOREIGN KEY (usuario_id) REFERENCES usuario (id),
     FOREIGN KEY (isbn_libro) REFERENCES libro(isbn)
 );

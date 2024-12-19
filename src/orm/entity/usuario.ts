@@ -41,10 +41,7 @@ export class Usuario {
     @OneToMany(() => HistorialCompra, (historialCompra) => historialCompra.usuario)
     historialCompra: HistorialCompra[];
 
-    @OneToMany(() => Carrito, (carrito) => carrito.usuario)
-    carritos: Carrito[];
-
-    @OneToMany(() => CarritoInformacion, (carritoInformacion) => carritoInformacion.usuario)
+    @OneToMany(() => CarritoInformacion, (carritoInformacion) => carritoInformacion.usuario_id)
     carritosInformacion: CarritoInformacion[];
 
     @OneToMany(() => Purchase, (purchase) => purchase.usuario)

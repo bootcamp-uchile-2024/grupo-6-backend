@@ -1,15 +1,23 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Libro } from "./libro";
 import { Usuario } from "./usuario";
+import { CarritoInformacion } from "./carrito_informacion";
 
 
 
 @Entity({name: "carrito"})
 export class Carrito {
-    @PrimaryColumn()
-    usuario_id: number;
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @OneToOne(() => CarritoInformacion, (carritoInformacion) => carritoInformacion.carrito)
+    @JoinColumn({ name: 'carrito_id' }) // Nombre de la clave foránea en la base de datos
+    carritoInformacion: CarritoInformacion;
+
+    @Column({name: 'carrito_id'})
+    carrito_id: number;
     
-    @PrimaryColumn()
+    @Column()
     isbn_libro: string;
 
     @Column()
@@ -20,12 +28,4 @@ export class Carrito {
 
     @Column()
     descuento: number;
-
-    @ManyToOne(() => Usuario, (usuario)=>usuario.carritos)
-    @JoinColumn({ name: "usuario_id" })
-    usuario: Usuario;
-
-    @ManyToOne(() => Libro, (libro) => libro.carritos, { onDelete: "CASCADE" })
-    @JoinColumn({name: 'isbn_libro'})
-    libro: Libro;
 }

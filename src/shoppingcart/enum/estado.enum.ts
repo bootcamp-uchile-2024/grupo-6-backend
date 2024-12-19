@@ -1,6 +1,6 @@
 
 
 export enum estadoEnum {
-    activo = "activo",
-    completado = "completado",
+    activo = 'activo',
+    completado = 'completad',
 }

@@ -15,6 +15,9 @@ export class CarritoInformacion {
 
     @ManyToOne(() => Usuario, (usuario) => usuario.carritosInformacion)
     @JoinColumn({ name: 'usuario_id' })
+    usuario: Usuario;
+
+    @Column()
     usuario_id: number;
     
     @Column()
@@ -23,6 +26,6 @@ export class CarritoInformacion {
     @Column()
     precio_total: number;
 
-    @Column()
+    @Column({type: 'enum', enum: estadoEnum})
     estado: estadoEnum;
 }

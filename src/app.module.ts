@@ -13,6 +13,7 @@ import { OrmModule } from './orm/orm.module';
 import { PurchasesModule } from './purchases/purchases.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { SeguridadModule } from './seguridad/seguridad.module';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -41,7 +42,7 @@ import { SeguridadModule } from './seguridad/seguridad.module';
     }),
     PurchasesModule,
     ServeStaticModule.forRoot({
-      rootPath: './estatics',
+      rootPath: path.join(__dirname, '..', 'estatics'),
       serveRoot: '/cover',
       }),
     SeguridadModule

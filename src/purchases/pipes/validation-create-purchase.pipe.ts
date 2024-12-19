@@ -48,12 +48,12 @@ export class ValidationCreatePurchasePipe implements PipeTransform {
             throw new BadRequestException(`La dirección no pertenece al usuario de ID: ${value.id_usuario}`)
         }
         // Validar ID carrito de compra
-        if (!( await this.carritoRepository.exists(
+        /*if (!( await this.carritoRepository.exists(
             {where: {
                 usuario_id: value.id_usuario,
             }}))) {
             throw new NotFoundException(`No existe un carrito de compra para el usuario con ID: ${value.id_usuario}`)
-        };
+        };*/
 
         return value;
     }

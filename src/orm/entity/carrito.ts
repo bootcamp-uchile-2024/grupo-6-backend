@@ -1,40 +1,31 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Libro } from "./libro";
 import { Usuario } from "./usuario";
+import { CarritoInformacion } from "./carrito_informacion";
 
 
 
 @Entity({name: "carrito"})
 export class Carrito {
-    @PrimaryColumn()
-    usuario_id: number;
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @OneToOne(() => CarritoInformacion, (carritoInformacion) => carritoInformacion.carrito)
+    @JoinColumn({ name: 'carrito_id' }) // Nombre de la clave foránea en la base de datos
+    carritoInformacion: CarritoInformacion;
+
+    @Column({name: 'carrito_id'})
+    carrito_id: number;
     
-    @PrimaryColumn()
+    @Column()
     isbn_libro: string;
 
     @Column()
     cantidad: number;
 
-    @ManyToOne(() => Usuario)
-    @JoinColumn({ name: "usuario_id" })
-    usuario: Usuario;
+    @Column()
+    precio: number;
 
-    @OneToMany(() => Libro, (libro) => libro.carrito, { onDelete: "CASCADE" })
-    libros: Libro[];
-/*
-    @ManyToMany(() => Usuario, (usuario) => usuario.carrito)
-    @JoinTable({ name: 'carrito_usuario',
-        joinColumn: {
-            name: 'id_dispositivo',
-            referencedColumnName: 'id',
-        },
-        inverseJoinColumn: {
-            name: 'usuario_id',
-            referencedColumnName: 'id',
-        },
-    })
-    arriendo: Arriendo[];
-
-    @ManyToMany(() => Dispositivo, (dispositivo) => dispositivo.arriendo)
-    dispositivo: Dispositivo[];*/
+    @Column()
+    descuento: number;
 }

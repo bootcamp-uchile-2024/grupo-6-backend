@@ -9,126 +9,72 @@ import { CarritoMapper } from './mapper/shoppingCart.mapper';
 import { Libro } from 'src/orm/entity/libro';
 import { CreateShoppingcartDto } from './dto/create-shoppingcart.dto';
 import { ShoppingcartUpdateDto } from './dto/shoppingcart.update.dto';
+import { CarritoInformacion } from 'src/orm/entity/carrito_informacion';
+import { estadoEnum } from './enum/estado.enum';
+import { SalidaShoppingcartDto } from './dto/salida-shoppingcart.dto';
 
 @Injectable()
 export class ShoppingcartService {
 
   constructor (
     @InjectRepository(Carrito) private readonly carritoRepository: Repository<Carrito>,
-    @InjectRepository(Libro) private readonly libroRepository: Repository<Libro>
+    @InjectRepository(CarritoInformacion) private readonly carritoInformacionRepository: Repository<CarritoInformacion>
   ){}
   //shoppingcart: Shoppingcart[] = [];
 
-  async create(createShoppingcartDto: CreateShoppingcartDto): Promise <ShoppingcartSalidaDto> {
-    const libroEncontrado = await this.libroRepository.findOne({
+  async create(datosUsuario, createShoppingcartDto: CreateShoppingcartDto): Promise <SalidaShoppingcartDto> {
+
+    const infoCarrito = new CarritoInformacion();
+
+    const prueba = 22;
+
+    infoCarrito.usuario_id = prueba;
+    infoCarrito.fecha_actualizacion = createShoppingcartDto.fechaCompra;
+    infoCarrito.precio_total = createShoppingcartDto.precioTotal;
+
+    await this.carritoInformacionRepository.save(infoCarrito);
+
+    const carritoID = await this.carritoInformacionRepository.findOne({
       where:{
-        isbn: createShoppingcartDto.isbn
-      }
-    }) 
-    const carrito = this.carritoRepository.create(createShoppingcartDto);
-    await this.carritoRepository.save(carrito);
-    return CarritoMapper.entityToDto(carrito, libroEncontrado);
-  }
-
-
-  async createlibros(createShoppingcartDto: CreateShoppingcartDto[]): Promise <ShoppingcartSalidaDto[]> {
-    
-    const unicos: ShoppingcartSalidaDto[] = [];
-    
-    for (const unico of createShoppingcartDto){
-
-      const libroEncontrado = await this.libroRepository.findOne({
-        where:{
-          isbn: unico.isbn
-        }
-      }) 
-      const carrito = this.carritoRepository.create(unico);
-      await this.carritoRepository.save(carrito);
-      const item = CarritoMapper.entityToDto(carrito, libroEncontrado);
-      unicos.push(item);
-    }
-    return unicos;
-  }
-
-
-  async obtenerCarrito(): Promise <ShoppingcartSalidaDto[]> {
-    const carritos = await this.carritoRepository.find();
-    const items: ShoppingcartSalidaDto[] = [];
-    for (const carrito of carritos){
-      const libroEncontrado = await this.libroRepository.findOne({
-        where:{
-          isbn: carrito.isbn_libro
-        }
-      })
-      const item = CarritoMapper.entityToDto(carrito, libroEncontrado);
-      items.push(item);
-    }
-    return items;
-  }
-
-
-  async cantidadMasMenos(updateDto: ShoppingcartUpdateDto): Promise<void> {
-    
-    if ( updateDto.cantidad > 0){
-      const productoEncontrado = await this.carritoRepository.findOne({
-        where:{
-          usuario_id: updateDto.idUsuario,
-          isbn_libro: updateDto.isbn
-        }   
-      })
-      productoEncontrado.cantidad = updateDto.cantidad;
-      await this.carritoRepository.save(productoEncontrado);
-    }
-    if (updateDto.cantidad === 0){
-      const productoEncontrado = await this.carritoRepository.findOne({
-        where:{
-          usuario_id: updateDto.idUsuario,
-          isbn_libro: updateDto.isbn
-        }   
-      })
-      await this.carritoRepository.remove(productoEncontrado);
-    }
-  }
-
-
-  async removecarrito(id: number): Promise <ShoppingcartSalidaDto[]> {
-    const carritos = await this.carritoRepository.find({
-      where:{
-        usuario_id: id
+        usuario_id: prueba,
+        estado: estadoEnum.activo
       }
     });
-    const items: ShoppingcartSalidaDto[] = [];
-    for (const carrito of carritos){
-      const libroEncontrado = await this.libroRepository.findOne({
-        where:{
-          isbn: carrito.isbn_libro
-        }
-      })
-      const item = CarritoMapper.entityToDto(carrito, libroEncontrado);
-      items.push(item);
-      await this.carritoRepository.remove(carrito);
+
+    const carritos: Carrito[] = [];
+    for(const carritoEntity of createShoppingcartDto.shoppingCart){
+      const carrito = new Carrito();
+      carrito.carrito_id = carritoID.id_carrito;
+      carrito.isbn_libro = carritoEntity.isbn;
+      carrito.cantidad = carritoEntity.cantidad;
+      carrito.precio = carritoEntity.precio;
+      carrito.descuento = carritoEntity.descuento;
+      carritos.push(carrito);
     }
-    return items;
+
+    await this.carritoRepository.save(carritos);
+    
+    return CarritoMapper.entityToDto(carritos, infoCarrito);
   }
 
 
-  /*async removelibro(id: number, isbn:number): Promise <ShoppingcartSalidaDto[]> {
-    const carritos = await this.carritoRepository.find({
+  async obtenerCarrito(datosUsuario): Promise <SalidaShoppingcartDto> {
+
+    const prueba = 22;
+
+    const carritoID = await this.carritoInformacionRepository.findOne({
       where:{
-        usuario_id: id
+        usuario_id: prueba,
+        estado: estadoEnum.activo
       }
     });
-    const items: ShoppingcartSalidaDto[] = [];
-    for (const carrito of carritos){
-      const libroEncontrado = await this.libroRepository.findOne({
-        where:{
-          id: carrito.libro_id
-        }
-      })
-      const item = CarritoMapper.entityToDto(carrito, libroEncontrado);
-      items.push(item);
-      await this.carritoRepository.remove(carrito);
-    }
-    return items;
-  }*/
+
+    const productos = await this.carritoRepository.find({
+      where:{
+        carrito_id: carritoID.id_carrito
+      }
+    });
+
+    return CarritoMapper.entityToDto(productos, carritoID);
+  }
 }

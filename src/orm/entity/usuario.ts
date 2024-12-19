@@ -3,6 +3,8 @@ import { Direccion } from "./direccion";
 import { Resena } from "./resena";
 import { HistorialCompra } from "./historial_compra";
 import { Carrito } from "./carrito";
+import { CarritoInformacion } from "./carrito_informacion";
+import { Purchase } from "./purchase";
 
 @Entity({name: "usuario"})
 export class Usuario {
@@ -39,6 +41,9 @@ export class Usuario {
     @OneToMany(() => HistorialCompra, (historialCompra) => historialCompra.usuario)
     historialCompra: HistorialCompra[];
 
-    @OneToMany(() => Carrito, (carrito) => carrito.usuario)
-    carritos: Carrito[];
+    @OneToMany(() => CarritoInformacion, (carritoInformacion) => carritoInformacion.usuario_id)
+    carritosInformacion: CarritoInformacion[];
+
+    @OneToMany(() => Purchase, (purchase) => purchase.usuario)
+    compras: Purchase[];
 }

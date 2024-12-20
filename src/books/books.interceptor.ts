@@ -2,20 +2,19 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
-  NestInterceptor,
-  Response,
+  Logger,
+  NestInterceptor
 } from '@nestjs/common';
-import { response } from 'express';
-import { catchError, map, Observable, pipe, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable()
 export class BooksInterceptor implements NestInterceptor {
+
+  private readonly logger = new Logger(BooksInterceptor.name)
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map((val) => {
-        console.log('----------Interceptor----------');
-        console.log('----------Flujo de salida----------');
-        console.log(val);
+        this.logger.log(`[Interceptor] Datos de salida: ${JSON.stringify(val)}`);
         return val;
       }),
     );

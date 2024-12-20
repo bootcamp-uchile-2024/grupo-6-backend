@@ -1,21 +1,19 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 import { ObjectType } from 'typescript';
 
 @Injectable()
 export class BooksMiddleware implements NestMiddleware {
+
+  private readonly logger = new Logger(BooksMiddleware.name)
   use(req: any, res: any, next: () => void) {
-    console.log('----------Middleware BooksMiddleware----------');
     const emptyBody = (Obj: ObjectType): boolean =>
       Object.keys(req.body).length === 0;
 
     if (emptyBody(req.body)) {
-      console.log('Path: ', '\n', req.originalUrl);
-      console.log('Method: ', '\n', req.method);
+      this.logger.log(`[Middleware] {${req.originalUrl}, ${req.method}}`);
     }
     if (!emptyBody(req.body)) {
-      console.log('Path: ', '\n', req.originalUrl);
-      console.log('Method: ', '\n', req.method);
-      console.log('Body: ', '\n', req.body);
+      this.logger.log(`[Middleware] {${req.originalUrl}, ${req.method}} Datos de entrada: ${JSON.stringify(req.body)}`);
     }
     next();
   }

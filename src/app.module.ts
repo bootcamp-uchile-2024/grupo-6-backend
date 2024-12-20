@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -14,6 +14,7 @@ import { PurchasesModule } from './purchases/purchases.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { SeguridadModule } from './seguridad/seguridad.module';
 import * as path from 'path';
+import { ContrasenaMiddleware } from './users/middleware/contrasena.middleware';
 
 @Module({
   imports: [
@@ -53,7 +54,18 @@ import * as path from 'path';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(BooksMiddleware) // MIDDLEWARE A APLICAR
-      .forRoutes('*'); // RUTAS A LAS QUE APLICA
+      .apply(BooksMiddleware)
+      .exclude(
+        { path: 'users/login', method: RequestMethod.POST },
+        { path: 'users/signUp', method: RequestMethod.POST },
+        { path: 'users', method: RequestMethod.PUT }
+     ) 
+      .forRoutes('*');
+    consumer
+      .apply(ContrasenaMiddleware)
+      .forRoutes(        
+        { path: 'users/login', method: RequestMethod.POST },
+        { path: 'users', method: RequestMethod.PUT },
+        { path: 'users/signUp', method: RequestMethod.POST }); 
   }
 }

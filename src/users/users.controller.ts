@@ -33,6 +33,8 @@ import { HashPipe } from './pipe/hash.pipe';
 import { UsuarioExistePipe } from './pipe/usuario-existe.pipe';
 import { UsuarioNoExistePipe } from './pipe/usuario-no-existe.pipe';
 import { UsersService } from './users.service';
+import { ExisteAlMenosUnoUpdateUserPipe } from './pipe/existe-campo-update-user.pipe';
+import { ExisteAlMenosUnoUpdateUserAdminPipe } from './pipe/existe-campo-update-user-admin.pipe';
 
 @Controller('users')
 export class UsersController {
@@ -210,7 +212,7 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description:
-      'Este codigo se debe a que se pudo modificar correctamente el usuario.',type: UpdateUserDto,
+      'Este codigo se debe a que se pudo modificar correctamente el usuario.',type: GetUserDto,
   })
   @ApiResponse({
     status: 400,
@@ -225,8 +227,8 @@ export class UsersController {
   @UsePipes(new ValidationPipe())
   @ApiBody({ type: UpdateUserDto })
   async updateUser(
-    @Body() updateUserDto: UpdateUserDto,
-    @Req() request): Promise<UpdateUserDto> {
+    @Body(ExisteAlMenosUnoUpdateUserPipe, UsuarioExistePipe, HashPipe) updateUserDto: UpdateUserDto,
+    @Req() request): Promise<GetUserDto> {
     const datosUsuario = request.datosUsuario;
     return await this.usersService.updateUser(+datosUsuario.idUsuario,updateUserDto);
   }
@@ -236,7 +238,7 @@ export class UsersController {
   @ApiResponse({
     status: 200,
     description:
-      'Este codigo se debe a que se pudo modificar correctamente el usuario.',type: UpdateUserAdminDto,
+      'Este codigo se debe a que se pudo modificar correctamente el usuario.',type: GetUserDto,
   })
   @ApiResponse({
     status: 400,
@@ -253,7 +255,7 @@ export class UsersController {
   async updateUserAdmin(
     @Param('userId', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }),
     UsuarioNoExistePipe)
-    userId: number, @Body() updateUserAdminDto: UpdateUserAdminDto): Promise<UpdateUserAdminDto> {
+    userId: number, @Body(ExisteAlMenosUnoUpdateUserAdminPipe, UsuarioExistePipe) updateUserAdminDto: UpdateUserAdminDto): Promise<GetUserDto> {
     return await this.usersService.updateUserAdmin(+userId,updateUserAdminDto);
   }
 

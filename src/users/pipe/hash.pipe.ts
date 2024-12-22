@@ -10,6 +10,9 @@ export class HashPipe implements PipeTransform {
   }
 
   transform(value: any, metadata: ArgumentMetadata) {
+    if(!value.contrasena){
+      return value
+    }
     value.contrasena = this.hashingService.getHash(value.contrasena);
     return value;
   }

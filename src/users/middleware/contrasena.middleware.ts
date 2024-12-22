@@ -1,5 +1,4 @@
-import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
-import { ObjectType } from 'typescript';
+import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 
 @Injectable()
 export class ContrasenaMiddleware implements NestMiddleware {

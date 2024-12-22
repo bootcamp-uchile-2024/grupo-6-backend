@@ -23,11 +23,11 @@ import { Purchase } from "./entity/purchase";
     imports: [
         TypeOrmModule.forRoot({
             type: 'mysql',
-            host: process.env.RUTA_DB ?? 'localhost',
-            port: Number(process.env.PUERTO_DB) ?? 3306,
-            username: process.env.USUARIO_DB ?? 'root', 
-            password: process.env.CLAVE_ROOT_DB ?? 'grupo-6',
-            database: process.env.NOMBRE_DB ?? 'paginas_selectas', 
+            host: process.env.DB_HOST,// ?? 'localhost',
+            port: Number(process.env.DB_PORT), // ?? 3306,
+            username: process.env.DB_USER, // ?? 'root', 
+            password: process.env.DB_PASS, // ?? 'grupo-6',
+            database: process.env.DB_NAME, // ?? 'paginas_selectas', 
             entities: [
                 Usuario,
                 Direccion,

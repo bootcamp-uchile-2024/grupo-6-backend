@@ -57,7 +57,7 @@ async function bootstrap() {
   configSwagger(app); // Swagger
 
   const configService: ConfigService = app.get(ConfigService);
-  await app.listen(process.env.PUERTO_NEST ?? 3000);
+  await app.listen(process.env.PUERTO_NESTJS);
 }
 
 bootstrap();

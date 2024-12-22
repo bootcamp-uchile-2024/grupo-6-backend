@@ -13,6 +13,7 @@ services:
   #     - NOMBRE_DB=${NOMBRE_DB}
   #     - USUARIO_DB=${USUARIO_DB}
   #     - RUTA_DB=${RUTA_DB}
+  #      - NODE_ENV=${NODE_ENV}
   #   ports:
   #     - "${PUERTO_NEST}:3000"
   #   depends_on:

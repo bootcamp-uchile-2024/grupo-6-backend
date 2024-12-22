@@ -12,6 +12,7 @@ import {
   UsePipes,
   ValidationPipe,
   Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { ShoppingcartService } from './shoppingcart.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -55,6 +56,9 @@ export class ShoppingcartController {
     @Body() createShoppingcartDto: CreateShoppingcartDto,
   ): Promise <SalidaShoppingcartDto> {
     const datosUsuario = request.datosUsuario;
+    if(!datosUsuario){
+      throw new BadRequestException();
+    }
     return await this.shoppingcartService.create(datosUsuario, createShoppingcartDto);
   }
     
@@ -65,12 +69,16 @@ export class ShoppingcartController {
     status: 404,
     description: 'No se puede obtener carrito de compras',
   })
+  @ApiOperation({ summary: 'Registra un carrito de compras activo.' })
   @ApiBearerAuth()
   @UseGuards(JwtGuard, ValidarRolGuard)
   @RolesAutorizados(Rol.USER)
   @Get()
   async obtenerCarrito(@Req() request): Promise <SalidaShoppingcartDto> {
     const datosUsuario = request.datosUsuario;
+    if(!datosUsuario){
+      throw new BadRequestException();
+    }
     return await this.shoppingcartService.obtenerCarrito(datosUsuario);
   }
 }

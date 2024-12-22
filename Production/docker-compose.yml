@@ -5,11 +5,12 @@ services:
 
     environment:
       - PUERTO_NESTJS=${PUERTO_NEST}
-      - DB_HOST=${RUTA-DB}
+      - DB_HOST=${RUTA_DB}
       - DB_PORT=${PUERTO_DB}
       - DB_USER=${USUARIO_DB}
       - DB_PASS=${CLAVE_ROOT_DB}
       - DB_NAME=${NOMBRE_DB}
+      - NODE_ENV=${NODE_ENV}
 
     ports:
       - "3000:${PUERTO_NEST}"

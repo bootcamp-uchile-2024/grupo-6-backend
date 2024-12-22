@@ -1,11 +1,23 @@
-Table usuario {
+Table autor {
   id integer [primary key, increment]
-  nombre varchar(50) [not null]
-  segundo_nombre varchar(50) 
-  apellido_paterno varchar(50) [not null]
-  apellido_materno varchar(50) [not null]
-  correo_electronico varchar(50) [not null]
-  contrasena varchar(255) [not null, unique]
+  nombre varchar(100) [not null]
+}
+
+Table carrito{
+  id integer [primary key, increment]
+  carrito_id integer
+  isbn_libro varchar(30)
+  cantidad integer
+  precio integer
+  descuento integer
+}
+
+Table carrito_informacion{
+  id_carrito integer [primary key, increment]
+  usuario_id integer
+  fecha_actualizacion date
+  precio_total int
+  estado enum
 }
 
 Table direccion {
@@ -14,10 +26,11 @@ Table direccion {
   calle varchar(150) [not null]
   numero_calle varchar(10) [not null]
   numero_departamento varchar(10)
+  informacion_adicional varchar(500)
   nombre_comuna varchar(50) [not null]
   nombre_ciudad varchar(50) [not null]
   nombre_region varchar(50) [not null]
-  informacion_adicional varchar(500)
+  estado varchar(15)
 }
 
 Table direccion_tipoDireccion {
@@ -25,37 +38,24 @@ Table direccion_tipoDireccion {
   id_tipoDireccion integer [primary key]
 }
 
-Table tipoDireccion {
+Table editorial {
+  id integer [primary key, increment]
+  descripcion varchar(100) [not null]
+}
+
+Table encuadernacion {
   id integer [primary key, increment]
   descripcion varchar(50) [not null]
 }
 
-Table resena {
+Table genero {
   id integer [primary key, increment]
-  id_usuario integer [not null]
-  id_libro integer [not null]
-  comentario varchar(1000)
-  rating integer [not null]
-  fecha date [not null]
+  descripcion varchar(50) [not null]
 }
 
-Table libro {
-  id integer [primary key]
-  isbn varchar(30) [not null]
-  id_idioma integer
-  id_encuadernacion integer
-  nombre varchar(150) [not null]
-  stock_libro integer [not null]
-  precio integer [not null]
-  rating decimal(2,1)
-  id_editorial integer
-  agno_publicacion integer
-  numero_paginas integer
-  descuento integer
-  caratula varchar(50)
-  dimensiones varchar(20)
-  codigo_barra varchar(50)
-  resumen varchar(2000)
+Table genero_libro {
+  id_genero integer [primary key]
+  isbn_libro varchar(30) [primary key]
 }
 
 Table historial_compra {
@@ -67,72 +67,79 @@ Table historial_compra {
   id_direccion_entrega integer [not null]
 }
 
-Table libro_compra {
-  id_compra integer [primary key]
-  id_libro integer [primary key]
-  cantidad integer [not null]
-}
-
-Table genero {
-  id integer [primary key, increment]
-  descripcion varchar(50) [not null]
-}
-
-Table genero_libro {
-  id_genero integer [primary key]
-  id_libro integer [primary key]
-}
-
-Table autor {
-  id integer [primary key, increment]
-  nombre varchar(100) [not null]
-}
-
-Table autor_libro {
-  id_autor integer [primary key]
-  id_libro integer [primary key]
-}
-
 Table idioma_libro {
   id integer [primary key, increment]
   descripcion varchar(50) [not null]
 }
 
-Table encuadernacion {
+Table libro {
+  isbn varchar(30) [not null, primary key]
+  nombre varchar(150) [not null]
+  id_autor integer
+  stock_libro integer [not null]
+  precio integer [not null]
+  rating decimal(2,1)
+  id_editorial integer
+  id_idioma integer
+  id_encuadernacion integer
+  agno_publicacion integer
+  numero_paginas integer
+  descuento integer
+  dimensiones varchar(20)
+  codigo_barra varchar(50)
+  caratula varchar(50)
+  resumen varchar(2000)
+  fecha_creacion date
+  destacado boolean
+  habilitado boolean
+}
+
+Table libro_compra {
+  id_compra integer [primary key]
+  isbn_libro varchar(30) [primary key]
+  cantidad integer [not null]
+}
+
+Table resena {
+  id integer [primary key, increment]
+  id_usuario integer [not null]
+  isbn_libro varchar(30) [not null]
+  comentario varchar(1000)
+  rating integer [not null]
+  fecha date [not null]
+}
+
+Table tipoDireccion {
   id integer [primary key, increment]
   descripcion varchar(50) [not null]
 }
 
-Table editorial {
+Table usuario {
   id integer [primary key, increment]
-  descripcion varchar(100) [not null]
+  nombres varchar(50) [not null]
+  apellido_paterno varchar(50) 
+  apellido_materno varchar(50) [not null]
+  correo_electronico varchar(50) [not null]
+  contrasena varchar(255) [not null, unique]
+  rol varchar(15) [not null, unique]
+  estado varchar(15) [not null, unique]
 }
 
-Table carritoCompra{
-  compra_id integer [primary key, increment]
-  libro_id integer [primary key]
-  usuario_id integer
-  cantidad integer
-}
-
-
-
+Ref: carrito.isbn_libro > libro.isbn
+Ref: carrito_informacion.id_carrito < carrito.carrito_id
+Ref: carrito_informacion.usuario_id - usuario.id
 Ref: direccion.id_usuario > usuario.id 
 Ref: direccion.id < direccion_tipoDireccion.id_direccion
 Ref: tipoDireccion.id < direccion_tipoDireccion.id_tipoDireccion
-Ref: libro.id < resena.id_libro
+Ref: libro.isbn < resena.isbn_libro
 Ref: libro.id_editorial > editorial.id
-Ref: autor_libro.id_libro > libro.id
-Ref: autor_libro.id_autor > autor.id
+Ref: autor.id > libro.id_autor
 Ref: genero_libro.id_genero > genero.id
-Ref: genero_libro.id_libro > libro.id
+Ref: genero_libro.isbn_libro > libro.isbn
 Ref: usuario.id < resena.id_usuario
 Ref: idioma_libro.id < libro.id_idioma
 Ref: encuadernacion.id < libro.id_encuadernacion
 Ref: historial_compra.id_usuario > usuario.id
 Ref: historial_compra.id_direccion_entrega > direccion.id
 Ref: libro_compra.id_compra > historial_compra.id
-Ref: libro_compra.id_libro > libro.id
-Ref: carritoCompra.compra_id - libro_compra.id_compra
-Ref: carritoCompra.libro_id < libro.id
-Ref: carritoCompra.usuario_id > usuario.id
+Ref: libro_compra.isbn_libro > libro.isbn

@@ -1,4 +1,4 @@
-USE Paginas_Selectas;
+USE paginas_selectas;
 
 -- 1. Insertar en la tabla `usuario`
 INSERT INTO usuario (nombre, segundo_nombre, apellido_paterno, apellido_materno, correo_electronico, contrasena) VALUES 

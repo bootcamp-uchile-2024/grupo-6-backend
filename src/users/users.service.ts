@@ -20,6 +20,7 @@ import { AddressMapper } from './mapper/address.mapper';
 import { UserMapper } from './mapper/user.mapper';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto copy';
 import { Rol } from './enum/rol.enum';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -137,24 +138,30 @@ export class UsersService {
   async updateUser( 
     userId: number,
     updateUserDto: UpdateUserDto
-  ): Promise<UpdateUserDto> {
+  ): Promise<GetUserDto> {
     const usuario: Usuario = await this.userRepository.findOneBy({id: +userId});
     if(!usuario){
       throw new NotFoundException("Usuario no existe.")
     }
     UserMapper.updateUserDtoToEntity(updateUserDto,usuario);
     await this.userRepository.save(usuario);
-    return updateUserDto;
+
+    const usuarioActualizado: Usuario = await this.userRepository.findOneBy({id: +userId});
+    const getUserDto = UserMapper.entityToGetUserDto(usuarioActualizado);
+    return getUserDto;
   }
 
   async updateUserAdmin(
     userId: number,
     updateUserAdminDto: UpdateUserAdminDto
-  ): Promise<UpdateUserAdminDto> {
+  ): Promise<GetUserDto> {
     const usuario: Usuario = await this.userRepository.findOneBy({id: +userId});
     UserMapper.updateUserAdminDtoToEntity(updateUserAdminDto,usuario)
     await this.userRepository.save(usuario);
-    return updateUserAdminDto;
+
+    const usuarioActualizado: Usuario = await this.userRepository.findOneBy({id: +userId});
+    const getUserDto = UserMapper.entityToGetUserDto(usuarioActualizado);
+    return getUserDto;
   }
 
   async createAddress(

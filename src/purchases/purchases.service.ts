@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { HistorialCompra } from 'src/orm/entity/historial_compra';
 import { Usuario } from 'src/orm/entity/usuario';
@@ -6,11 +6,12 @@ import { DataSource, Repository } from 'typeorm';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { GetPurchaseDto } from './dto/get-purchase.dto';
 import { UpdatePurchaseDto } from './dto/update-purchase.dto';
-import { PurchasesMapper } from './mappers/purchases.mapper';
 import { Direccion } from 'src/orm/entity/direccion';
 import { Carrito } from 'src/orm/entity/carrito';
 import { LibroCompra } from 'src/orm/entity/libro_compra';
-import { UsersService } from 'src/users/users.service';
+import { CarritoInformacion } from 'src/orm/entity/carrito_informacion';
+import { HistorialCompraMapper } from './mappers/historialCompra.mapper';
+import { LibroCompraMapper } from './mappers/libroCompra.mapper';
 
 @Injectable()
 export class PurchasesService {
@@ -31,64 +32,64 @@ export class PurchasesService {
     @InjectRepository(Carrito)
     private readonly carritoRepository: Repository<Carrito>,
 
+    @InjectRepository(CarritoInformacion)
+    private readonly carritoInfoRepository: Repository<CarritoInformacion>,
+
     @InjectRepository(LibroCompra)
     private readonly libroCompraRepository: Repository<LibroCompra>,
-
-    private readonly usuariosService: UsersService
   ){}
 
   // Crear pedido
-  async create(createPurchaseDto: CreatePurchaseDto): Promise<GetPurchaseDto> {
-
-    // Definición de fechas
-    const fecha_compra: Date = new Date();
-    const fecha_entrega: Date = new Date();
-    fecha_entrega.setDate(fecha_entrega.getDate() + 10); // Se asume que la entrega es 10 días después de la compra
-
-    // Obtener carrito según ID carrito
-    /*const carritoUsuario: Carrito[] = await this.carritoRepository.findBy({ 
-      usuario_id: createPurchaseDto.id_usuario 
-    });*/
+  async create(createPurchaseDto: CreatePurchaseDto, datosUsuario) { //Promise<GetPurchaseDto> {
     
-    // Definir Libro_Compra 
-    /*const nuevoLibroCompra: LibroCompra[] = carritoUsuario.map(
-      item => this.libroCompraRepository.create({
-        id_compra: createPurchaseDto.id,
-        isbn_libro: item.isbn_libro,
-        cantidad: item.cantidad,
-      })
-    )*/
-
-    // Definir dirección
-    const direccion: Direccion = await this.direccionRepository.findOneBy({ 
-      id: createPurchaseDto.id_direccion_entrega 
-    });
-
-    // this.libroCompraRepository.save(nuevoLibroCompra);
+    // Obtener carrito y carrito_informacion según ID carrito
+    const carritoInfo: CarritoInformacion = await this.carritoInfoRepository.findOneBy({ id_carrito: createPurchaseDto.idCarrito });
+    console.log(carritoInfo, datosUsuario)
+    if (carritoInfo.usuario_id != datosUsuario.idUsuario){
+      throw new BadRequestException(`El usuario no tiene un carrito de ID: ${carritoInfo.id_carrito} asociado`)
+    }
     
-    // Crear y guardar entidad en BD
-    const nuevoPedido = this.historialCompraRepository.create({
-      id: createPurchaseDto.id,
-      id_usuario: createPurchaseDto.id_usuario,
-      estatus_compra: 'En espera de pago',
-      fecha_compra: fecha_compra,
-      fecha_entrega: fecha_entrega,
-      id_direccion_entrega: createPurchaseDto.id_direccion_entrega,
-      //libroCompra: nuevoLibroCompra,
-      direccion: direccion,
-    });
+    // Realizar registro en historial_compra
+    const historial_compra: HistorialCompra = HistorialCompraMapper.createDtoToEntity(createPurchaseDto, datosUsuario);
 
-    await this.dataSource.transaction( async (transactionalEntityManager) => {
-      // Guardar pedido
-      await transactionalEntityManager.save(nuevoPedido);
+    try {
+      // await this.historialCompraRepository.save(historial_compra);
+    } catch (error) {
+      throw new HttpException('Error al guardar historial compra', 400)
+    }
+    // Realizar registros en libro_compra
+    const carrito: Carrito[] = await this.carritoRepository.findBy({
+      carrito_id: createPurchaseDto.idCarrito
+    })
 
-      // Borrar carrito de compra
-      await transactionalEntityManager.delete(Carrito, {
-        usuario_id: createPurchaseDto.id_usuario
-      });
-    });
+    const librosCompra: LibroCompra[] = carrito.map(
+      c => LibroCompraMapper.carritoToEntity(c, historial_compra)
+    )
+    console.log(carrito)
 
-    return PurchasesMapper.entityToDto(nuevoPedido);
+    
+
+    // const nuevoLibroCompra: LibroCompra[] = carrito.map(
+    //   item => this.libroCompraRepository.create({
+    //     id_compra: createPurchaseDto.id,
+    //     isbn_libro: item.isbn_libro,
+    //     cantidad: item.cantidad,
+    //   })
+    // )
+
+ 
+
+    // await this.dataSource.transaction( async (transactionalEntityManager) => {
+    //   // Guardar pedido
+    //   await transactionalEntityManager.save(nuevoPedido);
+
+    //   // Borrar carrito de compra
+    //   await transactionalEntityManager.delete(Carrito, {
+    //     usuario_id: createPurchaseDto.id_usuario
+    //   });
+    // });
+
+    // return PurchasesMapper.entityToDto(nuevoPedido);
   }
 
   // Obtener pedidos de usuario
@@ -105,7 +106,7 @@ export class PurchasesService {
       }
     });
 
-    return PurchasesMapper.entityListToDtoList(pedidos);
+    return HistorialCompraMapper.entityListToDtoList(pedidos);
   }
 
   // Obtener 1 pedido
@@ -120,7 +121,7 @@ export class PurchasesService {
       }
     });
 
-    return PurchasesMapper.entityToDto(pedido);
+    return HistorialCompraMapper.entityToDto(pedido);
   }
 
   // Actualizar estado de pedido

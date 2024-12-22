@@ -1,5 +1,5 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, Patch, Post, UsePipes } from '@nestjs/common';
-import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, Patch, Post, Request, UseGuards, UsePipes } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { GetPurchaseDto } from './dto/get-purchase.dto';
 import { UpdatePurchaseDto } from './dto/update-purchase.dto';
@@ -9,21 +9,32 @@ import { PurchasesService } from './purchases.service';
 import { ValidationDeletePurchasePipe } from './pipes/validation-delete-purchase.pipe';
 import { HistorialCompra } from 'src/orm/entity/historial_compra';
 import { ValidationFindPurchasePipe } from './pipes/validation-find-purchase.pipe';
+import { JwtGuard } from 'src/seguridad/guard/jwt.guard';
+import { ValidarRolGuard } from 'src/seguridad/guard/validar-rol.guard';
+import { RolesAutorizados } from 'src/seguridad/decorator/rol.decorator';
+import { Rol } from 'src/users/enum/rol.enum';
 
 @Controller('purchases')
 export class PurchasesController {
   constructor(private readonly purchasesService: PurchasesService) {}
 
-  // HU Proceso de compra (genera un pedido)
+  // HU Proceso de compra (genera un pedido) ---------------------------------------------------------
   @ApiTags('Purchases')
+  @ApiOperation({ summary:'Generar un pedido'})
+  @ApiBearerAuth()
   @UsePipes(ValidationCreatePurchasePipe)
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER, Rol.ADMIN)
   @ApiResponse({ status: 201, description: 'Se crea el pedido correctamente' })
   @ApiResponse({ status: 400, description: 'Error al crear el pedido' })
-  @ApiBody({type: CreatePurchaseDto, required: true})
+  @ApiBody({type: CreatePurchaseDto, required: true })
   @Post()
-  async create(@Body() createPurchaseDto: CreatePurchaseDto): Promise<GetPurchaseDto> {
+  async create(
+    @Body() createPurchaseDto: CreatePurchaseDto,
+    @Request() request,
+  ){//: Promise<GetPurchaseDto> {
+    return await this.purchasesService.create(createPurchaseDto, request.datosUsuario);
     try {
-      return await this.purchasesService.create(createPurchaseDto);
     } catch (error) {
       throw new HttpException('Error al crear el pedido', 400);
     }

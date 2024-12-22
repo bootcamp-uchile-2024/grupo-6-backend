@@ -1,13 +1,21 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsNumber, Matches } from "class-validator";
 
 export class CreatePurchaseDto {
-    @ApiProperty({ description: 'ID de la compra'})
-    id: number;
 
-    @ApiProperty({ description: 'ID del usuario que genera compra' })
-    id_usuario: number;
+    @ApiProperty({ description: 'ID del carrito de compra'})
+    @IsNumber()
+    @IsNotEmpty()
+    idCarrito: number;
+
+    @ApiProperty({ description: 'ID del método de pago'})
+    @IsNumber()
+    @IsNotEmpty()
+    idMetodoPago: number;
 
     @ApiProperty({ description: 'ID dirección de entrega' })
-    id_direccion_entrega: number;
+    @IsNumber()
+    @IsNotEmpty()
+    idDireccionEntrega: number;
 
 }

@@ -14,10 +14,10 @@ export class GetPurchaseDto {
     estatus_compra: string;
 
     @ApiProperty({ description: 'Fecha donde se realizó la compra'})
-    fecha_compra: Date;
+    fecha_compra: string;
     
     @ApiProperty({ description: 'Fecha entrega de la compra'})
-    fecha_entrega: Date;
+    fecha_entrega: string;
 
     @ApiProperty({ description: 'Dirección de entrega del pedido'})
     direccion: Direccion;

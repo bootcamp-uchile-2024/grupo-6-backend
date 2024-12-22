@@ -8,6 +8,8 @@ import { Usuario } from 'src/orm/entity/usuario';
 import { PurchasesController } from './purchases.controller';
 import { PurchasesService } from './purchases.service';
 import { UsersModule } from 'src/users/users.module';
+import { CarritoInformacion } from 'src/orm/entity/carrito_informacion';
+import { Libro } from 'src/orm/entity/libro';
 
 @Module({
   imports: [
@@ -16,7 +18,9 @@ import { UsersModule } from 'src/users/users.module';
       HistorialCompra,
       Direccion,
       Carrito,
-      LibroCompra
+      CarritoInformacion,
+      LibroCompra,
+      Libro,
     ]),
     UsersModule
   ],

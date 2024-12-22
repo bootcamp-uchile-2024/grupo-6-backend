@@ -21,7 +21,7 @@ export class Purchase {
     fecha_compra: string;
 
     /*@ManyToOne(() => CarritoInformacion, (carritoInformacion) => carritoInformacion.usuario)
-    @JoinColumn({ name: 'carrito_id' })
+    @JoinColumn({ name: 'id_carrito' })
     carrito: CarritoInformacion;*/
 
     @Column()

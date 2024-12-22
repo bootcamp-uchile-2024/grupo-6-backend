@@ -29,14 +29,14 @@ import { ContrasenaMiddleware } from './users/middleware/contrasena.middleware';
       isGlobal: true,
       envFilePath: process.env.ARCHIVO_ENV ? `.env.${process.env.ARCHIVO_ENV}` : '.env',
       validate: (config: Record<string, any>) => {
-        if (!config.PUERTO_NEST) {
+        if (!config.PUERTO_NESTJS) {
           throw new Error('Port Nest is required');
         }
-        if (config.PUERTO_NEST == '6000') {
+        if (config.PUERTO_NESTJS == '6000') {
           throw new Error('Port Nest must be diferent from 6000');
         }
         return {
-          PUERTO_NEST: parseInt(config.PUERTO_NEST),
+          PUERTO_NESTJS: parseInt(config.PUERTO_NESTJS),
           ENVIROMENT: config.ENVIROMENT,
         };
       },

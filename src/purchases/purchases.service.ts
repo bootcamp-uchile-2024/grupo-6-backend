@@ -12,6 +12,7 @@ import { LibroCompra } from 'src/orm/entity/libro_compra';
 import { CarritoInformacion } from 'src/orm/entity/carrito_informacion';
 import { HistorialCompraMapper } from './mappers/historialCompra.mapper';
 import { LibroCompraMapper } from './mappers/libroCompra.mapper';
+import { Libro } from 'src/orm/entity/libro';
 
 @Injectable()
 export class PurchasesService {
@@ -37,62 +38,67 @@ export class PurchasesService {
 
     @InjectRepository(LibroCompra)
     private readonly libroCompraRepository: Repository<LibroCompra>,
+    
+    @InjectRepository(Libro)
+    private readonly libroRepository: Repository<Libro>,
   ){}
 
   // Crear pedido
-  async create(createPurchaseDto: CreatePurchaseDto, datosUsuario) { //Promise<GetPurchaseDto> {
+  async create(createPurchaseDto: CreatePurchaseDto, datosUsuario): Promise<GetPurchaseDto> {
     
     // Obtener carrito y carrito_informacion según ID carrito
     const carritoInfo: CarritoInformacion = await this.carritoInfoRepository.findOneBy({ id_carrito: createPurchaseDto.idCarrito });
-    console.log(carritoInfo, datosUsuario)
+
     if (carritoInfo.usuario_id != datosUsuario.idUsuario){
       throw new BadRequestException(`El usuario no tiene un carrito de ID: ${carritoInfo.id_carrito} asociado`)
     }
     
     // Realizar registro en historial_compra
     const historial_compra: HistorialCompra = HistorialCompraMapper.createDtoToEntity(createPurchaseDto, datosUsuario);
+    await this.historialCompraRepository.save(historial_compra);
 
-    try {
-      // await this.historialCompraRepository.save(historial_compra);
-    } catch (error) {
-      throw new HttpException('Error al guardar historial compra', 400)
-    }
     // Realizar registros en libro_compra
     const carrito: Carrito[] = await this.carritoRepository.findBy({
       carrito_id: createPurchaseDto.idCarrito
     })
 
-    const librosCompra: LibroCompra[] = carrito.map(
-      c => LibroCompraMapper.carritoToEntity(c, historial_compra)
-    )
-    console.log(carrito)
+    for (let carrito_i of carrito){
+      const carritoEntity = LibroCompraMapper.carritoToEntity(carrito_i, historial_compra);
+      // Almacenar en BD
+      await this.libroCompraRepository.save(carritoEntity)
 
-    
+      // Reducir stock de libros
+      const libro = await this.libroRepository.findOneBy({
+        isbn: carrito_i.isbn_libro
+      })
 
-    // const nuevoLibroCompra: LibroCompra[] = carrito.map(
-    //   item => this.libroCompraRepository.create({
-    //     id_compra: createPurchaseDto.id,
-    //     isbn_libro: item.isbn_libro,
-    //     cantidad: item.cantidad,
-    //   })
-    // )
+      await this.libroRepository.update(
+        carrito_i.isbn_libro, 
+        { stock_libro: libro.stock_libro - carrito_i.cantidad });
 
- 
+    }
 
-    // await this.dataSource.transaction( async (transactionalEntityManager) => {
-    //   // Guardar pedido
-    //   await transactionalEntityManager.save(nuevoPedido);
+    // Borrar carrito de compra
+    await this.carritoRepository.delete({
+      carrito_id: createPurchaseDto.idCarrito
+    })
 
-    //   // Borrar carrito de compra
-    //   await transactionalEntityManager.delete(Carrito, {
-    //     usuario_id: createPurchaseDto.id_usuario
-    //   });
-    // });
+    await this.carritoInfoRepository.delete({
+      id_carrito: createPurchaseDto.idCarrito
+    })
 
-    // return PurchasesMapper.entityToDto(nuevoPedido);
+    // Resultado
+    const nuevo_pedido = await this.historialCompraRepository.findOne({
+      where: {id: historial_compra.id},
+      relations: {
+        libroCompra: true
+      }
+    })
+    return HistorialCompraMapper.entityToDto(nuevo_pedido);
   }
 
-  // Obtener pedidos de usuario
+
+  // Obtener pedidos de usuario ----
   async findAllClient(id_usuario: number): Promise<GetPurchaseDto[]> {
 
     // Obtener pedidos
@@ -109,6 +115,7 @@ export class PurchasesService {
     return HistorialCompraMapper.entityListToDtoList(pedidos);
   }
 
+
   // Obtener 1 pedido
   async findOne(id: number): Promise<GetPurchaseDto> {
     const pedido: HistorialCompra = await this.historialCompraRepository.findOne({
@@ -123,6 +130,7 @@ export class PurchasesService {
 
     return HistorialCompraMapper.entityToDto(pedido);
   }
+
 
   // Actualizar estado de pedido
   async update(pedido: HistorialCompra, updatePurchaseDto: UpdatePurchaseDto): Promise<GetPurchaseDto> {
@@ -151,6 +159,7 @@ export class PurchasesService {
       };
     };
 
+
     // Actualizar dirección de entrega de compra
     if (updatePurchaseDto.id_direccion_entrega){
       // Validar que dirección este asociada al usuario del pedido
@@ -172,6 +181,7 @@ export class PurchasesService {
     // Devolver pedido actualizado
     return await this.findOne(pedido.id);
   }
+
 
   // Eliminar pedido 
   async remove(id: number): Promise<string> {

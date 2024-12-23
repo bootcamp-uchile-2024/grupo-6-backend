@@ -1,6 +1,7 @@
 import { HistorialCompra } from "src/orm/entity/historial_compra";
 import { CreatePurchaseDto } from "../dto/create-purchase.dto";
 import { GetPurchaseDto } from "../dto/get-purchase.dto";
+import { LibroCompraMapper } from "./libroCompra.mapper";
 
 export class HistorialCompraMapper {
 
@@ -8,12 +9,13 @@ export class HistorialCompraMapper {
         const dto = new GetPurchaseDto();
         
         dto.id = entity.id;
-        dto.id_usuario = entity.id_usuario;
-        dto.estatus_compra = entity.estatus_compra;
-        dto.fecha_compra = entity.fecha_compra;
-        dto.fecha_entrega = entity.fecha_entrega;
+        dto.estatusCompra = entity.estatus_compra;
+        dto.fechaCompra = entity.fecha_compra;
+        dto.fechaEntrega = entity.fecha_entrega;
         dto.direccion = entity.direccion;
-        dto.libroCompra = entity.libroCompra;
+        dto.libroCompra = entity.libroCompra.map( l => LibroCompraMapper.entityToDto(l));
+        dto.total = dto.libroCompra.reduce(
+            (suma, libro) => suma + libro.precioFinal * libro.cantidad, 0);
 
         return dto;
     }
@@ -39,16 +41,14 @@ export class HistorialCompraMapper {
         return entity;
     }
 
-    // static createLibroCompraDtoToEntity(dto: )
-
-    static dtoToEntity(dto: GetPurchaseDto): HistorialCompra {
+    static dtoToEntity(dto: GetPurchaseDto, datosUsuario): HistorialCompra {
         const entity = new HistorialCompra();
 
         entity.id = dto.id;
-        entity.id_usuario = dto.id_usuario;
-        entity.estatus_compra = dto.estatus_compra;
-        entity.fecha_compra = dto.fecha_compra;
-        entity.fecha_entrega = dto.fecha_entrega;
+        entity.id_usuario = datosUsuario.idUsuario;
+        entity.estatus_compra = dto.estatusCompra;
+        entity.fecha_compra = dto.fechaCompra;
+        entity.fecha_entrega = dto.fechaEntrega;
         entity.id_direccion_entrega = dto.direccion.id;
 
         return entity;

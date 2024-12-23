@@ -33,24 +33,27 @@ export class PurchasesController {
     @Body() createPurchaseDto: CreatePurchaseDto,
     @Request() request,
   ){//: Promise<GetPurchaseDto> {
-    return await this.purchasesService.create(createPurchaseDto, request.datosUsuario);
     try {
+      return await this.purchasesService.create(createPurchaseDto, request.datosUsuario);
     } catch (error) {
       throw new HttpException('Error al crear el pedido', 400);
     }
   }
 
-  // HU Estado de compra (historial de pedidos del cliente)
+  // HU Estado de compra (historial de pedidos del cliente) ---------------------------------------
   @ApiTags('Purchases')
+  @ApiOperation({ summary:'Obtener pedidos de un usuario'})
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER, Rol.ADMIN)
   @ApiResponse({ status: 200, description: 'Se obtuvieron los pedidos del usuario correctamente' })
   @ApiResponse({ status: 400, description: 'Error al obtener los pedidos' })
-  @ApiParam({name: 'id', required: true, type: 'number', description: 'ID del cliente'})
-  @Get('/cliente/:id')
+  @Get()
   async findAll(
-    @Param('id') id_usuario: number
+    @Request() request,
   ): Promise<GetPurchaseDto[]> {
     try {
-      return await this.purchasesService.findAllClient(+id_usuario);
+      return await this.purchasesService.findAllClient(request.datosUsuario);
     } catch (error) {
       throw new HttpException('Error al obtener los pedidos', 400);
     }

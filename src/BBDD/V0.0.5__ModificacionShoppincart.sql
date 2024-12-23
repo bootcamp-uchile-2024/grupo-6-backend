@@ -66,21 +66,4 @@ INSERT INTO carrito_informacion (id_carrito, usuario_id, fecha_actualizacion, pr
 (4, 12, '2024-12-15', 118890, 'activo'),
 (5, 19, '2024-12-15', 52800, 'activo');
 
-CREATE TABLE purchase (
-    id_compra INT AUTO_INCREMENT PRIMARY KEY,
-    carrito_id INT,
-    id_metodo_pago INT,
-    fecha_compra DATE,
-    usuario_id INT,
-    id_direccion INT,
-    productos JSON,
-    FOREIGN KEY (carrito_id) REFERENCES carrito_informacion(id_carrito),
-    FOREIGN KEY (id_direccion) REFERENCES direccion(id),
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
-);
-
-INSERT INTO purchase (id_compra, carrito_id, id_metodo_pago, fecha_compra, usuario_id, id_direccion) VALUES 
-(1, 5, 1, '2024-12-15', 19, 19),
-(2, 3, 2, '2024-12-15', 8, 8);
-
 ALTER TABLE carrito ADD CONSTRAINT fk_carrito_carrito_informacion FOREIGN KEY (carrito_id) REFERENCES carrito_informacion(id_carrito);

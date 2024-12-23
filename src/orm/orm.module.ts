@@ -16,18 +16,16 @@ import { Usuario } from "./entity/usuario";
 import { GeneroLibro } from "./entity/genero_libro";
 import { DireccionTipoDireccion } from "./entity/direccion_tipoDireccion";
 import { CarritoInformacion } from "./entity/carrito_informacion";
-import { Purchase } from "./entity/purchase";
-
 
 @Module({
     imports: [
         TypeOrmModule.forRoot({
             type: 'mysql',
-            host: process.env.DB_HOST,// ?? 'localhost',
-            port: Number(process.env.DB_PORT), // ?? 3306,
-            username: process.env.DB_USER, // ?? 'root', 
-            password: process.env.DB_PASS, // ?? 'grupo-6',
-            database: process.env.DB_NAME, // ?? 'paginas_selectas', 
+            host: process.env.DB_HOST ?? 'localhost',
+            port: Number(process.env.DB_PORT) ?? 3306,
+            username: process.env.DB_USER ?? 'root', 
+            password: process.env.DB_PASS ?? 'grupo-6',
+            database: process.env.DB_NAME ?? 'paginas_selectas', 
             entities: [
                 Usuario,
                 Direccion,
@@ -44,8 +42,7 @@ import { Purchase } from "./entity/purchase";
                 Carrito,
                 GeneroLibro,  
                 DireccionTipoDireccion,
-                CarritoInformacion,
-                Purchase        
+                CarritoInformacion,        
             ]
         }),
         OrmModule,

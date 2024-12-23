@@ -13,6 +13,9 @@ export class LibroCompra {
     @Column()
     cantidad: number;
 
+    @Column()
+    precio: number;
+
     @ManyToOne(() => HistorialCompra)
     @JoinColumn({ name: "id_compra" })
     historialCompra: HistorialCompra;

@@ -2,7 +2,6 @@ import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryCo
 import { HistorialCompra } from "./historial_compra";
 import { TipoDireccion } from "./tipoDireccion";
 import { Usuario } from "./usuario";
-import { Purchase } from "./purchase";
 
 @Entity({name: "direccion"})
 export class Direccion {
@@ -46,6 +45,4 @@ export class Direccion {
     @OneToMany(() => HistorialCompra, (historialCompra) => historialCompra.direccion)
     historialCompra: HistorialCompra[];
 
-    @OneToMany(() => Purchase, (purchase) => purchase.direccion)
-    compras: Purchase[];
 }

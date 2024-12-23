@@ -9,13 +9,13 @@ import { CarritoInformacion } from "./carrito_informacion";
 export class Carrito {
     @PrimaryGeneratedColumn()
     id: number;
-
-    @OneToOne(() => CarritoInformacion, (carritoInformacion) => carritoInformacion.carrito)
-    @JoinColumn({ name: 'carrito_id' }) // Nombre de la clave foránea en la base de datos
-    carritoInformacion: CarritoInformacion;
-
+    
     @Column({name: 'carrito_id'})
     carrito_id: number;
+
+    @ManyToOne(() => CarritoInformacion, (carritoInformacion) => carritoInformacion.carrito)
+    @JoinColumn({ name: 'carrito_id' }) // Nombre de la clave foránea en la base de datos
+    carritoInformacion: CarritoInformacion;
     
     @Column()
     isbn_libro: string;

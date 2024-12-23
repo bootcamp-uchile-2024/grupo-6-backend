@@ -1,11 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { Usuario } from "./usuario";
 import { Direccion } from "./direccion";
 import { LibroCompra } from "./libro_compra";
 
 @Entity({name: "historial_compra"})
 export class HistorialCompra {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id: number;
     
     @Column()
@@ -15,10 +15,10 @@ export class HistorialCompra {
     estatus_compra: string;
 
     @Column()
-    fecha_compra: Date;
+    fecha_compra: string;
 
     @Column()
-    fecha_entrega: Date;
+    fecha_entrega: string;
 
     @Column()
     id_direccion_entrega: number;

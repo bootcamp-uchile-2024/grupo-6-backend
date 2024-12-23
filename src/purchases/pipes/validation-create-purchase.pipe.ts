@@ -6,54 +6,66 @@ import { Repository } from "typeorm";
 import { CreatePurchaseDto } from "../dto/create-purchase.dto";
 import { Carrito } from "src/orm/entity/carrito";
 import { HistorialCompra } from "src/orm/entity/historial_compra";
+import { CarritoInformacion } from "src/orm/entity/carrito_informacion";
+import { Libro } from "src/orm/entity/libro";
 
 export class ValidationCreatePurchasePipe implements PipeTransform {
     constructor (
-        @InjectRepository(HistorialCompra) 
-        private readonly historialCompraRepository: Repository<HistorialCompra>,
-
-        @InjectRepository(Usuario)
-        private readonly usuarioRepository: Repository<Usuario>,
 
         @InjectRepository(Direccion)
         private readonly direccionRepository: Repository<Direccion>,
 
+        @InjectRepository(CarritoInformacion)
+        private readonly carritoInfoRepository: Repository<CarritoInformacion>,
+
         @InjectRepository(Carrito)
         private readonly carritoRepository: Repository<Carrito>,
+
+        @InjectRepository(Libro)
+        private readonly libroRepository: Repository<Libro>,
+
     ){}
 
     async transform(value: CreatePurchaseDto, metadata: ArgumentMetadata) {
 
-        // Validar que no existe un pedido con el mismo ID
-        if (( await this.historialCompraRepository.existsBy({
-                id: value.id,
-            }))) {
-            throw new BadRequestException(`Ya existe un pedido con ID: ${value.id}`)
+        // Validar que exista carrito de compra
+        const existeCarritoInfo = await this.carritoInfoRepository.existsBy({
+            id_carrito: value.idCarrito });
+
+        if (!existeCarritoInfo) {
+            throw new NotFoundException(`No existe información de carrito de compra con ID ${value.idCarrito}`)
         };
 
-        // Validar que usuario existe
-        if (!( await this.usuarioRepository.existsBy({
-                id: value.id_usuario,
-            }))) {
-            throw new NotFoundException(`No existe un usuario con ID: ${value.id_usuario}`)
+        const carrito: Carrito[] = await this.carritoRepository.findBy({
+            carrito_id: value.idCarrito });
+
+        if (carrito.length === 0) {
+            throw new NotFoundException(`No existe un carrito de compra con ID ${value.idCarrito}`)
         };
+
         // Validar dirección de entrega
-        const direccion: Direccion = await this.direccionRepository.findOneBy({ id: value.id_direccion_entrega });
+        const direccion: Direccion = await this.direccionRepository.findOneBy({ 
+            id: value.idDireccionEntrega
+        });
 
         if (! direccion) {
-            throw new NotFoundException(`No existe una dirección con ID: ${value.id_direccion_entrega}`)
+            throw new NotFoundException(`No existe una dirección con ID: ${value.idDireccionEntrega}`)
         };
 
-        if ( direccion.id_usuario !== value.id_usuario ){
-            throw new BadRequestException(`La dirección no pertenece al usuario de ID: ${value.id_usuario}`)
+        // Validar stock
+        for (let item_carrito of carrito){
+            const libro = await this.libroRepository.findOneBy({
+                isbn: item_carrito.isbn_libro
+            })
+
+            if (! libro){
+                throw new NotFoundException(`No existe un libro con ISBN: ${item_carrito.isbn_libro}`)
+            }
+
+            if (libro.stock_libro < item_carrito.cantidad){
+                throw new NotFoundException(`No hay stock suficiente para el libro con ISBN: ${item_carrito.isbn_libro}`)
+            };
         }
-        // Validar ID carrito de compra
-        /*if (!( await this.carritoRepository.exists(
-            {where: {
-                usuario_id: value.id_usuario,
-            }}))) {
-            throw new NotFoundException(`No existe un carrito de compra para el usuario con ID: ${value.id_usuario}`)
-        };*/
 
         return value;
     }

@@ -98,13 +98,13 @@ export class PurchasesService {
   }
 
 
-  // Obtener pedidos de usuario ----
-  async findAllClient(id_usuario: number): Promise<GetPurchaseDto[]> {
+  // Obtener pedidos de usuario --------------------------------------------------------------------
+  async findAllClient(datosUsuario): Promise<GetPurchaseDto[]> {
 
     // Obtener pedidos
     const pedidos: HistorialCompra[] = await this.historialCompraRepository.find({
       where: { 
-        id_usuario: id_usuario,
+        id_usuario: datosUsuario.idUsuario,
       },
       relations: {
         direccion: true,

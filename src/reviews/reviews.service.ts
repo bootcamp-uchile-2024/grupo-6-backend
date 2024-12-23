@@ -2,8 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Libro } from 'src/orm/entity/libro';
 import { Resena } from 'src/orm/entity/resena';
-import { Usuario } from 'src/orm/entity/usuario';
-import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { ResenaMapper } from './mappers/review.mapper';
@@ -21,7 +19,7 @@ export class ReviewsService {
       isbn: isbn_libro
     });
     if(!existeLibro){
-      throw new BadRequestException('No existe el libro con el ID ingresado.')
+      throw new BadRequestException('No existe el libro con el ISBN ingresado.')
     }
 
     let resena: Resena = ResenaMapper.dtoToEntity(+idUsuario, isbn_libro, createReviewDto);

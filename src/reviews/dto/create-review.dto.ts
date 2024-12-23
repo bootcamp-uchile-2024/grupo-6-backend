@@ -2,12 +2,10 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber, IsOptional, IsString, Max, MaxLength, Min } from "class-validator";
 
 export class CreateReviewDto {
-@ApiProperty({
+    @ApiProperty({
     example: 'Muy buen libro!',
     description:
-        'Comentario que un usuario asigna a un libro especifico.',
-    required: false,
-    nullable: true
+        'Comentario que un usuario asigna a un libro especifico.'
     })
     @IsOptional()
     @IsString({ message: 'Introducir un formato de comentario tipo string correcto.' })

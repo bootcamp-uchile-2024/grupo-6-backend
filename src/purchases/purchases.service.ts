@@ -116,23 +116,28 @@ export class PurchasesService {
   }
 
 
-  // Obtener 1 pedido
-  async findOne(id: number): Promise<GetPurchaseDto> {
+  // Obtener 1 pedido --------------------------------------------------------------------------------
+  async findOne(id: number, datosUsuario): Promise<GetPurchaseDto> {
+    // Obtener pedido
     const pedido: HistorialCompra = await this.historialCompraRepository.findOne({
       where: {
         id: id,
+        id_usuario: datosUsuario.idUsuario
       },
       relations: {
         direccion: true,
         libroCompra: true,
       }
     });
+    if (!pedido){
+      throw new NotFoundException(`No existe un pedido con ID: ${id} asociado al usuario`)
+    }
 
     return HistorialCompraMapper.entityToDto(pedido);
   }
 
 
-  // Actualizar estado de pedido
+  // Actualizar pedido -------------------------------------------------------------------------------------
   async update(pedido: HistorialCompra, updatePurchaseDto: UpdatePurchaseDto): Promise<GetPurchaseDto> {
     
     let condiciones: { [key: string]: any } = {};
@@ -167,7 +172,7 @@ export class PurchasesService {
 
       if (nueva_direccion.id_usuario != pedido.id_usuario){
         throw new BadRequestException(
-          `La nueva dirección debe estar asociada al usuario del pedido. ID usuario: ${pedido.id_usuario}`)
+          `La nueva dirección debe estar asociada al usuario del pedido.`)
       }
 
       condiciones.id_direccion_entrega = updatePurchaseDto.id_direccion_entrega;
@@ -179,15 +184,30 @@ export class PurchasesService {
     );
     
     // Devolver pedido actualizado
-    return await this.findOne(pedido.id);
+    const pedidoActualizado: HistorialCompra = await this.historialCompraRepository.findOne({
+      where: {
+        id: pedido.id,
+      },
+      relations: {
+        direccion: true,
+        libroCompra: true,
+      }
+    });
+
+    return HistorialCompraMapper.entityToDto(pedidoActualizado);
   }
 
 
-  // Eliminar pedido 
+  // Eliminar pedido ------------------------------------------------------------------------
   async remove(id: number): Promise<string> {
-    await this.historialCompraRepository.delete(id);
+    // Eliminar en tabla "libro_compra"
+    await this.libroCompraRepository.delete({
+      id_compra: id
+    })
+    // Eliminar en tabla "historial_compra"
+    await this.historialCompraRepository.delete({id});
 
-    return `Fue eliminado el pedido con ID #${id}`;
+    return `Fue eliminado el pedido con ID: ${id}`;
   }
 
 }

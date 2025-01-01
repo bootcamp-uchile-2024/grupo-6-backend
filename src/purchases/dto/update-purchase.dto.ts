@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsNumber, IsOptional, Min } from 'class-validator';
 
 export class UpdatePurchaseDto {
-    @ApiProperty({ description: 'Nuevo estado de compra', example: 'Entregado'})
+    @ApiProperty({ description: 'Nuevo estado de compra', example: 'Completada'})
     @IsOptional()
     estatus_compra?: string;
 

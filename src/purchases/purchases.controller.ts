@@ -1,18 +1,17 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpException, Param, Patch, Post, Request, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, NotFoundException, Param, Patch, Post, Request, UseGuards, UsePipes } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { HistorialCompra } from 'src/orm/entity/historial_compra';
+import { RolesAutorizados } from 'src/seguridad/decorator/rol.decorator';
+import { JwtGuard } from 'src/seguridad/guard/jwt.guard';
+import { ValidarRolGuard } from 'src/seguridad/guard/validar-rol.guard';
+import { Rol } from 'src/users/enum/rol.enum';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { GetPurchaseDto } from './dto/get-purchase.dto';
 import { UpdatePurchaseDto } from './dto/update-purchase.dto';
 import { ValidationCreatePurchasePipe } from './pipes/validation-create-purchase.pipe';
+import { ValidationFindPurchasePipe } from './pipes/validation-find-purchase.pipe';
 import { ValidationUpdatePurchasePipe } from './pipes/validation-update-purchase.pipe';
 import { PurchasesService } from './purchases.service';
-import { ValidationDeletePurchasePipe } from './pipes/validation-delete-purchase.pipe';
-import { HistorialCompra } from 'src/orm/entity/historial_compra';
-import { ValidationFindPurchasePipe } from './pipes/validation-find-purchase.pipe';
-import { JwtGuard } from 'src/seguridad/guard/jwt.guard';
-import { ValidarRolGuard } from 'src/seguridad/guard/validar-rol.guard';
-import { RolesAutorizados } from 'src/seguridad/decorator/rol.decorator';
-import { Rol } from 'src/users/enum/rol.enum';
 
 @Controller('purchases')
 export class PurchasesController {
@@ -47,35 +46,56 @@ export class PurchasesController {
   @UseGuards(JwtGuard, ValidarRolGuard)
   @RolesAutorizados(Rol.USER, Rol.ADMIN)
   @ApiResponse({ status: 200, description: 'Se obtuvieron los pedidos del usuario correctamente' })
-  @ApiResponse({ status: 400, description: 'Error al obtener los pedidos' })
+  @ApiResponse({ status: 404, description: 'El usuario no tiene ningún pedido' })
   @Get()
   async findAll(
     @Request() request,
   ): Promise<GetPurchaseDto[]> {
     try {
-      return await this.purchasesService.findAllClient(request.datosUsuario);
+      const pedidos = await this.purchasesService.findAllClient(request.datosUsuario);
+
+      if (pedidos.length == 0){
+        throw new NotFoundException('El usuario no tiene ningún pedido');
+      }
+      return pedidos;
     } catch (error) {
-      throw new HttpException('Error al obtener los pedidos', 400);
+      throw new HttpException(error.message, error.status || HttpStatus.BAD_REQUEST);
     }
   }
 
-  // Obtener un pedido específico
+  // Obtener un pedido específico --------------------------------------------------------
   @ApiTags('Purchases')
+  @ApiOperation({ summary:'Obtener 1 pedido de un usuario'})
+  @ApiBearerAuth()
   @UsePipes(ValidationFindPurchasePipe)
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER, Rol.ADMIN)
   @ApiResponse({ status: 200, description: 'Se obtuvo el pedido correctamente' })
-  @ApiResponse({ status: 400, description: 'Error al obtener el pedido' })
+  @ApiResponse({ status: 404, description: 'No existe el pedido de ID XX para el usuario' })
   @ApiParam({name: 'id', required: true, type: 'number', description: 'ID del pedido'})
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(
+    @Request() request,
+    @Param('id') id: string,
+  ) {
     try {
-      return await this.purchasesService.findOne(+id);
+      const pedido = await this.purchasesService.findOne(+id, request.datosUsuario);
+
+      if (!pedido){
+        throw new NotFoundException(`No existe el pedido de ID ${id} para el usuario`);
+      }
+      return pedido;
     } catch (error) {
-      throw new HttpException('Error el obtener el pedido', 400);
+      throw new HttpException(error.message, error.status || HttpStatus.BAD_REQUEST);
     }
   }
 
-  // Actualizar estado de pedido
+  // Actualizar estado de pedido ---------------------------------------------------------------
   @ApiTags('Purchases')
+  @ApiOperation({ summary:'Actualizar datos de un pedido'})
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.ADMIN)
   @UsePipes(ValidationUpdatePurchasePipe)
   @ApiResponse({ status: 200, description: 'Se actualizó el estado del pedido correctamente' })
   @ApiResponse({ status: 400, description: 'Error al actualizar estado del pedido' })
@@ -83,28 +103,28 @@ export class PurchasesController {
   @Patch(':id')
   async update(
     @Param('id') id: HistorialCompra, 
-    @Body() updatePurchaseDto: UpdatePurchaseDto
+    @Body() updatePurchaseDto: UpdatePurchaseDto,
   ): Promise<GetPurchaseDto> {
     try {
       return await this.purchasesService.update(id, updatePurchaseDto);
     } catch (error) {
-      if (error instanceof BadRequestException){
-        throw error
-      } else {
-        throw new HttpException('Error el obtener el pedido', 400);
-      }
+      throw new HttpException(error.message, error.status || HttpStatus.BAD_REQUEST);
     }
   }
 
-  // Eliminar pedido si aún no está entregado
+  // Eliminar pedido si aún no está entregado -----------------------------------------------
   @ApiTags('Purchases')
-  @UsePipes(ValidationDeletePurchasePipe)
+  @ApiOperation({ summary:'Eliminar un pedido'})
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.ADMIN)
+  @UsePipes(ValidationFindPurchasePipe)
   @ApiResponse({ status: 200, description: 'Se eliminó el pedido correctamente' })
   @ApiResponse({ status: 400, description: 'Error al eliminar el pedido' })
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<string> {
+    return await this.purchasesService.remove(+id);
     try {
-      return await this.purchasesService.remove(+id);
     } catch (error) {
       throw new HttpException('Error al eliminar el libro', 400);
     }

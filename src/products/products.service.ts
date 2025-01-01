@@ -21,8 +21,6 @@ import { LibroMapper } from './mappers/libro.mapper';
 
 @Injectable()
 export class ProductsService {
-  // Libros de prueba
-
   constructor(
     @InjectDataSource() 
     private readonly dataSource: DataSource,

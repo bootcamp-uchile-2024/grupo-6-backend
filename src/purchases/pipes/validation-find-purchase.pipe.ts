@@ -11,7 +11,9 @@ export class ValidationFindPurchasePipe implements PipeTransform {
     ){}
 
     async transform(value: any, metadata: ArgumentMetadata) {
-        const existePedido: boolean = await this.historialCompraRepository.existsBy({ id: value });
+        const existePedido: boolean = await this.historialCompraRepository.existsBy({ 
+            id: value
+        });
 
         if (!existePedido){
             throw new NotFoundException(`No existe un pedido con ID: ${value}`)

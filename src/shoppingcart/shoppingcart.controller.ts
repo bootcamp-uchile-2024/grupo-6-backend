@@ -89,12 +89,14 @@ export class ShoppingcartController {
   @ApiBearerAuth()
   @UseGuards(JwtGuard, ValidarRolGuard)
   @RolesAutorizados(Rol.USER)
-  @Get()
+  @Delete()
   async cancelarCarrito(@Req() request): Promise <string> {
     const datosUsuario = request.datosUsuario;
     if(!datosUsuario){
       throw new BadRequestException();
-    }
+    };
+
+    
     return await this.shoppingcartService.cancelarCarrito(datosUsuario);
   }
 }

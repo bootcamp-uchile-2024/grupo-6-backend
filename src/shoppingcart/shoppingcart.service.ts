@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Shoppingcart } from './entities/shoppingcart.entity';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { ShoppingcartSalidaDto } from './dto/create-shoppingcart.salida.dto';
@@ -58,22 +58,28 @@ export class ShoppingcartService {
     };
 
     if(exist){
+
+      exist.fecha_actualizacion = createShoppingcartDto.fechaCompra;
+      exist.precio_total = createShoppingcartDto.precioTotal;
+
+      await this.carritoInformacionRepository.save(exist)
+
       const productos = await this.carritoRepository.find({
         where:{
           carrito_id: exist.id_carrito
         }
       });
 
-      for(const producto of productos){
-
-        await this.carritoRepository.delete(producto);
-
-      }
+      for (const producto of productos){
+        await this.carritoRepository.remove(producto);
+      };
+  
+      const carritoID = exist.id_carrito;
 
       const carritos: Carrito[] = [];
       for(const carritoEntity of createShoppingcartDto.shoppingCart){
         const carrito = new Carrito();
-        carrito.carrito_id = exist.id_carrito;
+        carrito.carrito_id = carritoID;
         carrito.isbn_libro = carritoEntity.isbn;
         carrito.cantidad = carritoEntity.cantidad;
         carrito.precio = carritoEntity.precio;
@@ -96,15 +102,24 @@ export class ShoppingcartService {
         usuario_id: datosUsuario.idUsuario,
         estado: estadoEnum.activo
       }
-    });
+    });    
+    
+    if(carritofind){
+  
+      const productos = await this.carritoRepository.find({
+        where:{
+          carrito_id: carritofind.id_carrito
+        }
 
-    const productos = await this.carritoRepository.find({
-      where:{
-        carrito_id: carritofind.id_carrito
-      }
-    });
+      });
+  
+      return CarritoMapper.entityToDto(productos, carritofind);
 
-    return CarritoMapper.entityToDto(productos, carritofind);
+    }
+  
+    if(!carritofind){
+      throw new NotFoundException();
+    }
   }
 
   async cancelarCarrito(datosUsuario): Promise <string> {
@@ -116,8 +131,18 @@ export class ShoppingcartService {
       }
     });
 
-    carritofind.estado = estadoEnum.completado;
+    if(carritofind){
+
+      carritofind.estado = estadoEnum.cancelado;
+
+      await this.carritoInformacionRepository.save(carritofind);
     
-    return "Carrito eliminado con exito"
+      return "Carrito eliminado con exito";
+
+    }
+
+    if(!carritofind){
+      throw new NotFoundException();
+    }   
   }
 }

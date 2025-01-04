@@ -21,11 +21,11 @@ import { CarritoInformacion } from "./entity/carrito_informacion";
     imports: [
         TypeOrmModule.forRoot({
             type: 'mysql',
-            host: process.env.DB_HOST ?? 'localhost',
-            port: Number(process.env.DB_PORT) ?? 3306,
-            username: process.env.DB_USER ?? 'root', 
-            password: process.env.DB_PASS ?? 'grupo-6',
-            database: process.env.DB_NAME ?? 'paginas_selectas', 
+            host: 'localhost'/*process.env.RUTA_DB*/,
+            port: 3306 /*Number(process.env.PUERTO_DB)*/,
+            username: 'root' /*process.env.USUARIO_DB*/, 
+            password: 'grupo-6' /*process.env.CLAVE_ROOT_DB*/,
+            database: 'paginas_selectas' /*process.env.NOMBRE_DB*/, 
             entities: [
                 Usuario,
                 Direccion,

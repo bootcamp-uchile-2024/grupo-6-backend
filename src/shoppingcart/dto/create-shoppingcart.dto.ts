@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsInt, IsNotEmpty, ValidateNested } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 import { ShoppingcartDto } from './Shoppincart.dto';
 import { Type } from 'class-transformer';
 
 
 export class CreateShoppingcartDto {
-
+  @IsString()
   @ApiProperty({example: '2024-05-25', description: 'fecha de actualización'})
   fechaCompra: string;
 

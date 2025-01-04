@@ -1,10 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt } from "class-validator";
+import { IsInt, IsString } from "class-validator";
 
 
 
 export class ShoppingcartDto {
-
+  
+  @IsString()
   @ApiProperty({example: '9788439732471', description: 'ISBN del libro'})
   isbn: string;
 

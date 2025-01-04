@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Direccion } from "src/orm/entity/direccion";
-import { LibroCompra } from "src/orm/entity/libro_compra";
 import { GetLibroCompraDto } from "./get-libro-compra.dto";
 
 export class GetPurchaseDto {
@@ -25,4 +24,7 @@ export class GetPurchaseDto {
 
     @ApiProperty({ description: 'Costo total del pedido'})
     total: number;
+
+    @ApiProperty({ description: 'Método de pago'})
+    metodoPago: string;
 }

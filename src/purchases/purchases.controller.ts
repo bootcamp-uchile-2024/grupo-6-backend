@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, NotFoundException, Param, Patch, Post, Request, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, NotFoundException, Param, Patch, Post, Request, UseGuards, UseInterceptors, UsePipes } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { HistorialCompra } from 'src/orm/entity/historial_compra';
 import { RolesAutorizados } from 'src/seguridad/decorator/rol.decorator';
@@ -12,6 +12,8 @@ import { ValidationCreatePurchasePipe } from './pipes/validation-create-purchase
 import { ValidationFindPurchasePipe } from './pipes/validation-find-purchase.pipe';
 import { ValidationUpdatePurchasePipe } from './pipes/validation-update-purchase.pipe';
 import { PurchasesService } from './purchases.service';
+import { ExistUserShoppingCardInterceptor } from './interceptors/existUserShoppingCard.interceptor';
+import { ExistUserAdressInterceptor } from './interceptors/existUserAdress.interceptor';
 
 @Controller('purchases')
 export class PurchasesController {
@@ -22,6 +24,7 @@ export class PurchasesController {
   @ApiOperation({ summary:'Generar un pedido'})
   @ApiBearerAuth()
   @UsePipes(ValidationCreatePurchasePipe)
+  @UseInterceptors(ExistUserShoppingCardInterceptor, ExistUserAdressInterceptor)
   @UseGuards(JwtGuard, ValidarRolGuard)
   @RolesAutorizados(Rol.USER, Rol.ADMIN)
   @ApiResponse({ status: 201, description: 'Se crea el pedido correctamente' })
@@ -31,9 +34,9 @@ export class PurchasesController {
   async create(
     @Body() createPurchaseDto: CreatePurchaseDto,
     @Request() request,
-  ){//: Promise<GetPurchaseDto> {
+  ): Promise<GetPurchaseDto> {
     try {
-      return await this.purchasesService.create(createPurchaseDto, request.datosUsuario);
+      return await this.purchasesService.create(createPurchaseDto, request);
     } catch (error) {
       throw new HttpException('Error al crear el pedido', 400);
     }

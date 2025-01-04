@@ -20,34 +20,72 @@ export class ShoppingcartService {
     @InjectRepository(Carrito) private readonly carritoRepository: Repository<Carrito>,
     @InjectRepository(CarritoInformacion) private readonly carritoInformacionRepository: Repository<CarritoInformacion>
   ){}
-  //shoppingcart: Shoppingcart[] = [];
 
   async create(datosUsuario, createShoppingcartDto: CreateShoppingcartDto): Promise <SalidaShoppingcartDto> {
 
-    const infoCarrito = new CarritoInformacion();
+    const exist = await this.carritoInformacionRepository.findOne({
+      where:{
+        usuario_id: datosUsuario.idUsuario,
+        estado: estadoEnum.activo
+      }
+    });
 
-    infoCarrito.usuario_id = datosUsuario.idUsuario;
-    infoCarrito.fecha_actualizacion = createShoppingcartDto.fechaCompra;
-    infoCarrito.precio_total = createShoppingcartDto.precioTotal;
+    if(!exist){
+      const infoCarrito = new CarritoInformacion();
 
-    await this.carritoInformacionRepository.save(infoCarrito);
+      infoCarrito.usuario_id = datosUsuario.idUsuario;
+      infoCarrito.fecha_actualizacion = createShoppingcartDto.fechaCompra;
+      infoCarrito.precio_total = createShoppingcartDto.precioTotal;
 
-    const carritoID = infoCarrito.id_carrito;
+      await this.carritoInformacionRepository.save(infoCarrito);
 
-    const carritos: Carrito[] = [];
-    for(const carritoEntity of createShoppingcartDto.shoppingCart){
-      const carrito = new Carrito();
-      carrito.carrito_id = carritoID;
-      carrito.isbn_libro = carritoEntity.isbn;
-      carrito.cantidad = carritoEntity.cantidad;
-      carrito.precio = carritoEntity.precio;
-      carrito.descuento = carritoEntity.descuento;
-      carritos.push(carrito);
+      const carritoID = infoCarrito.id_carrito;
+
+      const carritos: Carrito[] = [];
+      for(const carritoEntity of createShoppingcartDto.shoppingCart){
+        const carrito = new Carrito();
+        carrito.carrito_id = carritoID;
+        carrito.isbn_libro = carritoEntity.isbn;
+        carrito.cantidad = carritoEntity.cantidad;
+        carrito.precio = carritoEntity.precio;
+        carrito.descuento = carritoEntity.descuento;
+        carritos.push(carrito);
+      }
+
+      await this.carritoRepository.save(carritos);
+    
+      return CarritoMapper.entityToDto(carritos, infoCarrito);
+    };
+
+    if(exist){
+      const productos = await this.carritoRepository.find({
+        where:{
+          carrito_id: exist.id_carrito
+        }
+      });
+
+      for(const producto of productos){
+
+        await this.carritoRepository.delete(producto);
+
+      }
+
+      const carritos: Carrito[] = [];
+      for(const carritoEntity of createShoppingcartDto.shoppingCart){
+        const carrito = new Carrito();
+        carrito.carrito_id = exist.id_carrito;
+        carrito.isbn_libro = carritoEntity.isbn;
+        carrito.cantidad = carritoEntity.cantidad;
+        carrito.precio = carritoEntity.precio;
+        carrito.descuento = carritoEntity.descuento;
+        carritos.push(carrito);
+      }
+
+      await this.carritoRepository.save(carritos);
+
+      return CarritoMapper.entityToDto(carritos, exist);
     }
 
-    await this.carritoRepository.save(carritos);
-    
-    return CarritoMapper.entityToDto(carritos, infoCarrito);
   }
 
 
@@ -60,7 +98,6 @@ export class ShoppingcartService {
       }
     });
 
-    console.log(carritofind);
     const productos = await this.carritoRepository.find({
       where:{
         carrito_id: carritofind.id_carrito
@@ -68,5 +105,19 @@ export class ShoppingcartService {
     });
 
     return CarritoMapper.entityToDto(productos, carritofind);
+  }
+
+  async cancelarCarrito(datosUsuario): Promise <string> {
+
+    const carritofind = await this.carritoInformacionRepository.findOne({
+      where:{
+        usuario_id: datosUsuario.idUsuario,
+        estado: estadoEnum.activo
+      }
+    });
+
+    carritofind.estado = estadoEnum.completado;
+    
+    return "Carrito eliminado con exito"
   }
 }

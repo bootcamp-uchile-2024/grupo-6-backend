@@ -45,6 +45,9 @@ import { ContrasenaMiddleware } from './users/middleware/contrasena.middleware';
     ServeStaticModule.forRoot({
       rootPath: path.join(__dirname, '..', 'estatics'),
       serveRoot: '/cover',
+      serveStaticOptions: {
+        extensions: ['png', 'jpg', 'webp']
+      }
       }),
     SeguridadModule
   ],

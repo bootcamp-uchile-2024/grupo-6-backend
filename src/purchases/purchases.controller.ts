@@ -126,8 +126,8 @@ export class PurchasesController {
   @ApiResponse({ status: 400, description: 'Error al eliminar el pedido' })
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<string> {
-    return await this.purchasesService.remove(+id);
     try {
+      return await this.purchasesService.remove(+id);
     } catch (error) {
       throw new HttpException('Error al eliminar el libro', 400);
     }

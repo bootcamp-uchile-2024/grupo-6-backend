@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { promises as FS } from 'fs';
+import * as fs from 'fs';
 import { Autor } from 'src/orm/entity/autor';
 import { Editorial } from 'src/orm/entity/editorial';
 import { Encuadernacion } from 'src/orm/entity/encuadernacion';
@@ -524,7 +525,10 @@ export class ProductsService {
 
     // Eliminar caratula
     const ruta_archivo: string = `${ruta_archivos_local}/${libro.caratula}`
-    await FS.unlink(ruta_archivo);
+
+    if (fs.existsSync(ruta_archivo)){
+      await FS.unlink(ruta_archivo);
+    }
 
     return { 
       message: `Fue eliminado el libro con ISBN: ${isbn}`

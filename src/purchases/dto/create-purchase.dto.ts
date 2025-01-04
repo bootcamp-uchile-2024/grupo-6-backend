@@ -11,9 +11,11 @@ export class CreatePurchaseDto {
             'Transferencia bancaria',
             'Webpay',
         ],
-        example: 'Webpay'
+        example: 'Webpay',
     })
-    @IsEnum(MetodoPagoEnum)
+    @IsEnum(MetodoPagoEnum, {
+        message: 'El método de pago debe ser uno de los siguientes valores: Tarjeta débito/crédito, Transferencia bancaria, Webpay'
+    })
     @IsNotEmpty()
     metodoPago: MetodoPagoEnum;
 

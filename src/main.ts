@@ -8,6 +8,7 @@ import * as dotenv from 'dotenv';
 import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { configSwagger } from './config/swagger/swagger.config';
+import { ValidationPipe } from '@nestjs/common';
 const DailyRotateFile = require('winston-daily-rotate-file');
 dotenv.config(); 
 const isProduction = process.env.NODE_ENV == 'production';
@@ -53,6 +54,11 @@ async function bootstrap() {
   app.useGlobalInterceptors(new BooksInterceptor());
   app.useGlobalFilters(new BooksFilter());
   app.enableCors();
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true
+  }))
   
   configSwagger(app); // Swagger
 

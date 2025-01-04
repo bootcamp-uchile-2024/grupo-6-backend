@@ -625,8 +625,11 @@ export class ProductsService {
       condiciones.caratula = caratula.originalname;
       
       // Eliminar archivo antiguo
-      await FS.unlink(`${ruta_archivos_local}/${libro.caratula}`);
+      const old_path: string = `${ruta_archivos_local}/${libro.caratula}`
 
+      if (fs.existsSync(old_path)){
+        await FS.unlink(old_path);
+      }
       // Guardar nuevo archivo
       const ruta_archivo: string = `${ruta_archivos_local}/${caratula.originalname}`
       await FS.writeFile(ruta_archivo, caratula.buffer);

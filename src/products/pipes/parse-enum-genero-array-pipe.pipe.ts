@@ -26,6 +26,8 @@ export class ParseEnumGeneroArrayPipe implements PipeTransform {
         }
         return item;
       });
+    } else {
+      return undefined;
     }
   }
 }

@@ -141,52 +141,52 @@ export class ProductsController {
   @ApiQuery({ name: 'novedades', description: 'Ordena los productos desde el más recientemente agregado', required: false, type: Boolean })
   @ApiQuery({ name: 'destacado', description: 'Devuelve los productos catalogados como destacados', required: false, type: Boolean })
   @ApiResponse({ status: 200, description: 'Solicitud generada correctamente',  type: GetProductDto, isArray: true })
-  @ApiResponse({ status: 404, description: 'No existen productos que cumplan la solicitud', })
+  @ApiResponse({ status: 404, description: 'Error al buscar los productos', })
   @Get('catalog')
   async getFilteredProducts(
-    @Query('priceMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMin?: number,
-    @Query('priceMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMax?: number,
-    @Query('pagina', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) pagina = 1,
-    @Query('cantidad', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) cantidad = 12,
+    @Query('priceMin') priceMin?: string,
+    @Query('priceMax') priceMax?: string,
+    @Query('pagina') pagina: string = '1',
+    @Query('cantidad') cantidad: string = '12',
     @Query('sortBy') sortBy?: string,
     @Query('autor') autor?: string,
     @Query('nombre') nombre?: string,
-    @Query('rating', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) rating?: number,
+    @Query('rating') rating?: string,
     @Query('genero', new ParseEnumGeneroArrayPipe(GeneroEnum)) genero?: string | string[],
     @Query('editorial', new ParseArrayPipe({ items: String, separator: ',', optional: true, errorHttpStatusCode: 400, }), ) editorial?: string | string[],
     @Query('idioma', new ParseEnumIdiomaArrayPipe(Idioma)) idioma?: string | string[],
     @Query('isbn') isbn?: string,
     @Query('encuadernacion', new ParseEnumPipe(EncuadernacionEnum, { optional: true }), ) encuadernacion?: EncuadernacionEnum,
-    @Query('agnoPublicacionMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMin?: number,
-    @Query('agnoPublicacionMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMax?: number,
-    @Query('tendencia', new ParseBoolPipe({ errorHttpStatusCode: 400, optional: true})) tendencias?: boolean,
-    @Query('novedades', new ParseBoolPipe({ errorHttpStatusCode: 400, optional: true})) novedades?: boolean,
-    @Query('destacado', new ParseBoolPipe({ errorHttpStatusCode: 400, optional: true})) destacados?: boolean,
+    @Query('agnoPublicacionMin') agnoPublicacionMin?: string,
+    @Query('agnoPublicacionMax') agnoPublicacionMax?: string,
+    @Query('tendencia') tendencias: string = 'false',
+    @Query('novedades') novedades: string = 'false',
+    @Query('destacado') destacados: string = 'false',
   ): Promise<GetFilteredProductsDto> {
     const filters = {
-      priceMin,
-      priceMax,
-      pagina,
-      cantidad,
+      priceMin: priceMin ? parseInt(priceMin): undefined,
+      priceMax: priceMax ? parseInt(priceMax): undefined,
+      pagina: parseInt(pagina),
+      cantidad: parseInt(cantidad),
       sortBy,
       autor,
       nombre,
-      rating,
+      rating: rating ? parseInt(rating) : undefined,
       genero,
       editorial: typeof editorial === 'string' ? [editorial] : editorial,
       idioma,
       isbn,
       encuadernacion,
-      agnoPublicacionMin,
-      agnoPublicacionMax,
-      tendencias,
-      novedades,
-      destacados,
+      agnoPublicacionMin: agnoPublicacionMin ? parseInt(agnoPublicacionMin): undefined,
+      agnoPublicacionMax: agnoPublicacionMax ? parseInt(agnoPublicacionMax): undefined,
+      tendencias: tendencias ? tendencias == 'true' : undefined,
+      novedades: novedades ? novedades == 'true' : undefined,
+      destacados: destacados ? destacados == 'true' : undefined,
     };
     try {
       return await this.productsService.getFilteredProducts(filters);
     } catch (error) {
-      throw new HttpException('Error al obtener los productos', 400);
+      throw new HttpException('Error al buscar los productos', 404);
     }
   }
 
@@ -237,40 +237,40 @@ export class ProductsController {
   @Get('search')
   async getSearchedProducts(
     @Query('query') query: string,
-    @Query('priceMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMin?: number,
-    @Query('priceMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) priceMax?: number,
-    @Query('pagina', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) pagina = 1,
-    @Query('cantidad', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) cantidad = 12,
+    @Query('priceMin') priceMin?: string,
+    @Query('priceMax') priceMax?: string,
+    @Query('pagina') pagina: string = '1',
+    @Query('cantidad') cantidad: string = '12',
     @Query('sortBy') sortBy?: string,
     @Query('autor') autor?: string,
-    @Query('rating', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) rating?: number,
+    @Query('rating') rating?: string,
     @Query('genero', new ParseEnumGeneroArrayPipe(GeneroEnum)) genero?: string | string[],
     @Query('editorial', new ParseArrayPipe({ items: String, separator: ',', optional: true, errorHttpStatusCode: 400, }), ) editorial?: string | string[],
     @Query('idioma', new ParseEnumIdiomaArrayPipe(Idioma)) idioma?: string | string[],
     @Query('encuadernacion', new ParseEnumPipe(EncuadernacionEnum, { optional: true }), ) encuadernacion?: EncuadernacionEnum, 
-    @Query('agnoPublicacionMin', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMin?: number, 
-    @Query('agnoPublicacionMax', new ParseIntPipe({ errorHttpStatusCode: 400, optional: true }), ) agnoPublicacionMax?: number,
-    @Query('tendencia', new ParseBoolPipe({ errorHttpStatusCode: 400, optional: true})) tendencias?: boolean,
-    @Query('novedades', new ParseBoolPipe({ errorHttpStatusCode: 400, optional: true})) novedades?: boolean,
-    @Query('destacado', new ParseBoolPipe({ errorHttpStatusCode: 400, optional: true})) destacados?: boolean,
+    @Query('agnoPublicacionMin') agnoPublicacionMin?: string,
+    @Query('agnoPublicacionMax') agnoPublicacionMax?: string,
+    @Query('tendencia') tendencias: string = 'false',
+    @Query('novedades') novedades: string = 'false',
+    @Query('destacado') destacados: string = 'false',
   ): Promise<GetFilteredProductsDto> {
     const filters = {
-      priceMin,
-      priceMax,
-      pagina,
-      cantidad,
+      priceMin: priceMin ? parseInt(priceMin): undefined,
+      priceMax: priceMax ? parseInt(priceMax): undefined,
+      pagina: parseInt(pagina),
+      cantidad: parseInt(cantidad),
       sortBy,
       autor,
-      rating,
+      rating: rating ? parseInt(rating) : undefined,
       genero,
       editorial,
       idioma,
       encuadernacion,
-      agnoPublicacionMin,
-      agnoPublicacionMax,
-      tendencias,
-      novedades,
-      destacados,
+      agnoPublicacionMin: agnoPublicacionMin ? parseInt(agnoPublicacionMin): undefined,
+      agnoPublicacionMax: agnoPublicacionMax ? parseInt(agnoPublicacionMax): undefined,
+      tendencias: tendencias ? tendencias == 'true' : undefined,
+      novedades: novedades ? novedades == 'true' : undefined,
+      destacados: destacados ? destacados == 'true' : undefined,
     };
     try {
       return this.productsService.getSearchedProductos(query, filters);

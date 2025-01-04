@@ -23,6 +23,8 @@ export class ParseEnumIdiomaArrayPipe implements PipeTransform {
         }
         return item;
       });
+    } else {
+      return undefined;
     }
   }
 }

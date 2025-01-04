@@ -18,7 +18,7 @@ services:
   #    - "${PUERTO_NESTJS}:3000"
   #  depends_on:
   #    - mysql
-
+  
   mysql:
     image: mysql:${VERSION_DB}
     environment:

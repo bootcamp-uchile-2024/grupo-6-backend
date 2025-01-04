@@ -326,7 +326,7 @@ export class ProductsService {
     const offset = (filters.pagina-1) * filters.cantidad;
     const paginatedProducts = products.slice(offset, offset + filters.cantidad);
 
-    const productsDto: GetProductDto[] = LibroMapper.entityListToCatalogDtoList(paginatedProducts)
+    const productsDto: GetProductDto[] = LibroMapper.entityListToCatalogDtoList(paginatedProducts);
 
     return LibroMapper.entityToDtoPaginacion(
       productsDto, totalProductos, filters.cantidad, filters.pagina

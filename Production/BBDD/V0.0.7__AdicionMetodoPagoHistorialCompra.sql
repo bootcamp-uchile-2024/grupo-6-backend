@@ -1,0 +1,22 @@
+ALTER TABLE historial_compra ADD COLUMN metodo_pago VARCHAR(40) DEFAULT "Transferencia bancaria";
+
+UPDATE historial_compra SET metodo_pago = "Tarjeta débito/crédito" WHERE id = 1;
+UPDATE historial_compra SET metodo_pago = "Tarjeta débito/crédito" WHERE id = 2;
+UPDATE historial_compra SET metodo_pago = "Tarjeta débito/crédito" WHERE id = 3;
+UPDATE historial_compra SET metodo_pago = "Tarjeta débito/crédito" WHERE id = 4;
+UPDATE historial_compra SET metodo_pago = "Transferencia bancaria" WHERE id = 5;
+UPDATE historial_compra SET metodo_pago = "Transferencia bancaria" WHERE id = 6;
+UPDATE historial_compra SET metodo_pago = "Transferencia bancaria" WHERE id = 7;
+UPDATE historial_compra SET metodo_pago = "Transferencia bancaria" WHERE id = 8;
+UPDATE historial_compra SET metodo_pago = "Transferencia bancaria" WHERE id = 9;
+UPDATE historial_compra SET metodo_pago = "Transferencia bancaria" WHERE id = 10;
+UPDATE historial_compra SET metodo_pago = "Webpay" WHERE id = 11;
+UPDATE historial_compra SET metodo_pago = "Webpay" WHERE id = 12;
+UPDATE historial_compra SET metodo_pago = "Webpay" WHERE id = 13;
+UPDATE historial_compra SET metodo_pago = "Webpay" WHERE id = 14;
+UPDATE historial_compra SET metodo_pago = "Webpay" WHERE id = 15;
+UPDATE historial_compra SET metodo_pago = "Webpay" WHERE id = 16;
+UPDATE historial_compra SET metodo_pago = "Webpay" WHERE id = 17;
+UPDATE historial_compra SET metodo_pago = "Webpay" WHERE id = 18;
+UPDATE historial_compra SET metodo_pago = "Webpay" WHERE id = 19;
+UPDATE historial_compra SET metodo_pago = "Webpay" WHERE id = 20;

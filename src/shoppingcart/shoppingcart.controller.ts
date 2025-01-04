@@ -81,4 +81,22 @@ export class ShoppingcartController {
     }
     return await this.shoppingcartService.obtenerCarrito(datosUsuario);
   }
+
+  @ApiTags('Shopping cart')
+  @ApiResponse({ status: 200, description: 'Eliminación de carrito de compras con éxito' })
+  @ApiResponse({ status: 404, description: 'No se puede obtener carrito de compras' })
+  @ApiOperation({ summary: 'Borrado lógico del carrito de compras' })
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard, ValidarRolGuard)
+  @RolesAutorizados(Rol.USER)
+  @Delete()
+  async cancelarCarrito(@Req() request): Promise <string> {
+    const datosUsuario = request.datosUsuario;
+    if(!datosUsuario){
+      throw new BadRequestException();
+    };
+
+    
+    return await this.shoppingcartService.cancelarCarrito(datosUsuario);
+  }
 }

@@ -46,7 +46,7 @@ export class ProductsController {
     try {
       return await this.productsService.create(createProductDto, caratula);
     } catch (error) {
-      throw new BadRequestException(error);//'Error al crear producto. Revisar datos ingresados')
+      throw new BadRequestException(error);
     }
   }
 

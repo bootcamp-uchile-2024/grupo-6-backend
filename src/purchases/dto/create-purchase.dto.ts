@@ -1,17 +1,23 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsNumber, Matches } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, Matches } from "class-validator";
+import { MetodoPagoEnum } from "../entities/metodoPago.enum";
 
 export class CreatePurchaseDto {
 
-    @ApiProperty({ description: 'ID del carrito de compra'})
-    @IsNumber()
+    @ApiProperty({ 
+        description: 'Método de pago',
+        enum: [
+            'Tarjeta débito/crédito',
+            'Transferencia bancaria',
+            'Webpay',
+        ],
+        example: 'Webpay',
+    })
+    @IsEnum(MetodoPagoEnum, {
+        message: 'El método de pago debe ser uno de los siguientes valores: Tarjeta débito/crédito, Transferencia bancaria, Webpay'
+    })
     @IsNotEmpty()
-    idCarrito: number;
-
-    @ApiProperty({ description: 'ID del método de pago'})
-    @IsNumber()
-    @IsNotEmpty()
-    idMetodoPago: number;
+    metodoPago: MetodoPagoEnum;
 
     @ApiProperty({ description: 'ID dirección de entrega' })
     @IsNumber()

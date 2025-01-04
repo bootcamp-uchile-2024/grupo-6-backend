@@ -43,25 +43,19 @@ export class PurchasesService {
     private readonly libroRepository: Repository<Libro>,
   ){}
 
-  // Crear pedido
-  async create(createPurchaseDto: CreatePurchaseDto, datosUsuario): Promise<GetPurchaseDto> {
-    
-    // Obtener carrito y carrito_informacion según ID carrito
-    const carritoInfo: CarritoInformacion = await this.carritoInfoRepository.findOneBy({ id_carrito: createPurchaseDto.idCarrito });
+  // Crear pedido ------------------------------------------------------------------------------------
+  async create(createPurchaseDto: CreatePurchaseDto, request): Promise<GetPurchaseDto> {
+    const datosUsuario = request.datosUsuario;
+    const carritoInfo: CarritoInformacion = request.carritoInfo;
+    const carrito = request.carrito;
 
-    if (carritoInfo.usuario_id != datosUsuario.idUsuario){
-      throw new BadRequestException(`El usuario no tiene un carrito de ID: ${carritoInfo.id_carrito} asociado`)
-    }
+    const id_carrito = carritoInfo.id_carrito;
     
     // Realizar registro en historial_compra
     const historial_compra: HistorialCompra = HistorialCompraMapper.createDtoToEntity(createPurchaseDto, datosUsuario);
     await this.historialCompraRepository.save(historial_compra);
 
     // Realizar registros en libro_compra
-    const carrito: Carrito[] = await this.carritoRepository.findBy({
-      carrito_id: createPurchaseDto.idCarrito
-    })
-
     for (let carrito_i of carrito){
       const carritoEntity = LibroCompraMapper.carritoToEntity(carrito_i, historial_compra);
       // Almacenar en BD
@@ -75,16 +69,15 @@ export class PurchasesService {
       await this.libroRepository.update(
         carrito_i.isbn_libro, 
         { stock_libro: libro.stock_libro - carrito_i.cantidad });
-
     }
 
     // Borrar carrito de compra
     await this.carritoRepository.delete({
-      carrito_id: createPurchaseDto.idCarrito
+      carrito_id: id_carrito
     })
 
     await this.carritoInfoRepository.delete({
-      id_carrito: createPurchaseDto.idCarrito
+      id_carrito: id_carrito
     })
 
     // Resultado

@@ -13,6 +13,7 @@ export class HistorialCompraMapper {
         dto.fechaCompra = entity.fecha_compra;
         dto.fechaEntrega = entity.fecha_entrega;
         dto.direccion = entity.direccion;
+        dto.metodoPago = entity.metodo_pago;
         dto.libroCompra = entity.libroCompra.map( l => LibroCompraMapper.entityToDto(l));
         dto.total = dto.libroCompra.reduce(
             (suma, libro) => suma + libro.precioFinal * libro.cantidad, 0);
@@ -36,6 +37,7 @@ export class HistorialCompraMapper {
         entity.estatus_compra = 'En espera de pago';
         entity.fecha_compra = formatDate(fecha_compra);
         entity.fecha_entrega = formatDate(fecha_entrega);
+        entity.metodo_pago = dto.metodoPago
         entity.id_direccion_entrega = dto.idDireccionEntrega;
 
         return entity;
@@ -49,6 +51,7 @@ export class HistorialCompraMapper {
         entity.estatus_compra = dto.estatusCompra;
         entity.fecha_compra = dto.fechaCompra;
         entity.fecha_entrega = dto.fechaEntrega;
+        entity.metodo_pago = dto.metodoPago;
         entity.id_direccion_entrega = dto.direccion.id;
 
         return entity;

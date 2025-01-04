@@ -21,6 +21,9 @@ export class HistorialCompra {
     fecha_entrega: string;
 
     @Column()
+    metodo_pago: string;
+
+    @Column()
     id_direccion_entrega: number;
 
     @ManyToOne(() => Usuario)

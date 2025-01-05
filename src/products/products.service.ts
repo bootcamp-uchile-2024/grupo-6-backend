@@ -1,7 +1,7 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import { promises as FS } from 'fs';
 import * as fs from 'fs';
+import { promises as FS } from 'fs';
 import { Autor } from 'src/orm/entity/autor';
 import { Editorial } from 'src/orm/entity/editorial';
 import { Encuadernacion } from 'src/orm/entity/encuadernacion';
@@ -520,8 +520,20 @@ export class ProductsService {
     const libro: Libro = await this.productRepository.findOneBy({
       isbn: isbn
     })
+    if (!libro){
+      throw new NotFoundException(`No existe el libro con ISBN: ${isbn}`)
+    }
     // Eliminar libro de BD
-    await this.productRepository.delete(libro);
+    try{
+      await this.productRepository
+        .createQueryBuilder()
+        .delete()
+        .from(Libro)
+        .where('isbn = :isbn', {isbn})
+        .execute();
+    } catch (error) {
+      throw new Error(`Error al eliminar libro en la BD: ${error.message}`)
+    }
 
     // Eliminar caratula
     const ruta_archivo: string = `${ruta_archivos_local}/${libro.caratula}`

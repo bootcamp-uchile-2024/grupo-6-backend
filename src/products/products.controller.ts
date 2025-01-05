@@ -65,7 +65,7 @@ export class ProductsController {
     try {
       return await this.productsService.remove(isbn);
     } catch (error) {
-      throw new HttpException('Error al eliminar el libro', 400);
+      throw new HttpException(error.message, 400);
     }
   }
 

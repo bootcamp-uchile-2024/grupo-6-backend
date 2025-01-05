@@ -45,12 +45,12 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     @ApiProperty({
         description: 'Rating del libro',
         type: Number,
-        minimum: 1,
+        minimum: 0,
         maximum: 5,
         example: 4, 
     })
     @IsInt()
-    @Min(1)
+    @Min(0)
     @Max(5)
     @IsOptional()
     public rating?: number;
@@ -71,6 +71,7 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
 
     @ApiProperty({ description: 'Año de publicación del libro', type: 'number', example: 2001})
     @IsNumber()
+    @IsOptional()
     public agnoPublicacion?: number;
 
     @ApiProperty({ 
@@ -171,13 +172,16 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
         example: [GeneroEnum.ROMANCE, GeneroEnum.EDUCATIVO],
       })
       @ArrayNotEmpty()
+      @IsOptional()
       public genero: GeneroEnum[];
 
     @ApiProperty({ description: 'Indicador de si el producto es destacado o no', type: Boolean, example: true })
     @IsBoolean()
+    @IsOptional()
     public destacado?: boolean;
 
     @ApiProperty({ description: 'Indicador de si el producto esta habilitado o no', type: Boolean, example: true })
     @IsBoolean()
+    @IsOptional()
     public habilitado?: boolean;
 }

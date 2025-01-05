@@ -97,9 +97,11 @@ export class ProductsService {
       const autor = new Autor();
       autor.nombre = createProductDto.autor;
       createProductDto.id_autor = autor.id;
-
+      
       try {
         await this.autorRepository.save(autor);
+        const nuevoAutor = await this.autorRepository.findOneBy({nombre: autor.nombre});
+        createProductDto.id_autor = nuevoAutor.id;
       } catch(error) {
         throw new HttpException('Error al guardar autor', 400)
       }

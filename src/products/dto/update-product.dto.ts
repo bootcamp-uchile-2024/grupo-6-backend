@@ -1,8 +1,10 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayNotEmpty, Contains, IsBoolean, IsInt, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import { ArrayNotEmpty, Contains, IsBoolean, IsEnum, IsInt, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 import { GeneroEnum } from '../entities/generoEnum';
 import { CreateProductDto } from './create-product.dto';
+import { Idioma } from '../entities/idioma';
+import { EncuadernacionEnum } from '../entities/encuadernacionEnum';
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {
 
@@ -59,15 +61,46 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
     @IsOptional()
     public editorial?: string;
 
-    @ApiProperty({ description: 'ID del idioma del libro', type: Number, example: '1', })
-    @IsInt()
+    @ApiProperty({
+        description: 'Idioma del libro',
+        enum: [
+          'Español',
+          'Inglés',
+        ],
+        example: Idioma.ESPANOL,
+      })
     @IsOptional()
-    public id_idioma?: number;
+    @IsEnum(Idioma)
+    public idioma?: Idioma;
 
-    @ApiProperty({ description: 'ID de la encuadernación del libro', type: Number, example: '1', })
-    @IsInt()
+    @ApiProperty({
+        example: EncuadernacionEnum.TAPA_DURA,
+        description: 'Tipo de encuadernación del libro',
+        enum: [
+          'Tapa Dura',
+          'Tapa Blanda',
+          'Edición de Bolsillo',
+          'Edición de Lujo',
+          'Digital',
+          'Audiolibro',
+          'Impresión Bajo Demanda',
+          'Coleccionista',
+          'Edición Limitada',
+          'Rústica',
+          'Libreta de Apuntes',
+          'Manual',
+          'Guía de Viaje',
+          'Cómic',
+          'Manga',
+          'Folleto',
+          'Calendario',
+          'Póster',
+          'Plegable',
+          'Tarjeta',
+        ],
+      })
     @IsOptional()
-    public id_encuadernacion?: number;
+    public encuadernacion?: EncuadernacionEnum;
 
     @ApiProperty({ description: 'Año de publicación del libro', type: 'number', example: 2001})
     @IsNumber()

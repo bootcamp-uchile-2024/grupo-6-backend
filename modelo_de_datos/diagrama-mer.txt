@@ -65,6 +65,7 @@ Table historial_compra {
   fecha_compra date [not null]
   fecha_entrega date [not null]
   id_direccion_entrega integer [not null]
+  metodo_pago varchar(40) [not null]
 }
 
 Table idioma_libro {
